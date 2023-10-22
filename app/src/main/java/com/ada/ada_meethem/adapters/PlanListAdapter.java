@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.modelo.Plan;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -77,8 +78,8 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
             planCreator.setText(plan.getCreator().getUsername());
             planGroup.setText(plan.getGroup().getGroupName());
 
-            // TODO cargar imagen
-            //Picasso.get().load(pelicula.getUrlCaratula()).into(imagen);
+            // cargar imagen
+            Picasso.get().load(plan.getImageUrl()).into(planImage);
 
             itemView.setOnClickListener(view -> listener.onItemClick(plan));
         }

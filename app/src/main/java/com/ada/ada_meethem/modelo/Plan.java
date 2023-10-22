@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Plan {
 
-    // TODO imagen del plan
+    private String imageUrl;
     private String title;
     private Group group;
     private Person creator;
@@ -13,23 +13,25 @@ public class Plan {
     private boolean open;
     private int maxPeople;
 
-    public Plan(String title, Group group, Person creator, int maxPeople) {
+    public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl) {
         this.title = title;
         this.group = group;
         this.creator = creator;
         this.enlisted = new ArrayList<>();
         this.open = true;
         this.maxPeople = maxPeople;
+        this.imageUrl = imageUrl;
     }
 
 
-    public Plan(String title, Group group, Person creator, int maxPeople, List<Person> enlisted) {
+    public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl, List<Person> enlisted) {
         this.title = title;
         this.group = group;
         this.creator = creator;
         this.enlisted = enlisted;
         this.open = true;
         this.maxPeople = maxPeople;
+        this.imageUrl = imageUrl;
     }
 
     public void addToPlan(Person person) {
@@ -91,5 +93,13 @@ public class Plan {
 
     public void setMaxPeople(int maxPeople) {
         this.maxPeople = maxPeople;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
