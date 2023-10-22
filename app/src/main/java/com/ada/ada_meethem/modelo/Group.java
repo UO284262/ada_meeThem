@@ -4,12 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
+
+    private String groupName;
     private List<Person> members;
     private List<Person> admins;
-
     private Person creator;
 
-    public Group(Person creator, List<Person> admins, List<Person> members) {
+    public Group(String groupName, Person creator) {
+        this.groupName = groupName;
+        this.creator = creator;
+        this.members = new ArrayList<>();
+        this.admins = new ArrayList<>();
+        addMember(creator);
+        setAsAdmin(creator);
+    }
+
+    public Group(String groupName, Person creator, List<Person> admins, List<Person> members) {
+        this.groupName = groupName;
         this.creator = creator;
         this.members = members;
         this.admins = admins;
@@ -27,6 +38,14 @@ public class Group {
     public void removeFromAdmins(Person person) {
         if(!members.contains(person) && admins.contains(person))
             admins.remove(person); members.add(person);
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public List<Person> getMembers() {

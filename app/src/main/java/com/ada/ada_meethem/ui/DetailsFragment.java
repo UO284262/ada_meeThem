@@ -59,8 +59,6 @@ public class DetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root= inflater.inflate(R.layout.fragment_home, container, false);
-        TextView tvArgumento = root.findViewById(R.id.text_home);
-        tvArgumento.setText(text);
         return root;
     }
 }
