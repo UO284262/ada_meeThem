@@ -2,12 +2,11 @@ package com.ada.ada_meethem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
+import com.ada.ada_meethem.ui.FriendsFragment;
 import com.ada.ada_meethem.ui.HomeFragment;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -61,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Argumento solamente necesita.... El argumento de la película */
 
-                HomeFragment homeFragment=HomeFragment.newInstance("Detalles");
+                FriendsFragment friendsFragment= FriendsFragment.newInstance("Friends");
 
                 /* ¿Qué estaremos haciendo aquí? */
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, friendsFragment).commit();
                 return true;
             }
             //Si no es nula y no entra... Algo falla.

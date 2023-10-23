@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">meeThem</string>
     <string name="nav_home">Home</string>
-    <string name="nav_plan_details">Details</string>
+    <string name="nav_friends">Friends</string>
     <string name="nav_profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
