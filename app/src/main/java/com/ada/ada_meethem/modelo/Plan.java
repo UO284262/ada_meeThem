@@ -4,31 +4,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Plan {
+
+    private String imageUrl;
     private String title;
-    private Group gruop;
+    private Group group;
     private Person creator;
     private List<Person> enlisted;
     private boolean open;
+    private int maxPeople;
 
-    public Plan(String title, Group gruop, Person creator) {
+    public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl) {
         this.title = title;
-        this.gruop = gruop;
+        this.group = group;
         this.creator = creator;
-        this.enlisted = new ArrayList<Person>();
+        this.enlisted = new ArrayList<>();
         this.open = true;
+        this.maxPeople = maxPeople;
+        this.imageUrl = imageUrl;
     }
 
 
-    public Plan(String title, Group gruop, Person creator, List<Person> enlisted) {
+    public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl, List<Person> enlisted) {
         this.title = title;
-        this.gruop = gruop;
+        this.group = group;
         this.creator = creator;
         this.enlisted = enlisted;
         this.open = true;
+        this.maxPeople = maxPeople;
+        this.imageUrl = imageUrl;
     }
 
     public void addToPlan(Person person) {
-        if(!enlisted.contains(person) && open) enlisted.add(person);
+        if(!enlisted.contains(person) && open && enlisted.size() <= maxPeople)
+            enlisted.add(person);
     }
 
     public void removeFromPlan(Person person) {
@@ -47,8 +55,8 @@ public class Plan {
         this.title = title;
     }
 
-    public void setGruop(Group gruop) {
-        this.gruop = gruop;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public void setCreator(Person creator) {
@@ -63,8 +71,8 @@ public class Plan {
         return title;
     }
 
-    public Group getGruop() {
-        return gruop;
+    public Group getGroup() {
+        return group;
     }
 
     public Person getCreator() {
@@ -77,5 +85,21 @@ public class Plan {
 
     public List<Person> _getEnlisted() {
         return enlisted;
+    }
+
+    public int getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(int maxPeople) {
+        this.maxPeople = maxPeople;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
