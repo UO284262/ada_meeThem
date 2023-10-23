@@ -5,4 +5,7 @@
     <string name="nav_profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_recycler_line_plan_image_content_description">Foto del plan</string>
+    <string name="home_recycler_line_creator">"Creador: "</string>
+    <string name="home_recycler_line_group">"Grupo: "</string>
 </resources>
