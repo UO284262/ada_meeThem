@@ -39,13 +39,7 @@ public class MainActivity extends AppCompatActivity {
             /* Según el caso, crearemos un Fragmento u otro */
             if (itemId == R.id.nav_home)
             {
-                /* Haciendo uso del FactoryMethod pasándole todos los parámetros necesarios */
-
-                /* Argumento solamente necesita.... El argumento de la película */
-
-                HomeFragment homeFragment=HomeFragment.newInstance("Home");
-
-                /* ¿Qué estaremos haciendo aquí? */
+                HomeFragment homeFragment = new HomeFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
                 return true;
             }
@@ -57,13 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_plan_details)
             {
-                /* Haciendo uso del FactoryMethod pasándole todos los parámetros necesarios */
-
-                /* Argumento solamente necesita.... El argumento de la película */
-
-                HomeFragment homeFragment=HomeFragment.newInstance("Detalles");
-
-                /* ¿Qué estaremos haciendo aquí? */
+                HomeFragment homeFragment = new HomeFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
                 return true;
             }

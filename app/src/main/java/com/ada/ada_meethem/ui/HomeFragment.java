@@ -18,48 +18,16 @@ import com.ada.ada_meethem.modelo.Plan;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "text";
-
-    private String text;
-
     private List<Plan> plans;
-    private RecyclerView plansRecyclerView;
 
     public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param text Parameter 1.
-     * @return A new instance of fragment HomeFragment.
-     */
-    public static HomeFragment newInstance(String text) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, text);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            text = getArguments().getString(ARG_PARAM1);
-        }
-
-        generatePlans();
     }
 
     @Override
@@ -68,7 +36,9 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        plansRecyclerView = root.findViewById(R.id.plansRecyclerView);
+        generatePlans();
+
+        RecyclerView plansRecyclerView = root.findViewById(R.id.plansRecyclerView);
         plansRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext());
