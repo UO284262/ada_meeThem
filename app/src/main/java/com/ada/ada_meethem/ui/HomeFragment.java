@@ -105,6 +105,15 @@ public class HomeFragment extends Fragment {
         plans.add(plan1);
         plans.add(plan2);
         plans.add(plan3);
+        plans.add(plan1);
+        plans.add(plan2);
+        plans.add(plan3);
+        plans.add(plan1);
+        plans.add(plan2);
+        plans.add(plan3);
+        plans.add(plan1);
+        plans.add(plan2);
+        plans.add(plan3);
     }
 
 }

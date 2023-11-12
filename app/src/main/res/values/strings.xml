@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">meeThem</string>
     <string name="nav_home">Home</string>
-    <string name="nav_friends">Friends</string>
-    <string name="nav_profile">Profile</string>
+    <string name="nav_friends">Crear plan</string>
+    <string name="nav_profile">Perfil</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home_recycler_line_plan_image_content_description">Foto del plan</string>

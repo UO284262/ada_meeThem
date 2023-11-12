@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <include layout="@layout/content_scrollingbotonera" />
+    <include layout="@layout/content_scrollingbotonera_prueba" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
