@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.ada.ada_meethem.ui.ContactsFragment;
 import com.ada.ada_meethem.ui.HomeFragment;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -49,10 +50,15 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
-            if (itemId == R.id.nav_plan_details)
-            {
-                HomeFragment homeFragment = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+//TODO            if (itemId == R.id.nav_plan_details)
+//            {
+//                HomeFragment homeFragment = new HomeFragment();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+//                return true;
+//            }
+            if (itemId == R.id.nav_contacts) {
+                ContactsFragment contactsFragment = new ContactsFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, contactsFragment).commit();
                 return true;
             }
             //Si no es nula y no entra... Algo falla.
