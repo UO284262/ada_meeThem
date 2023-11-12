@@ -2,12 +2,11 @@ package com.ada.ada_meethem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
+import com.ada.ada_meethem.ui.FriendsFragment;
 import com.ada.ada_meethem.ui.ContactsFragment;
 import com.ada.ada_meethem.ui.HomeFragment;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -50,12 +49,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
-//TODO            if (itemId == R.id.nav_plan_details)
-//            {
-//                HomeFragment homeFragment = new HomeFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-//                return true;
-//            }
+            if (itemId == R.id.nav_plan_details) {
+                /* Haciendo uso del FactoryMethod pasándole todos los parámetros necesarios */
+
+                /* Argumento solamente necesita.... El argumento de la película */
+
+                FriendsFragment friendsFragment = FriendsFragment.newInstance("Friends");
+
+                /* ¿Qué estaremos haciendo aquí? */
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, friendsFragment).commit();
+            }
             if (itemId == R.id.nav_contacts) {
                 ContactsFragment contactsFragment = new ContactsFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, contactsFragment).commit();
