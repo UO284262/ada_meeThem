@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,14 @@ import androidx.fragment.app.Fragment;
 import com.ada.ada_meethem.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ContactsFragment extends Fragment {
+public class CreatePlanFragment extends Fragment {
 
     private static final int PICK_CONTACT_REQUEST = 1;
 
     private TextView tvName;
     private TextView tvNumber;
 
-    public ContactsFragment() {
+    public CreatePlanFragment() {
         // Required empty public constructor
     }
 
