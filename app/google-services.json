@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "590201869407",
+    "project_id": "meethem-8955a",
+    "storage_bucket": "meethem-8955a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590201869407:android:72dded2969851a33aeb7ea",
+        "android_client_info": {
+          "package_name": "com.ada.ada_meethem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4g8YotLWL0a-Q6ify7UpDGJw7JzF-7IU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
