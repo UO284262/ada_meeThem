@@ -1,6 +1,9 @@
 package com.ada.ada_meethem.ui;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,11 +78,26 @@ public class HomeFragment extends Fragment {
         plansRecyclerView.setLayoutManager(layoutManager);
 
         PlanListAdapter plAdapter= new PlanListAdapter(plans,
-                plan -> {
-                });
+                new PlanListAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Plan plan) {
+                        clickonItem(plan);
+                    }
+        });
         plansRecyclerView.setAdapter(plAdapter);
 
         return root;
+    }
+
+    public void clickonItem (Plan plan){
+        //Paso el modo de apertura
+        PlanFragment planFragment=PlanFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("plan", plan);
+        Log.d("queCoño","queCoño");
+        planFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, planFragment).commit();
+
     }
 
     private void generatePlans() {

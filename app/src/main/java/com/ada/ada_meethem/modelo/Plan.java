@@ -1,9 +1,10 @@
 package com.ada.ada_meethem.modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Plan {
+public class Plan implements Serializable {
 
     private String imageUrl;
     private String title;
