@@ -1,9 +1,14 @@
 package com.ada.ada_meethem.data;
 
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 
 import com.ada.ada_meethem.modelo.Contact;
 
@@ -28,13 +33,17 @@ public class ContactProvider {
      * @return lista de contactos encontrados o null si no encuentra ninguno.
      */
     public List<Contact> getContacts(String selection, String[] selectionArgs) {
+        // Antes de nada, hay que comprobar que el usuario haya aceptado los permisos de lectura
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED)
+            return null;
+
         // Columnas que se recuperarán de cada contacto
         String[] projection = {
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.HAS_PHONE_NUMBER
         };
-
         // Columna por la que se ordenará el resultado
         String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
 

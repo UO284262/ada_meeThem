@@ -9,4 +9,6 @@
     <string name="home_recycler_line_creator">"Creador: "</string>
     <string name="home_recycler_line_group">"Grupo: "</string>
     <string name="contact_picker_recycler_line_contact_image_content_description">Imagen del contacto</string>
+    <string name="read_contact_permissions_not_acepted">Para mostrar los contactos hay que aceptar los permisos</string>
+    <string name="contact_list_is_empty">No hay contactos en el teléfono</string>
 </resources>
