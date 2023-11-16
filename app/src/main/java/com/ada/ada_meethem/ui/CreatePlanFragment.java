@@ -19,8 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CreatePlanFragment extends Fragment {
 
-    private static final int PICK_CONTACT_REQUEST = 1;
-
     private TextView tvName;
     private TextView tvNumber;
 
@@ -48,32 +46,8 @@ public class CreatePlanFragment extends Fragment {
         return root;
     }
 
-
     private void pickContacts() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setDataAndType(Uri.parse("content://contacts"), ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-        startActivityForResult(intent, PICK_CONTACT_REQUEST);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == PICK_CONTACT_REQUEST) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                Uri uri = data.getData();
-
-                Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
-
-                if (cursor != null && cursor.moveToFirst()) {
-                    int nameColumn = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-                    int numberColumn = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-                    String name = cursor.getString(nameColumn);
-                    String number = cursor.getString(numberColumn);
-
-                    tvName.setText(name);
-                    tvNumber.setText(number);
-                }
-            }
-        }
+        ContactPickerFragment contactPickerFragment = new ContactPickerFragment();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, contactPickerFragment).commit();
     }
 }
