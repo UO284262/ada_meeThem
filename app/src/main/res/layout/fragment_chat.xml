@@ -35,7 +35,7 @@
             app:layout_constraintVertical_bias="0.042" />
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/etMessage"
             android:layout_width="332dp"
             android:layout_height="50dp"
             android:layout_marginTop="633dp"
@@ -44,13 +44,13 @@
             android:text="Name"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.079"
+            app:layout_constraintHorizontal_bias="0.202"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/planNameChat"
-            app:layout_constraintVertical_bias="0.272" />
+            app:layout_constraintVertical_bias="1.0" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/fabSendMsg"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:clickable="true"
@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.304"
-            app:layout_constraintStart_toEndOf="@+id/editTextText"
+            app:layout_constraintStart_toEndOf="@+id/etMessage"
             app:layout_constraintTop_toBottomOf="@+id/chatList"
             app:layout_constraintVertical_bias="1.0" />
 
