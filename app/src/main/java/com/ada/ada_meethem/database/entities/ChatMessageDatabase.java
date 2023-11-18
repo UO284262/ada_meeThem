@@ -12,12 +12,7 @@ public class ChatMessageDatabase {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("chats").child(planId);
-        Log.d("quePolla",FirebaseAuth.getInstance()
-                .getCurrentUser().getPhoneNumber()+ "-" + text);
         // Escribe los datos en la base de datos
         chatReference.child(msg.getId()).setValue(msg);
-
-
-
     }
 }

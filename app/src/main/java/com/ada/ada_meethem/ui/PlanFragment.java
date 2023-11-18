@@ -50,7 +50,7 @@ public class PlanFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root= inflater.inflate(R.layout.fragment_plan, container, false);
-        plan = (Plan) getArguments().getSerializable("plan");
+        plan = (Plan) getArguments().getParcelable("plan");
 
 
         ((TextView) root.findViewById(R.id.planName)).setText(plan.getTitle());
@@ -65,14 +65,13 @@ public class PlanFragment extends Fragment {
                 abrirChat(plan);
             }
         });
-        Log.d("queCojones","queCojones");
         return root;
     }
 
     private void abrirChat(Plan plan) {
         ChatFragment chatFragment=ChatFragment.newInstance();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("plan", plan);
+        bundle.putParcelable("plan", plan);
         chatFragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, chatFragment).commit();
 

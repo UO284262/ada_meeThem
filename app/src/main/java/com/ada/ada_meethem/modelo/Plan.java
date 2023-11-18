@@ -1,11 +1,16 @@
 package com.ada.ada_meethem.modelo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Plan implements Serializable {
+public class Plan implements Parcelable {
 
     private String imageUrl;
     private String title;
@@ -14,7 +19,6 @@ public class Plan implements Serializable {
     private List<Person> enlisted;
     private boolean open;
     private int maxPeople;
-
     private String planId;
 
     public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl) {
@@ -116,4 +120,42 @@ public class Plan implements Serializable {
     public void setPlanId(String id) {
         this.planId = id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(imageUrl);
+        dest.writeList(enlisted);
+        dest.writeInt(maxPeople);
+        dest.writeString(planId);
+        dest.writeByte((byte) (open ? 1 : 0));
+        dest.writeParcelable(creator,flags);
+    }
+    protected Plan(Parcel in) {
+        title = in.readString();
+        imageUrl = in.readString();
+        in.readList(enlisted, getClass().getClassLoader());
+        maxPeople = in.readInt();
+        planId = in.readString();
+        open = in.readByte() != 0;
+        creator = in.readParcelable(Person.class.getClassLoader());
+    }
+
+    public static final Creator<Plan> CREATOR = new Creator<Plan>() {
+        @Override
+        public Plan createFromParcel(Parcel in) {
+            return new Plan(in);
+        }
+
+        @Override
+        public Plan[] newArray(int size) {
+            return new Plan[size];
+        }
+    };
+
 }

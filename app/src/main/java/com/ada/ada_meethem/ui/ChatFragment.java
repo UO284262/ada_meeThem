@@ -73,7 +73,7 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root= inflater.inflate(R.layout.fragment_chat, container, false);
-        plan = (Plan) getArguments().getSerializable("plan");
+        plan = (Plan) getArguments().getParcelable("plan");
 
         ((TextView) root.findViewById(R.id.planNameChat)).setText(plan.getTitle());
 

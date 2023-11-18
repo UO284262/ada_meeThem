@@ -63,8 +63,7 @@ public class HomeFragment extends Fragment {
         //Paso el modo de apertura
         PlanFragment planFragment=PlanFragment.newInstance();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("plan", plan);
-        Log.d("queCoño","queCoño");
+        bundle.putParcelable("plan", plan);
         planFragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, planFragment).commit();
 
