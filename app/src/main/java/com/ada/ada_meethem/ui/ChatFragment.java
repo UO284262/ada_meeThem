@@ -31,6 +31,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,6 +45,8 @@ public class ChatFragment extends Fragment {
     private ListView listView;
     private MessageListAdapter adapter;
     private Plan plan;
+
+    private int[] colorsArray;
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -63,7 +66,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        colorsArray = getResources().getIntArray(R.array.colors_array);
     }
 
     @Override
@@ -87,7 +90,7 @@ public class ChatFragment extends Fragment {
         });
 
         listView = root.findViewById(R.id.chatList);
-        adapter = new MessageListAdapter(root.getContext(), new ArrayList<ChatMessage>());
+        adapter = new MessageListAdapter(root.getContext(), new ArrayList<ChatMessage>(),colorsArray);
         listView.setAdapter(adapter);
         displayMessages(root);
 
@@ -96,35 +99,6 @@ public class ChatFragment extends Fragment {
     }
 
     public void displayMessages(View root) {
-        /**
-        ListView listOfMessages = (ListView) root.findViewById(R.id.chatList);
-
-        Query query = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("chats");
-
-        FirebaseListOptions<ChatMessage> options =
-                         new FirebaseListOptions.Builder<ChatMessage>()
-                                 .setQuery(query, ChatMessage.class)
-                                 .setLayout(R.layout.message)
-                                 .build();
-        adapter = new FirebaseListAdapter<ChatMessage>(options) {
-            @Override
-            protected void populateView(View v, ChatMessage model, int position) {
-                Log.d("queCojones",model.getMessageText());
-                // Get references to the views of message.xml
-                TextView messageText = (TextView)v.findViewById(R.id.message_text);
-                TextView messageUser = (TextView)v.findViewById(R.id.message_user);
-                TextView messageTime = (TextView)v.findViewById(R.id.message_time);
-                // Set their text
-                messageText.setText(model.getMessageText());
-                messageUser.setText(model.getMessageUser());
-                // Format the date before showing it
-                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
-                        model.getMessageTime()));
-            }
-        };
-        listOfMessages.setAdapter(adapter);
-         **/
 
         FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("chats").child(plan.getPlanId()).addValueEventListener(new ValueEventListener() {
@@ -137,7 +111,8 @@ public class ChatFragment extends Fragment {
                         msgs.add(chatMessage);
                     }
                 }
-                adapter = new MessageListAdapter(root.getContext(),msgs);
+                Collections.reverse(msgs);
+                adapter = new MessageListAdapter(root.getContext(), msgs,colorsArray);
                 listView.setAdapter(adapter);
             }
 

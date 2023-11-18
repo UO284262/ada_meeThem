@@ -18,9 +18,12 @@ public class MessageListAdapter extends BaseAdapter {
         private List<ChatMessage> listaMessages;
         private Context context;
 
-        public MessageListAdapter(Context context, List<ChatMessage> listaMessages) {
+        private int[] colorsArray;
+
+        public MessageListAdapter(Context context, List<ChatMessage> listaMessages,int[] colorsArray) {
             this.context = context;
             this.listaMessages = listaMessages;
+            this.colorsArray = colorsArray;
         }
 
         @Override
@@ -49,15 +52,17 @@ public class MessageListAdapter extends BaseAdapter {
 
             // Obtén el usuario actual
             ChatMessage chatMessage = listaMessages.get(position);
-
+            String userPhoneNumber = chatMessage.getMessageUser().substring(3);
+            int color = colorsArray[Integer.parseInt(userPhoneNumber)%18];
             TextView messageText = (TextView)view.findViewById(R.id.message_text);
             TextView messageUser = (TextView)view.findViewById(R.id.message_user);
             TextView messageTime = (TextView)view.findViewById(R.id.message_time);
             // Set their text
             messageText.setText(chatMessage.getMessageText());
-            messageUser.setText(chatMessage.getMessageUser());
+            messageUser.setTextColor(color);
+            messageUser.setText(userPhoneNumber);
             // Format the date before showing it
-            messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+            messageTime.setText(DateFormat.format("HH:mm (dd-MM-yyyy)",
                     chatMessage.getMessageTime()));
 
 
