@@ -8,4 +8,5 @@
     <string name="home_recycler_line_plan_image_content_description">Foto del plan</string>
     <string name="home_recycler_line_creator">"Creador: "</string>
     <string name="home_recycler_line_group">"Grupo: "</string>
+    <string name="hintMessage">Message</string>
 </resources>
