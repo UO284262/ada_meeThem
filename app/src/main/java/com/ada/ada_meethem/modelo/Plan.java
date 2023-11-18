@@ -3,6 +3,7 @@ package com.ada.ada_meethem.modelo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Plan implements Serializable {
 
@@ -14,6 +15,8 @@ public class Plan implements Serializable {
     private boolean open;
     private int maxPeople;
 
+    private String planId;
+
     public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl) {
         this.title = title;
         this.group = group;
@@ -22,6 +25,7 @@ public class Plan implements Serializable {
         this.open = true;
         this.maxPeople = maxPeople;
         this.imageUrl = imageUrl;
+        this.planId = UUID.randomUUID().toString();
     }
 
 
@@ -33,6 +37,7 @@ public class Plan implements Serializable {
         this.open = true;
         this.maxPeople = maxPeople;
         this.imageUrl = imageUrl;
+        this.planId = UUID.randomUUID().toString();
     }
 
     public void addToPlan(Person person) {
@@ -102,5 +107,13 @@ public class Plan implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getPlanId() {
+        return this.planId;
+    }
+
+    public void setPlanId(String id) {
+        this.planId = id;
     }
 }

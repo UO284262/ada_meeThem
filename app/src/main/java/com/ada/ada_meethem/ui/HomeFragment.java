@@ -119,16 +119,11 @@ public class HomeFragment extends Fragment {
         plan2.addToPlan(person2);
         plan2.addToPlan(person4);
 
+        plan1.setPlanId("1");
+        plan2.setPlanId("2");
+        plan3.setPlanId("3");
+
         plans = new ArrayList<>();
-        plans.add(plan1);
-        plans.add(plan2);
-        plans.add(plan3);
-        plans.add(plan1);
-        plans.add(plan2);
-        plans.add(plan3);
-        plans.add(plan1);
-        plans.add(plan2);
-        plans.add(plan3);
         plans.add(plan1);
         plans.add(plan2);
         plans.add(plan3);
