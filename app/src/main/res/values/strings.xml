@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">meeThem</string>
     <string name="nav_home">Home</string>
-    <string name="nav_friends">Crear plan</string>
+    <string name="nav_create_plan">Crear plan</string>
     <string name="nav_profile">Perfil</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -9,4 +9,7 @@
     <string name="home_recycler_line_creator">"Creador: "</string>
     <string name="home_recycler_line_group">"Grupo: "</string>
     <string name="hintMessage">Message</string>
+    <string name="contact_picker_recycler_line_contact_image_content_description">Imagen del contacto</string>
+    <string name="read_contact_permissions_not_acepted">Para mostrar los contactos hay que aceptar los permisos</string>
+    <string name="contact_list_is_empty">No hay contactos en el teléfono</string>
 </resources>

@@ -5,8 +5,8 @@
         android:id="@+id/nav_home"
         android:title="@string/nav_home" />
     <item
-        android:id="@+id/nav_plan_details"
-        android:title="@string/nav_friends" />
+        android:id="@+id/nav_plan_create"
+        android:title="@string/nav_create_plan" />
     <item
         android:id="@+id/nav_profile"
         android:title="@string/nav_profile" />

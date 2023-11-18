@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.ada.ada_meethem.ui.FriendsFragment;
+import com.ada.ada_meethem.ui.CreatePlanFragment;
 import com.ada.ada_meethem.ui.HomeFragment;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,36 +36,22 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             /* Según el caso, crearemos un Fragmento u otro */
-            if (itemId == R.id.nav_home)
-            {
-                /* Haciendo uso del FactoryMethod pasándole todos los parámetros necesarios */
-
-                /* Argumento solamente necesita.... El argumento de la película */
-
-                HomeFragment homeFragment=HomeFragment.newInstance("Home");
-
-                /* ¿Qué estaremos haciendo aquí? */
+            if (itemId == R.id.nav_home) {
+                HomeFragment homeFragment = new HomeFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
                 return true;
             }
 
-            if (itemId == R.id.nav_profile)
-            {
+            if (itemId == R.id.nav_profile) {
                 return true;
             }
 
-            if (itemId == R.id.nav_plan_details)
-            {
-                /* Haciendo uso del FactoryMethod pasándole todos los parámetros necesarios */
-
-                /* Argumento solamente necesita.... El argumento de la película */
-
-                FriendsFragment friendsFragment= FriendsFragment.newInstance("Friends");
-
-                /* ¿Qué estaremos haciendo aquí? */
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, friendsFragment).commit();
+            if (itemId == R.id.nav_plan_create) {
+                CreatePlanFragment createPlanFragment = new CreatePlanFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, createPlanFragment).commit();
                 return true;
             }
+
             //Si no es nula y no entra... Algo falla.
             throw new IllegalStateException("Unexpected value: " + item.getItemId());
         };
