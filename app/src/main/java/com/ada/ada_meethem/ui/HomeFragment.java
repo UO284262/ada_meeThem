@@ -1,6 +1,9 @@
 package com.ada.ada_meethem.ui;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,11 +48,25 @@ public class HomeFragment extends Fragment {
         plansRecyclerView.setLayoutManager(layoutManager);
 
         PlanListAdapter plAdapter= new PlanListAdapter(plans,
-                plan -> {
-                });
+                new PlanListAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Plan plan) {
+                        clickonItem(plan);
+                    }
+        });
         plansRecyclerView.setAdapter(plAdapter);
 
         return root;
+    }
+
+    public void clickonItem (Plan plan){
+        //Paso el modo de apertura
+        PlanFragment planFragment=PlanFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("plan", plan);
+        planFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, planFragment).commit();
+
     }
 
     private void generatePlans() {
@@ -71,16 +88,11 @@ public class HomeFragment extends Fragment {
         plan2.addToPlan(person2);
         plan2.addToPlan(person4);
 
+        plan1.setPlanId("1");
+        plan2.setPlanId("2");
+        plan3.setPlanId("3");
+
         plans = new ArrayList<>();
-        plans.add(plan1);
-        plans.add(plan2);
-        plans.add(plan3);
-        plans.add(plan1);
-        plans.add(plan2);
-        plans.add(plan3);
-        plans.add(plan1);
-        plans.add(plan2);
-        plans.add(plan3);
         plans.add(plan1);
         plans.add(plan2);
         plans.add(plan3);
