@@ -25,41 +25,41 @@
 
         <ListView
             android:id="@+id/chatList"
-            android:layout_width="349dp"
-            android:layout_height="580dp"
-            android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="356dp"
+            android:layout_height="570dp"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll"
+            app:layout_constraintBottom_toTopOf="@+id/etMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/planNameChat"
-            app:layout_constraintVertical_bias="0.042" />
+            app:layout_constraintTop_toBottomOf="@+id/planNameChat" />
 
         <EditText
             android:id="@+id/etMessage"
-            android:layout_width="308dp"
-            android:layout_height="41dp"
+            android:layout_width="298dp"
+            android:layout_height="50dp"
             android:ems="10"
             android:hint="@string/hintMessage"
             android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.194"
+            app:layout_constraintHorizontal_bias="0.247"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chatList"
-            app:layout_constraintVertical_bias="0.195" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.924" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabSendMsg"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:clickable="true"
+        <ImageButton
+            android:id="@+id/buttonSend"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/green"
             android:src="@android:drawable/ic_menu_send"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.424"
+            app:layout_constraintHorizontal_bias="0.325"
             app:layout_constraintStart_toEndOf="@+id/etMessage"
             app:layout_constraintTop_toBottomOf="@+id/chatList"
-            app:layout_constraintVertical_bias="0.25" />
+            app:layout_constraintVertical_bias="0.157" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
