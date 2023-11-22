@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 class MessageListAdapter(
 
     private val context: Context,
-    private val listaMessages: List<ChatMessage>,
+    private var listaMessages: List<ChatMessage>,
     private val colorsArray: IntArray
 ) : BaseAdapter() {
 
@@ -73,5 +73,10 @@ class MessageListAdapter(
             chatMessage.messageTime
         )
         return view
+    }
+
+    fun update(listaChatMessage : List<ChatMessage>) {
+        listaMessages = listaChatMessage
+        notifyDataSetChanged()
     }
 }

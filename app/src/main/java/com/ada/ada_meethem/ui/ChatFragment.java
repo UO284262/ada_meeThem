@@ -114,8 +114,7 @@ public class ChatFragment extends Fragment {
                 Comparator<ChatMessage> timeComparator = Comparator.comparingLong(
                                                                 ChatMessage::getMessageTime);
                 msgs.sort(timeComparator);
-                adapter = new MessageListAdapter(root.getContext(), msgs,colorsArray);
-                listView.setAdapter(adapter);
+                adapter.update(msgs);
                 listView.setSelection(adapter.getCount() - 1);
             }
 
