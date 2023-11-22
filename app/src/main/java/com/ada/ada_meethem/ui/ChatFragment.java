@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -76,15 +78,13 @@ public class ChatFragment extends Fragment {
         plan = (Plan) getArguments().getParcelable("plan");
 
         ((TextView) root.findViewById(R.id.planNameChat)).setText(plan.getTitle());
-
-        FloatingActionButton fab =
-                (FloatingActionButton)root.findViewById(R.id.fabSendMsg);
-        fab.setOnClickListener(new View.OnClickListener() {
+        ImageButton button = (ImageButton) root.findViewById(R.id.buttonSend);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 EditText input = (EditText) root.findViewById(R.id.etMessage);
-                ChatMessageDatabase.sendMessage(plan.getPlanId(),input.getText().toString());
-                // Clear the input
+                if(!input.getText().toString().trim().isEmpty())
+                    ChatMessageDatabase.sendMessage(plan.getPlanId(), input.getText().toString());
                 input.setText("");
             }
         });
@@ -111,9 +111,11 @@ public class ChatFragment extends Fragment {
                         msgs.add(chatMessage);
                     }
                 }
-                Collections.reverse(msgs);
-                adapter = new MessageListAdapter(root.getContext(), msgs,colorsArray);
-                listView.setAdapter(adapter);
+                Comparator<ChatMessage> timeComparator = Comparator.comparingLong(
+                                                                ChatMessage::getMessageTime);
+                msgs.sort(timeComparator);
+                adapter.update(msgs);
+                listView.setSelection(adapter.getCount() - 1);
             }
 
             @Override
