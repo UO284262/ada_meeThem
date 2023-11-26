@@ -63,11 +63,12 @@
             app:layout_constraintVertical_bias="0.04" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabItems"
+            android:id="@+id/fabEditPlan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:src="@android:drawable/ic_input_add"
+            android:src="@android:drawable/ic_menu_edit"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.912"
@@ -76,6 +77,7 @@
             app:layout_constraintVertical_bias="0.976" />
 
         <ListView
+            android:id="@+id/pinnedList"
             android:layout_width="347dp"
             android:layout_height="494dp"
             app:layout_constraintBottom_toBottomOf="parent"

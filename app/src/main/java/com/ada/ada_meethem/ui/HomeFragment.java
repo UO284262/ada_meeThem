@@ -70,17 +70,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void generatePlans() {
-        Person person1 = new Person("Maricarmen");
-        Person person2 = new Person("Alex");
-        Person person3 = new Person("Abel");
-        Person person4 = new Person("Diego");
+        Person person1 = new Person("Maricarmen","0",null);
+        Person person2 = new Person("Alex","0",null);
+        Person person3 = new Person("Abel","0",null);
+        Person person4 = new Person("Diego","0",null);
 
-        Group group1 = new Group("Montañeros raperos", person1);
-        Group group2 = new Group("Molamos", person2);
-
-        Plan plan1 = new Plan("Ruta del Cares", group1, person1, 10, "https://www.escapadarural.com/blog/wp-content/uploads/2019/11/ruta-cares.jpg");
-        Plan plan2 = new Plan("Padelcito", group2, person3, 3, "https://www.covb.cat/wp-content/uploads/2023/04/padel-g9a1278dbc_1280.jpg");
-        Plan plan3 = new Plan("Surf en rodiles", group2, person4, 5, "https://img.redbull.com/images/q_auto,f_auto/redbullcom/2015/01/22/1331701014293_2/iv%C3%A1n-villalba-en-rodiles-%28asturias%29-semeyadetoral.com.jpg");
+        Plan plan1 = new Plan("Ruta del Cares", person1, 10, "https://www.escapadarural.com/blog/wp-content/uploads/2019/11/ruta-cares.jpg");
+        Plan plan2 = new Plan("Padelcito", person3, 3, "https://www.covb.cat/wp-content/uploads/2023/04/padel-g9a1278dbc_1280.jpg");
+        Plan plan3 = new Plan("Surf en rodiles", person4, 5, "https://img.redbull.com/images/q_auto,f_auto/redbullcom/2015/01/22/1331701014293_2/iv%C3%A1n-villalba-en-rodiles-%28asturias%29-semeyadetoral.com.jpg");
 
         plan3.addToPlan(person1);
         plan3.addToPlan(person3);

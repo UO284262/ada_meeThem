@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.ada.ada_meethem.R
-import com.ada.ada_meethem.database.entities.ChatMessage
+import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.google.firebase.auth.FirebaseAuth
 
 class MessageListAdapter(
