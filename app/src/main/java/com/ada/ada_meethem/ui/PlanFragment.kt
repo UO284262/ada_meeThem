@@ -1,142 +1,128 @@
-package com.ada.ada_meethem.ui;
+package com.ada.ada_meethem.ui
 
-import android.os.Bundle;
+import android.os.Bundle
+import android.os.Parcelable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ListView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.ada.ada_meethem.R
+import com.ada.ada_meethem.adapters.PinnedItemsAdapter
+import com.ada.ada_meethem.database.PlanDatabase
+import com.ada.ada_meethem.modelo.Plan
+import com.ada.ada_meethem.modelo.pinnable.ChatMessage
+import com.ada.ada_meethem.modelo.pinnable.DateSurvey
+import com.ada.ada_meethem.modelo.pinnable.Pinnable
+import com.ada.ada_meethem.modelo.pinnable.PlanImage
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.ada.ada_meethem.R;
-import com.ada.ada_meethem.adapters.MessageListAdapter;
-import com.ada.ada_meethem.adapters.PinnedItemsAdapter;
-import com.ada.ada_meethem.database.ChatMessageDatabase;
-import com.ada.ada_meethem.database.PlanDatabase;
-import com.ada.ada_meethem.modelo.Plan;
-import com.ada.ada_meethem.modelo.pinnable.ChatMessage;
-import com.ada.ada_meethem.modelo.pinnable.DateSurvey;
-import com.ada.ada_meethem.modelo.pinnable.Pinnable;
-import com.ada.ada_meethem.modelo.pinnable.PlanImage;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PlanFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class PlanFragment extends Fragment {
-
-    private Plan plan;
-
-    private PinnedItemsAdapter adapter;
-
-    private ListView listView;
-
-    public PlanFragment() {
-        // Required empty public constructor
+class PlanFragment : Fragment() {
+    private var plan: Plan? = null
+    private var adapter: PinnedItemsAdapter? = null
+    private var listView: ListView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-    public static PlanFragment newInstance() {
-        return  new PlanFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        View root= inflater.inflate(R.layout.fragment_plan, container, false);
-        plan = (Plan) getArguments().getParcelable("plan");
-
-        ((TextView) root.findViewById(R.id.planName)).setText(plan.getTitle());
-        ((TextView) root.findViewById(R.id.participantes)).setText(String.format("%d/%d",plan.getEnlisted().size(),plan.getMaxPeople()));
-        ((TextView) root.findViewById(R.id.creadorPlan)).setText(plan.getCreator().getUsername());
+        val root = inflater.inflate(R.layout.fragment_plan, container, false)
+        plan = requireArguments().getParcelable<Parcelable>("plan") as Plan?
+        (root.findViewById<View>(R.id.planName) as TextView).text = plan!!.title
+        (root.findViewById<View>(R.id.participantes) as TextView).text =
+            String.format("%d/%d", plan!!.enlisted.size, plan!!.maxPeople)
+        (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.username
         //((ImageView) root.findViewById(R.id.imagenPlan))
-
-        FloatingActionButton fab = (FloatingActionButton) root.findViewById(R.id.fabChat);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                abrirChat(plan);
-            }
-        });
-
-        FloatingActionButton fab2 = (FloatingActionButton) root.findViewById(R.id.fabEditPlan);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                abrirEdit(plan);
-            }
-        });
-
-        listView = root.findViewById(R.id.pinnedList);
-        adapter = new PinnedItemsAdapter(root.getContext(), new ArrayList<Pinnable>());
-        listView.setAdapter(adapter);
-        displayPinned(root);
-
-        return root;
+        val fab = root.findViewById<View>(R.id.fabChat) as FloatingActionButton
+        fab.setOnClickListener { abrirChat(plan) }
+        val fab2 = root.findViewById<View>(R.id.fabEditPlan) as FloatingActionButton
+        fab2.setOnClickListener { abrirEdit(plan) }
+        if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
+            == plan!!.creator.phoneNumber
+        ) fab2.visibility = View.VISIBLE
+        listView = root.findViewById(R.id.pinnedList)
+        adapter = PinnedItemsAdapter(root.context, ArrayList(), plan!!.planId)
+        listView!!.setAdapter(adapter)
+        displayPinned(root)
+        return root
     }
 
-    private void abrirChat(Plan plan) {
-        ChatFragment chatFragment=ChatFragment.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("plan", plan);
-        chatFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, chatFragment).commit();
-
+    private fun abrirChat(plan: Plan?) {
+        val chatFragment = ChatFragment.newInstance()
+        val bundle = Bundle()
+        bundle.putParcelable("plan", plan)
+        //chatFragment.arguments = bundle
+        //requireFragmentManager().beginTransaction().replace(R.id.fragment_container, chatFragment).commit()
+        findNavController().navigate(
+            R.id.action_planFragment_to_chatFragment,
+            bundle
+        );
     }
 
-    private void abrirEdit(Plan plan) {
-        EditPlanFragment editPlanFragment=EditPlanFragment.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("plan", plan);
-        editPlanFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, editPlanFragment).commit();
-
+    private fun abrirEdit(plan: Plan?) {
+        val editPlanFragment = EditPlanFragment.newInstance()
+        val bundle = Bundle()
+        bundle.putParcelable("plan", plan)
+        //editPlanFragment.arguments = bundle
+        //fragmentManager!!.beginTransaction().replace(R.id.fragment_container, editPlanFragment).commit()
+        findNavController().navigate(
+            R.id.action_planFragment_to_editPlanFragment,
+            bundle
+        );
     }
 
-    public void displayPinned(View root) {
-
-        PlanDatabase.getReference(plan.getPlanId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Pinnable> pins = new ArrayList<>();
-                for (DataSnapshot chatSnapshot : dataSnapshot.getChildren()) {
-                    ChatMessage chatMessage = chatSnapshot.getValue(ChatMessage.class);
-                    DateSurvey dateSurvey = chatSnapshot.getValue(DateSurvey.class);
-                    PlanImage imageItem = chatSnapshot.getValue(PlanImage.class);
+    fun displayPinned(root: View?) {
+        PlanDatabase.getReference(plan!!.planId).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val pins: MutableList<Pinnable> = ArrayList()
+                for (chatSnapshot in dataSnapshot.children) {
+                    var chatMessage: ChatMessage? = null
+                    try {
+                        chatMessage = chatSnapshot.getValue(ChatMessage::class.java)
+                    } catch (ignored: Exception) {
+                    }
+                    var dateSurvey: DateSurvey? = null
+                    try {
+                        dateSurvey = chatSnapshot.getValue(DateSurvey::class.java)
+                    } catch (ignored: Exception) {
+                    }
+                    var imageItem: PlanImage? = null
+                    try {
+                        imageItem = chatSnapshot.getValue(PlanImage::class.java)
+                    } catch (ignored: Exception) {
+                    }
                     if (chatMessage != null) {
-                        pins.add(chatMessage);
+                        pins.add(chatMessage)
                     } else if (dateSurvey != null) {
-                        pins.add(dateSurvey);
-                    } else {
-                        pins.add(imageItem);
+                        pins.add(dateSurvey)
+                    } else if (imageItem != null){
+                        pins.add(imageItem)
                     }
                 }
-                adapter.update(pins);
-                listView.setSelection(adapter.getCount() - 1);
+                adapter!!.update(pins.toList())
+                listView!!.setSelection(adapter!!.count - 1)
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            override fun onCancelled(databaseError: DatabaseError) {
                 // Manejo de errores
             }
-        });
+        })
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): PlanFragment {
+            return PlanFragment()
+        }
     }
 }

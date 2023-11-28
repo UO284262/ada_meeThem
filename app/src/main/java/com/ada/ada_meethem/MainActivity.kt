@@ -1,59 +1,50 @@
-package com.ada.ada_meethem;
+package com.ada.ada_meethem
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.ada.ada_meethem.ui.CreatePlanFragment
+import com.ada.ada_meethem.ui.HomeFragment
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-import android.os.Bundle;
-import android.view.MenuItem;
+class MainActivity : AppCompatActivity() {
+    var toolBarLayout: CollapsingToolbarLayout? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-import com.ada.ada_meethem.ui.CreatePlanFragment;
-import com.ada.ada_meethem.ui.HomeFragment;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+        val navController = findNavController(R.id.nav_host_fragment)
 
-public class MainActivity extends AppCompatActivity {
-
-    CollapsingToolbarLayout toolBarLayout;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        navView.setSelectedItemId(R.id.nav_home);
+        val navView = findViewById<BottomNavigationView>(R.id.nav_view)
+        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navView.setupWithNavController(navController)
+        navView.selectedItemId = R.id.nav_home
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
-        /* Cuando se selecciona uno de los botones / ítems*/
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            /* Cuando se selecciona uno de los botones / ítems*/
+            val itemId = item.itemId
 
-            int itemId = item.getItemId();
-
-            /* Según el caso, crearemos un Fragmento u otro */
-            if (itemId == R.id.nav_home) {
-                HomeFragment homeFragment = new HomeFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-                return true;
-            }
-
+            /* Según el caso, crearemos un Fragmento u otro */if (itemId == R.id.nav_home) {
+            val homeFragment = HomeFragment()
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, homeFragment)
+                .commit()
+            return@OnNavigationItemSelectedListener true
+        }
             if (itemId == R.id.nav_profile) {
-                return true;
+                return@OnNavigationItemSelectedListener true
             }
-
             if (itemId == R.id.nav_plan_create) {
-                CreatePlanFragment createPlanFragment = new CreatePlanFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, createPlanFragment).commit();
-                return true;
+                val createPlanFragment = CreatePlanFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, createPlanFragment).commit()
+                return@OnNavigationItemSelectedListener true
             }
-
-            //Si no es nula y no entra... Algo falla.
-            throw new IllegalStateException("Unexpected value: " + item.getItemId());
-        };
-    };
+            throw IllegalStateException("Unexpected value: " + item.itemId)
+        }
 }

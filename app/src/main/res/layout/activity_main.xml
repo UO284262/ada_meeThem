@@ -9,5 +9,4 @@
 
     <include layout="@layout/content_scrollingbotonera_prueba" />
 
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

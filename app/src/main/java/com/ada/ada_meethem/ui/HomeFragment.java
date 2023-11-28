@@ -1,5 +1,7 @@
 package com.ada.ada_meethem.ui;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,13 +66,17 @@ public class HomeFragment extends Fragment {
         PlanFragment planFragment=PlanFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putParcelable("plan", plan);
-        planFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, planFragment).commit();
+        //planFragment.setArguments(bundle);
+        //getFragmentManager().beginTransaction().replace(R.id.fragment_container, planFragment).commit();
+        findNavController(this).navigate(
+                R.id.action_homeFragment_to_planFragment,
+                bundle
+        );
 
     }
 
     private void generatePlans() {
-        Person person1 = new Person("Maricarmen","0",null);
+        Person person1 = new Person("Maricarmen","666666666",null);
         Person person2 = new Person("Alex","0",null);
         Person person3 = new Person("Abel","0",null);
         Person person4 = new Person("Diego","0",null);

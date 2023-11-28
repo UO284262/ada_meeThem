@@ -29,11 +29,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChatFragment extends Fragment {
 
     private ListView listView;
@@ -63,10 +58,6 @@ public class ChatFragment extends Fragment {
 
         ((TextView) root.findViewById(R.id.planNameChat)).setText(plan.getTitle());
         ImageButton button = (ImageButton) root.findViewById(R.id.buttonSend);
-
-        String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-        if(phoneNumber.equals(plan.getCreator().getPhoneNumber()))
-            root.findViewById(R.id.fabEditPlan).setVisibility(VISIBLE);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

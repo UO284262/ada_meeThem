@@ -11,6 +11,14 @@ public class PlanDatabase {
                 .getReference("plans").child(planId).child("pinnedItems");
     }
 
+    public static void unpinMessage(ChatMessage msg, String planId) {
+        DatabaseReference chatReference = FirebaseDatabase
+                .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("plans").child(planId).child("pinnedItems");
+        // Escribe los datos en la base de datos
+        chatReference.child(msg.getId()).removeValue();
+    }
+
     public static void pinMessage(ChatMessage msg, String planId) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")

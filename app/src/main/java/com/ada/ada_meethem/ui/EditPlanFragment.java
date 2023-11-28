@@ -1,5 +1,6 @@
 package com.ada.ada_meethem.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,6 +59,9 @@ public class EditPlanFragment extends Fragment {
             public void onClick(View v) {
                 String text = pinMsgText.getText().toString();
                 if(!text.isEmpty()) anclarMensaje(text);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(pinMsgText.getWindowToken(), 0);
+                showPlan();
             }
         });
 
@@ -67,5 +72,13 @@ public class EditPlanFragment extends Fragment {
         String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         ChatMessage message = new ChatMessage(text,phoneNumber);
         PlanDatabase.pinMessage(message,plan.getPlanId());
+    }
+
+    private void showPlan() {
+        PlanFragment planFragment= PlanFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("plan", plan);
+        planFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, planFragment).commit();
     }
 }
