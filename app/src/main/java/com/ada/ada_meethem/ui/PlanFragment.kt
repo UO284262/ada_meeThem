@@ -43,16 +43,20 @@ class PlanFragment : Fragment() {
             String.format("%d/%d", plan!!.enlisted.size, plan!!.maxPeople)
         (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.username
         //((ImageView) root.findViewById(R.id.imagenPlan))
+
         val fab = root.findViewById<View>(R.id.fabChat) as FloatingActionButton
         fab.setOnClickListener { abrirChat(plan) }
+
         val fab2 = root.findViewById<View>(R.id.fabEditPlan) as FloatingActionButton
         fab2.setOnClickListener { abrirEdit(plan) }
+
         if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
             == plan!!.creator.phoneNumber
         ) fab2.visibility = View.VISIBLE
+
         listView = root.findViewById(R.id.pinnedList)
         adapter = PinnedItemsAdapter(root.context, ArrayList(), plan!!.planId)
-        listView!!.setAdapter(adapter)
+        listView!!.adapter = adapter
         displayPinned(root)
         return root
     }
@@ -89,18 +93,15 @@ class PlanFragment : Fragment() {
                     var chatMessage: ChatMessage? = null
                     try {
                         chatMessage = chatSnapshot.getValue(ChatMessage::class.java)
-                    } catch (ignored: Exception) {
-                    }
+                    } catch (ignored: Exception) { }
                     var dateSurvey: DateSurvey? = null
                     try {
                         dateSurvey = chatSnapshot.getValue(DateSurvey::class.java)
-                    } catch (ignored: Exception) {
-                    }
+                    } catch (ignored: Exception) { }
                     var imageItem: PlanImage? = null
                     try {
                         imageItem = chatSnapshot.getValue(PlanImage::class.java)
-                    } catch (ignored: Exception) {
-                    }
+                    } catch (ignored: Exception) { }
                     if (chatMessage != null) {
                         pins.add(chatMessage)
                     } else if (dateSurvey != null) {

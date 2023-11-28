@@ -20,6 +20,7 @@
         app:layout_constraintVertical_bias="0.021" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/date_choices_list"
         android:layout_width="373dp"
         android:layout_height="155dp"
         app:layout_constraintBottom_toBottomOf="parent"

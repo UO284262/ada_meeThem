@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ListView
 import android.widget.TextView
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.database.PlanDatabase
@@ -16,7 +17,6 @@ import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.google.firebase.auth.FirebaseAuth
 
 class PinnedItemsAdapter(
-
     private val context: Context,
     private var listaPinned: List<Pinnable>,
     private val planId: String
@@ -76,7 +76,10 @@ class PinnedItemsAdapter(
 
         when(viewType) {
             SURVEY -> {
-
+                val dateSurvey = (item as DateSurvey)
+                val listView : ListView = view!!.findViewById<View>(R.id.date_choices_list) as ListView
+                val adapter = DateChoicesAdapter(view.context, ArrayList(),dateSurvey)
+                listView.adapter = adapter
             }
             MESSAGE -> {
                 val messageText = view!!.findViewById<View>(R.id.message_text_pinned) as TextView

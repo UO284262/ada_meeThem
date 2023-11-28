@@ -14,15 +14,15 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:paddingStart="5sp"
-        android:text="User"
+        android:text="@string/pinned_msg_title"
         android:textColor="@color/green"
         android:textStyle="normal|bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.033"
+        app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintVertical_bias="0.018" />
 
     <TextView
         android:id="@+id/message_time_pinned"
@@ -38,12 +38,12 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/message_user_pinned"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.019" />
+        app:layout_constraintVertical_bias="0.018" />
 
     <TextView
         android:id="@+id/message_text_pinned"
-        android:layout_width="298dp"
-        android:layout_height="37dp"
+        android:layout_width="320dp"
+        android:layout_height="39dp"
         android:layout_below="@+id/message_user_pinned"
         android:layout_alignParentStart="true"
         android:padding="5sp"
@@ -53,7 +53,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
+        app:layout_constraintHorizontal_bias="0.175"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/message_user_pinned"
         app:layout_constraintVertical_bias="0.0" />
