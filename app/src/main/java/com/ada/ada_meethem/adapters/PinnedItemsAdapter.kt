@@ -26,6 +26,7 @@ class PinnedItemsAdapter(
     private val SURVEY : Int = 0
     private val MESSAGE : Int = 1
     private val IMAGE : Int = 2
+    private var votedDates : ArrayList<String> = ArrayList<String>()
     override fun getCount(): Int {
         return listaPinned.size
     }
@@ -79,7 +80,7 @@ class PinnedItemsAdapter(
             SURVEY -> {
                 val dateSurvey = (item as DateSurvey)
                 val listView : ListView = view!!.findViewById<View>(R.id.date_choices_list) as ListView
-                val adapter = DateChoicesAdapter(view.context, dateSurvey.getDates().keys.toList())
+                val adapter = DateChoicesAdapter(view.context, dateSurvey.getDates(),dateSurvey, plan.planId, votedDates)
                 listView.adapter = adapter
             }
             MESSAGE -> {
