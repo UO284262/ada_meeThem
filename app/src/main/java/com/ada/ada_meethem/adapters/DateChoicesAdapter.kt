@@ -16,8 +16,7 @@ import java.util.Date
 
 class DateChoicesAdapter(
     private val context: Context,
-    private var listaDates: List<Date>,
-    private var dateSurvey: DateSurvey,
+    private var listaDates: List<String>,
 ) : BaseAdapter() {
     override fun getCount(): Int {
         return listaDates.size
@@ -32,7 +31,7 @@ class DateChoicesAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val date = getItem(position) as Date
+        val date = getItem(position) as String
         var view = convertView
         if (view == null) {
             val inflater =
@@ -40,10 +39,7 @@ class DateChoicesAdapter(
             view = inflater.inflate(R.layout.date_survey_choice, null)
         }
         val viewStr: CheckBox = view!!.findViewById<View>(R.id.date_survey_cb) as CheckBox
-        viewStr.text = DateFormat.format(
-            "dd/MM/yyyy HH:mm",
-            getItem(position) as Date
-        )
+        viewStr.text = date
         return view
     }
 }

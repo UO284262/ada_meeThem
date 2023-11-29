@@ -15,4 +15,6 @@
     <string name="pin_msg">Anclar</string>
     <string name="pin_msg_title">Anclar texto al panel</string>
     <string name="pinned_msg_title">Mensaje destacado</string>
+    <string name="create_date_survey_title">Crear encuesta de fecha</string>
+    <string name="create_date_survey_btn">Crear</string>
 </resources>

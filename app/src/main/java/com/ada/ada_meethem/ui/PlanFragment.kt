@@ -55,7 +55,7 @@ class PlanFragment : Fragment() {
         ) fab2.visibility = View.VISIBLE
 
         listView = root.findViewById(R.id.pinnedList)
-        adapter = PinnedItemsAdapter(root.context, ArrayList(), plan!!.planId)
+        adapter = PinnedItemsAdapter(root.context, ArrayList(), plan!!)
         listView!!.adapter = adapter
         displayPinned(root)
         return root
@@ -90,24 +90,10 @@ class PlanFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val pins: MutableList<Pinnable> = ArrayList()
                 for (chatSnapshot in dataSnapshot.children) {
-                    var chatMessage: ChatMessage? = null
-                    try {
-                        chatMessage = chatSnapshot.getValue(ChatMessage::class.java)
-                    } catch (ignored: Exception) { }
-                    var dateSurvey: DateSurvey? = null
-                    try {
-                        dateSurvey = chatSnapshot.getValue(DateSurvey::class.java)
-                    } catch (ignored: Exception) { }
-                    var imageItem: PlanImage? = null
-                    try {
-                        imageItem = chatSnapshot.getValue(PlanImage::class.java)
-                    } catch (ignored: Exception) { }
-                    if (chatMessage != null) {
-                        pins.add(chatMessage)
-                    } else if (dateSurvey != null) {
-                        pins.add(dateSurvey)
-                    } else if (imageItem != null){
-                        pins.add(imageItem)
+                    val ident : String = chatSnapshot.key!!.subSequence(0,3).toString()
+                    when(ident) {
+                        "msg" -> pins.add(chatSnapshot.getValue(ChatMessage::class.java) as ChatMessage)
+                        "dts" -> pins.add(chatSnapshot.getValue(DateSurvey::class.java) as DateSurvey)
                     }
                 }
                 adapter!!.update(pins.toList())

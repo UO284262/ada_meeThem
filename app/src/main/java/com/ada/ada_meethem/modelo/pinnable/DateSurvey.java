@@ -8,27 +8,33 @@ import java.util.UUID;
 public class DateSurvey implements Pinnable{
 
     private String id;
-    private HashMap<Date,Integer> dates;
+    private HashMap<String,Integer> dates;
 
     private boolean open;
 
-    public DateSurvey(List<Date> dates) {
-        this.dates = new HashMap<Date,Integer>();
-        for(Date date : dates) this.dates.put(date, 0);
-        id = UUID.randomUUID().toString();
+    public DateSurvey() {}
+
+    public DateSurvey(List<String> dates) {
+        this.dates = new HashMap<String,Integer>();
+        for(String date : dates) this.dates.put(date, 0);
+        id = "dts" + UUID.randomUUID().toString();
         open = true;
     }
 
-    public void voteDate(Date date) {
+    public void voteDate(String date) {
         if(open)
             this.dates.put(date, dates.get(date) + 1);
     }
 
-    public void unvoteDate(Date date) {
+    public void unvoteDate(String date) {
         if(open) {
             int currentVotes = dates.get(date);
             this.dates.put(date, currentVotes != 0 ? currentVotes - 1 : 0);
         }
+    }
+
+    public void addDate(String date) {
+        this.dates.put(date,0);
     }
 
     public void closeSurvey() {
@@ -39,11 +45,11 @@ public class DateSurvey implements Pinnable{
         return open;
     }
 
-    public void setDates(HashMap<Date, Integer> dates) {
+    public void setDates(HashMap<String, Integer> dates) {
         this.dates = dates;
     }
 
-    public HashMap<Date, Integer> getDates() {
+    public HashMap<String, Integer> getDates() {
         return dates;
     }
 

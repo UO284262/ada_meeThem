@@ -10,6 +10,7 @@ import android.widget.ListView
 import android.widget.TextView
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.database.PlanDatabase
+import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey
 import com.ada.ada_meethem.modelo.pinnable.Pinnable
@@ -19,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 class PinnedItemsAdapter(
     private val context: Context,
     private var listaPinned: List<Pinnable>,
-    private val planId: String
+    private val plan: Plan
 ) : BaseAdapter() {
 
     private val SURVEY : Int = 0
@@ -38,7 +39,7 @@ class PinnedItemsAdapter(
     }
 
     override fun getViewTypeCount(): Int {
-        return 2
+        return 3
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -78,27 +79,23 @@ class PinnedItemsAdapter(
             SURVEY -> {
                 val dateSurvey = (item as DateSurvey)
                 val listView : ListView = view!!.findViewById<View>(R.id.date_choices_list) as ListView
-                val adapter = DateChoicesAdapter(view.context, ArrayList(),dateSurvey)
+                val adapter = DateChoicesAdapter(view.context, dateSurvey.getDates().keys.toList())
                 listView.adapter = adapter
             }
             MESSAGE -> {
                 val messageText = view!!.findViewById<View>(R.id.message_text_pinned) as TextView
-                val messageUser = view.findViewById<View>(R.id.message_user_pinned) as TextView
                 val messageTime = view.findViewById<View>(R.id.message_time_pinned) as TextView
                 val unpinBtn = view.findViewById<View>(R.id.pinbutton)
 
                 if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-                    == (item as ChatMessage).messageUser.substring(3))
+                    == plan.creator.phoneNumber)
                         unpinBtn.isClickable = true
 
                 unpinBtn.setOnClickListener(View.OnClickListener {
-                    PlanDatabase.unpinMessage(item as ChatMessage,planId)
+                    PlanDatabase.unpinMessage(item as ChatMessage,plan.planId)
                 })
 
-                // Set their text
                 messageText.text = (item as ChatMessage).messageText
-                messageUser.text = (item as ChatMessage).messageUser.substring(3)
-                // Format the date before showing it
                 messageTime.text = DateFormat.format(
                     "EEE HH:mm",
                     (item as ChatMessage).messageTime

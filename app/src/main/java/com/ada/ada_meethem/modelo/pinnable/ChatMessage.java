@@ -13,7 +13,7 @@ public class ChatMessage implements Pinnable{
         this.messageUser = messageUser;
         // Initialize to current time
         messageTime = new Date().getTime();
-        id = UUID.randomUUID().toString();
+        id = "msg" + UUID.randomUUID().toString();
     }
     public ChatMessage(){
     }
