@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.ada.ada_meethem.database.daos.ContactDAO;
 import com.ada.ada_meethem.database.entities.Contact;
 
-@Database(entities = Contact.class, version = 1, exportSchema = false)
+@Database(entities = { Contact.class }, version = 1, exportSchema = false)
 public abstract class ContactDatabase extends RoomDatabase {
     public static final String DB_NOMBRE = "contacts.db";
 

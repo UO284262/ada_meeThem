@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.database.PlanDatabase
+import com.ada.ada_meethem.modelo.DateSurveyVotes
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey
@@ -61,6 +62,7 @@ class EditPlanFragment : Fragment() {
         createSurveyBtn!!.setOnClickListener {
             if (dateSurvey != null) {
                 PlanDatabase.pinDateSurvey(dateSurvey, plan!!.planId)
+                PlanDatabase.voteDate(DateSurveyVotes(HashMap<String,String>()),plan!!.planId)
                 showPlan()
             }
         }
@@ -72,10 +74,10 @@ class EditPlanFragment : Fragment() {
         addDateToSurveyBtn!!.setOnClickListener {
             if (!dateTextView!!.text.toString().isEmpty()) {
                 if (dateSurvey != null) {
-                    dateSurvey!!.addDate(dateTextView!!.getText().toString())
+                    dateSurvey!!.addDate(dateTextView!!.text.toString())
                 } else {
                     dateSurvey = DateSurvey(ArrayList())
-                    dateSurvey!!.addDate(dateTextView!!.getText().toString())
+                    dateSurvey!!.addDate(dateTextView!!.text.toString())
                 }
             }
         }

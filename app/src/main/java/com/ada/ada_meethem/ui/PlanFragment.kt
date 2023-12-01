@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.adapters.PinnedItemsAdapter
 import com.ada.ada_meethem.database.PlanDatabase
+import com.ada.ada_meethem.modelo.DateSurveyVotes
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey
@@ -55,7 +56,7 @@ class PlanFragment : Fragment() {
         ) fab2.visibility = View.VISIBLE
 
         listView = root.findViewById(R.id.pinnedList)
-        adapter = PinnedItemsAdapter(root.context, ArrayList(), plan!!)
+        adapter = PinnedItemsAdapter(root.context, ArrayList(), DateSurveyVotes() ,plan!!)
         listView!!.adapter = adapter
         displayPinned(root)
         return root
@@ -86,7 +87,7 @@ class PlanFragment : Fragment() {
     }
 
     fun displayPinned(root: View?) {
-        PlanDatabase.getReference(plan!!.planId).addValueEventListener(object : ValueEventListener {
+        PlanDatabase.getReference(plan!!.planId).child("pinnedItems").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val pins: MutableList<Pinnable> = ArrayList()
                 for (chatSnapshot in dataSnapshot.children) {
@@ -97,6 +98,21 @@ class PlanFragment : Fragment() {
                     }
                 }
                 adapter!!.update(pins.toList())
+                listView!!.setSelection(adapter!!.count - 1)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Manejo de errores
+            }
+        })
+
+        PlanDatabase.getReference(plan!!.planId).child("surveyVotes").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var votes: DateSurveyVotes = DateSurveyVotes();
+                for (chatSnapshot in dataSnapshot.children) {
+                    votes = chatSnapshot.getValue(DateSurveyVotes::class.java) as DateSurveyVotes
+                }
+                adapter!!.updateVotes(votes)
                 listView!!.setSelection(adapter!!.count - 1)
             }
 
