@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener
 class PlanFragment : Fragment() {
     private var plan: Plan? = null
     private var adapter: PinnedItemsAdapter? = null
+    private var surveyDone: Boolean = false
     private var listView: ListView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +79,7 @@ class PlanFragment : Fragment() {
         val editPlanFragment = EditPlanFragment.newInstance()
         val bundle = Bundle()
         bundle.putParcelable("plan", plan)
-        //editPlanFragment.arguments = bundle
-        //fragmentManager!!.beginTransaction().replace(R.id.fragment_container, editPlanFragment).commit()
+        bundle.putBoolean("surveyDone",surveyDone)
         findNavController().navigate(
             R.id.action_planFragment_to_editPlanFragment,
             bundle
@@ -89,12 +89,16 @@ class PlanFragment : Fragment() {
     fun displayPinned(root: View?) {
         PlanDatabase.getReference(plan!!.planId).child("pinnedItems").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                surveyDone = false
                 val pins: MutableList<Pinnable> = ArrayList()
                 for (chatSnapshot in dataSnapshot.children) {
                     val ident : String = chatSnapshot.key!!.subSequence(0,3).toString()
                     when(ident) {
                         "msg" -> pins.add(chatSnapshot.getValue(ChatMessage::class.java) as ChatMessage)
-                        "dts" -> pins.add(chatSnapshot.getValue(DateSurvey::class.java) as DateSurvey)
+                        "dts" -> {
+                            pins.add(chatSnapshot.getValue(DateSurvey::class.java) as DateSurvey)
+                            surveyDone = true
+                        }
                     }
                 }
                 adapter!!.update(pins.toList())

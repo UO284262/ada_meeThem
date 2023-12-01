@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class EditPlanFragment : Fragment() {
     private var plan: Plan? = null
+    private var surveyDone: Boolean = false
     private var pinMsgButton: Button? = null
     private var createSurveyBtn: Button? = null
     private var addDateToSurveyBtn: ImageButton? = null
@@ -42,6 +43,7 @@ class EditPlanFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_edit_plan, container, false)
 
         plan = requireArguments().getParcelable<Parcelable>("plan") as Plan?
+        surveyDone = requireArguments().getBoolean("surveyDone")
 
         val planTitle = root.findViewById<View>(R.id.plan_title) as TextView
         planTitle.text = plan!!.title
@@ -66,6 +68,7 @@ class EditPlanFragment : Fragment() {
                 showPlan()
             }
         }
+        createSurveyBtn!!.isClickable = !surveyDone
 
         dateTextView = root.findViewById<View>(R.id.editTextDate) as EditText
         dateTextView!!.setOnClickListener { showDatePickerDialog() }

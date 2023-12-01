@@ -20,6 +20,7 @@ class DateChoicesAdapter(
     private var dateSurvey: DateSurvey,
     private var planId: String,
 ) : BaseAdapter() {
+    private val phoneNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
     override fun getCount(): Int {
         return listaDates.size
     }
@@ -42,7 +43,8 @@ class DateChoicesAdapter(
         }
         val viewStr: CheckBox = view!!.findViewById<View>(R.id.date_survey_cb) as CheckBox
         viewStr.text = date
-        if(listaVotes.votes.keys.contains(FirebaseAuth.getInstance().currentUser!!.phoneNumber)) {
+        if(listaVotes.votes.keys.contains(phoneNumber)
+            && listaVotes.votes.get(phoneNumber) == date) {
             viewStr.isChecked = true
             viewStr.isActivated = true
         }
@@ -54,6 +56,7 @@ class DateChoicesAdapter(
             }
             else if(!viewStr.isActivated) {
                 dateSurvey.voteDate(date)
+                unvotePrevius()
                 listaVotes.vote(date)
             }
             PlanDatabase.pinDateSurvey(dateSurvey,planId)
@@ -64,5 +67,10 @@ class DateChoicesAdapter(
         numVotes.text = listaDates[date]!!.toString()
 
         return view
+    }
+
+    fun unvotePrevius() {
+        var date : String? = listaVotes.votes.get(phoneNumber)
+        if(date != null) dateSurvey.unvoteDate(date)
     }
 }
