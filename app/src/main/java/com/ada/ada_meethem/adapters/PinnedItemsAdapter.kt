@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -86,12 +87,26 @@ class PinnedItemsAdapter(
                     view!!.findViewById<View>(R.id.date_choices_list) as ListView
                 val adapter = DateChoicesAdapter(
                     view.context,
-                    dateSurvey.dates,
                     listaVotes,
                     dateSurvey,
                     plan.planId,
                 )
                 listView.adapter = adapter
+
+                val closeSurveyBtn =
+                    view.findViewById<View>(R.id.close_survey_btn) as ImageButton
+
+                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
+                    == plan.creator.phoneNumber
+                ) {
+                    closeSurveyBtn.isClickable = true
+                    closeSurveyBtn.isVisible = true
+                }
+
+                closeSurveyBtn.setOnClickListener(View.OnClickListener {
+                    dateSurvey.closeSurvey()
+                    PlanDatabase.closeSurvey(dateSurvey.id,plan.planId)
+                })
             }
 
             MESSAGE -> {

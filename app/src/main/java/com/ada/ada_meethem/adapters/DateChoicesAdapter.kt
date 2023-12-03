@@ -15,12 +15,12 @@ import com.google.firebase.auth.FirebaseAuth
 
 class DateChoicesAdapter(
     private val context: Context,
-    private var listaDates: HashMap<String, Int>,
     private var listaVotes: DateSurveyVotes,
     private var dateSurvey: DateSurvey,
     private var planId: String,
 ) : BaseAdapter() {
     private val phoneNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
+    private var listaDates = dateSurvey.dates
     override fun getCount(): Int {
         return listaDates.size
     }
@@ -48,6 +48,8 @@ class DateChoicesAdapter(
             viewStr.isChecked = true
             viewStr.isActivated = true
         }
+
+        if(!dateSurvey.open) viewStr.isClickable = false
 
         viewStr.setOnClickListener(View.OnClickListener {
             if(viewStr.isActivated) {

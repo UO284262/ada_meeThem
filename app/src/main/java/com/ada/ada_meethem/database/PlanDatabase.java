@@ -46,4 +46,12 @@ public class PlanDatabase {
         // Escribe los datos en la base de datos
         chatReference.child(votes.getId()).setValue(votes);
     }
+
+    public static void closeSurvey(String surveyId, String planId) {
+        DatabaseReference chatReference = FirebaseDatabase
+                .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("plans").child(planId).child("pinnedItems");
+        // Escribe los datos en la base de datos
+        chatReference.child(surveyId).child("open").setValue(false);
+    }
 }
