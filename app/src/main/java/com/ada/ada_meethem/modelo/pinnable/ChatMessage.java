@@ -1,9 +1,9 @@
-package com.ada.ada_meethem.database.entities;
+package com.ada.ada_meethem.modelo.pinnable;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class ChatMessage {
+public class ChatMessage implements Pinnable{
     private String id;
     private String messageText;
     private String messageUser;
@@ -13,7 +13,7 @@ public class ChatMessage {
         this.messageUser = messageUser;
         // Initialize to current time
         messageTime = new Date().getTime();
-        id = UUID.randomUUID().toString();
+        id = "msg" + UUID.randomUUID().toString();
     }
     public ChatMessage(){
     }

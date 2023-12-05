@@ -8,12 +8,20 @@ import androidx.annotation.NonNull;
 public class Person implements Parcelable {
     private String username;
 
-    public Person(String username) {
+    private String phoneNumber;
+
+    private String profileImage;
+
+    public Person(String username, String phoneNumber, String profileImage) {
+        this.phoneNumber = phoneNumber;
         this.username = username;
+        this.profileImage = profileImage;
     }
 
     protected Person(Parcel in) {
         username = in.readString();
+        phoneNumber = in.readString();
+        profileImage = in.readString();
     }
 
     public static final Creator<Person> CREATOR = new Creator<Person>() {
@@ -36,6 +44,22 @@ public class Person implements Parcelable {
         return username;
     }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -44,5 +68,7 @@ public class Person implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(username);
+        dest.writeString(phoneNumber);
+        dest.writeString(profileImage);
     }
 }

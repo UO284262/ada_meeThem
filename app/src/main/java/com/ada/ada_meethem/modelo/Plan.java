@@ -14,16 +14,16 @@ public class Plan implements Parcelable {
 
     private String imageUrl;
     private String title;
-    private Group group;
     private Person creator;
     private List<Person> enlisted;
+
+    private List<Person> invited;
     private boolean open;
     private int maxPeople;
     private String planId;
 
-    public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl) {
+    public Plan(String title, Person creator, int maxPeople, String imageUrl) {
         this.title = title;
-        this.group = group;
         this.creator = creator;
         this.enlisted = new ArrayList<>();
         this.open = true;
@@ -33,15 +33,9 @@ public class Plan implements Parcelable {
     }
 
 
-    public Plan(String title, Group group, Person creator, int maxPeople, String imageUrl, List<Person> enlisted) {
-        this.title = title;
-        this.group = group;
-        this.creator = creator;
-        this.enlisted = enlisted;
-        this.open = true;
-        this.maxPeople = maxPeople;
-        this.imageUrl = imageUrl;
-        this.planId = UUID.randomUUID().toString();
+    public Plan(String title, Person creator, int maxPeople, String imageUrl, List<Person> invited) {
+        this(title,creator,maxPeople,imageUrl);
+        this.invited = invited;
     }
 
     public void addToPlan(Person person) {
@@ -65,10 +59,6 @@ public class Plan implements Parcelable {
         this.title = title;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
     public void setCreator(Person creator) {
         this.creator = creator;
     }
@@ -77,12 +67,12 @@ public class Plan implements Parcelable {
         this.enlisted = enlisted;
     }
 
-    public String getTitle() {
-        return title;
+    public void setInvited(List<Person> invited) {
+        this.invited = invited;
     }
 
-    public Group getGroup() {
-        return group;
+    public String getTitle() {
+        return title;
     }
 
     public Person getCreator() {
@@ -95,6 +85,14 @@ public class Plan implements Parcelable {
 
     public List<Person> _getEnlisted() {
         return enlisted;
+    }
+
+    public List<Person> getInvited() {
+        return new ArrayList<>(invited);
+    }
+
+    public List<Person> _getInvited() {
+        return invited;
     }
 
     public int getMaxPeople() {

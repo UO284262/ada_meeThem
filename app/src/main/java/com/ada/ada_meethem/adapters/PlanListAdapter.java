@@ -60,7 +60,6 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
         private TextView planName;
         private TextView planMembersNumber;
         private TextView planCreator;
-        private TextView planGroup;
 
         public PlanViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,7 +67,6 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
             planName = itemView.findViewById(R.id.planName);
             planMembersNumber = itemView.findViewById(R.id.planMembersNumber);
             planCreator = itemView.findViewById(R.id.planCreator);
-            planGroup = itemView.findViewById(R.id.planGroup);
         }
 
         // asignar valores a los componentes
@@ -77,7 +75,6 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
             String membersNumber = plan.getEnlisted().size() + "/" + plan.getMaxPeople();
             planMembersNumber.setText(membersNumber);
             planCreator.setText(plan.getCreator().getUsername());
-            planGroup.setText(plan.getGroup().getGroupName());
 
             // cargar imagen
             Picasso.get().load(plan.getImageUrl()).into(planImage);
