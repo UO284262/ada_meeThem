@@ -20,5 +20,6 @@
     <color name="colorMaroon">#800000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#6DC36D</color>
+    <color name="green">#81C784</color>
+    <color name="light_green">#F0FFDF</color>
 </resources>
