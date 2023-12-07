@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.adapters.ContactListAdapter;
 import com.ada.ada_meethem.data.ContactProvider;
 import com.ada.ada_meethem.modelo.Contact;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -43,6 +45,9 @@ public class ContactPickerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_contact_picker, container, false);
+
+        FloatingActionButton fab = root.findViewById(R.id.fabContactsSelected);
+        fab.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create));
 
         contactsRecyclerView = root.findViewById(R.id.contactPickerRecyclerView);
         contactsRecyclerView.setHasFixedSize(true);
