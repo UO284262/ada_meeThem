@@ -27,7 +27,7 @@ public class DateSurvey implements Pinnable{
     }
 
     public void unvoteDate(String date) {
-        if(open) {
+        if(open && dates.containsKey(date)) {
             int currentVotes = dates.get(date);
             this.dates.put(date, currentVotes != 0 ? currentVotes - 1 : 0);
         }
@@ -36,6 +36,8 @@ public class DateSurvey implements Pinnable{
     public void addDate(String date) {
         this.dates.put(date,0);
     }
+
+    public void removeDate(String date) { this.dates.remove(date); }
 
     public void closeSurvey() {
         this.open = false;

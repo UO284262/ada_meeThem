@@ -11,9 +11,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ListView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ada.ada_meethem.R
+import com.ada.ada_meethem.adapters.OnCreateDateChoicesAdapter
 import com.ada.ada_meethem.database.PlanDatabase
 import com.ada.ada_meethem.modelo.DateSurveyVotes
 import com.ada.ada_meethem.modelo.Plan
@@ -29,11 +32,11 @@ class EditPlanFragment : Fragment() {
     private var createSurveyBtn: Button? = null
     private var addDateToSurveyBtn: ImageButton? = null
     private var dateTextView: EditText? = null
-    private var dateSurvey: DateSurvey? = null
+    private var dateSurvey: DateSurvey = DateSurvey(ArrayList())
     private var pinMsgText: EditText? = null
+    private var adapterOnCreate : OnCreateDateChoicesAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dateSurvey = null
     }
 
     override fun onCreateView(
@@ -59,31 +62,45 @@ class EditPlanFragment : Fragment() {
             imm.hideSoftInputFromWindow(pinMsgText!!.windowToken, 0)
             showPlan()
         }
-
-        createSurveyBtn = root.findViewById<View>(R.id.btn_crear_survey) as Button
-        createSurveyBtn!!.setOnClickListener {
-            if (dateSurvey != null) {
+        if(!surveyDone) {
+            createSurveyBtn = root.findViewById<View>(R.id.btn_crear_survey) as Button
+            createSurveyBtn!!.setOnClickListener {
                 PlanDatabase.pinDateSurvey(dateSurvey, plan!!.planId)
                 PlanDatabase.voteDate(DateSurveyVotes(HashMap<String,String>()),plan!!.planId)
                 showPlan()
             }
-        }
-        createSurveyBtn!!.isClickable = !surveyDone
+            createSurveyBtn!!.isClickable = false
 
-        dateTextView = root.findViewById<View>(R.id.editTextDate) as EditText
-        dateTextView!!.setOnClickListener { showDatePickerDialog() }
+            dateTextView = root.findViewById<View>(R.id.editTextDate) as EditText
+            dateTextView!!.setOnClickListener { showDatePickerDialog() }
 
-        addDateToSurveyBtn = root.findViewById<View>(R.id.btn_add_date) as ImageButton
-        addDateToSurveyBtn!!.setOnClickListener {
-            if (!dateTextView!!.text.toString().isEmpty()) {
-                if (dateSurvey != null) {
-                    dateSurvey!!.addDate(dateTextView!!.text.toString())
-                } else {
-                    dateSurvey = DateSurvey(ArrayList())
-                    dateSurvey!!.addDate(dateTextView!!.text.toString())
+            addDateToSurveyBtn = root.findViewById<View>(R.id.btn_add_date) as ImageButton
+            addDateToSurveyBtn!!.setOnClickListener {
+                if (!dateTextView!!.text.toString().isEmpty()) {
+                    dateSurvey.addDate(dateTextView!!.text.toString())
+                    adapterOnCreate!!.addDate(dateTextView!!.text.toString())
+                    dateTextView!!.setText("")
+                    createSurveyBtn!!.isClickable = true
                 }
             }
+
+            val listView = root.findViewById<View>(R.id.oncreate_survey_list) as ListView
+            adapterOnCreate = OnCreateDateChoicesAdapter(root.context, dateSurvey, plan!!.planId,this)
+            listView.adapter = adapterOnCreate
+        } else {
+            createSurveyBtn = root.findViewById<View>(R.id.btn_crear_survey) as Button
+            dateTextView = root.findViewById<View>(R.id.editTextDate) as EditText
+            addDateToSurveyBtn = root.findViewById<View>(R.id.btn_add_date) as ImageButton
+            val listView = root.findViewById<View>(R.id.oncreate_survey_list) as ListView
+            val tv = root.findViewById<View>(R.id.survey_add_title) as TextView
+
+            dateTextView!!.isVisible = false
+            tv.isVisible = false
+            createSurveyBtn!!.isVisible = false
+            addDateToSurveyBtn!!.isVisible = false
+            listView.isVisible = false
         }
+
         return root
     }
 
@@ -94,7 +111,6 @@ class EditPlanFragment : Fragment() {
     }
 
     private fun showPlan() {
-        val planFragment = PlanFragment.newInstance()
         val bundle = Bundle()
         bundle.putParcelable("plan", plan)
         findNavController().navigate(
@@ -110,6 +126,10 @@ class EditPlanFragment : Fragment() {
                 dateTextView!!.setText(selectedDate)
             }
         newFragment.show(requireActivity().supportFragmentManager, "datePicker")
+    }
+
+    fun notifyEmptyDates() {
+        this.createSurveyBtn!!.isClickable = false
     }
 
     companion object {
