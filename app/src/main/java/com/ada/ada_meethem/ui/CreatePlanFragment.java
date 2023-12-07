@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CreatePlanFragment extends Fragment {
 
-    private TextView tvName;
+    private TextView tvName; // TODO completar vista
     private TextView tvNumber;
 
     public CreatePlanFragment() {

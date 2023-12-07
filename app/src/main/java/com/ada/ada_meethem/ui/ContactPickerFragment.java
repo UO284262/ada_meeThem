@@ -66,7 +66,7 @@ public class ContactPickerFragment extends Fragment {
                     Snackbar.LENGTH_LONG).show();
 
         ContactListAdapter clAdapter= new ContactListAdapter(contacts,
-                plan -> { // TODO
+                plan -> { // TODO completar funcionalidad checkbox
                 });
         contactsRecyclerView.setAdapter(clAdapter);
     }
