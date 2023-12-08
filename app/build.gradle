@@ -50,6 +50,9 @@ dependencies {
     // librería para cargar imágenes desde una url
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // imagenes circulares
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
     //db
     implementation("androidx.room:room-runtime:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
