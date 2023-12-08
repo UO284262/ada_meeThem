@@ -17,4 +17,7 @@
     <string name="pinned_msg_title">Mensaje destacado</string>
     <string name="create_date_survey_title">Crear encuesta de fecha</string>
     <string name="create_date_survey_btn">Crear</string>
+    <string name="nav_home_title">Home</string>
+    <string name="nav_plan_create_title">Create</string>
+    <string name="nav_profile_title">Profile</string>
 </resources>
