@@ -14,6 +14,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <Spinner
+            android:id="@+id/countryCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:gravity="center"/>
+
         <EditText
             android:id="@+id/phoneNumber"
             android:layout_width="match_parent"

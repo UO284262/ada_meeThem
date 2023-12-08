@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class PhoneSMSVerificationActivity extends AppCompatActivity {
 
@@ -57,13 +63,50 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            inicioMainActivity();
+                            verificarNuevoUsuario();
                         } else {
                             Toast.makeText(PhoneSMSVerificationActivity.this, "Error de verificación", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
+
+            private void verificarNuevoUsuario() {
+                // Obtener el número de teléfono del usuario actual
+                String phoneNumber = mAuth.getCurrentUser().getPhoneNumber();
+
+                // Realizar una consulta a tu base de datos para ver si el número ya existe
+                // Puedes usar Firebase Realtime Database o Firestore según tu configuración
+                // Aquí se asume que estás utilizando Firebase Realtime Database
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+
+                databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    // El número de teléfono ya existe, usuario ya registrado
+                                    inicioMainActivity();
+                                } else {
+                                    // El número de teléfono no existe, es la primera vez que se registra
+                                    abrirActivityRegistro();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Manejar errores si es necesario
+                            }
+                        });
+            }
+
+            private void abrirActivityRegistro() {
+                // Si es la primera vez que se registra, abrir la actividad de registro
+                Intent intent = new Intent(PhoneSMSVerificationActivity.this, RegistroActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
         });
     }
 
