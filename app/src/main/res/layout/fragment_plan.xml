@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_green"
-    android:backgroundTint="@color/light_green"
     tools:context=".ui.PlanFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,15 +53,14 @@
             android:id="@+id/fabChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:src="@android:drawable/stat_notify_chat"
             app:backgroundTint="@color/green"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.912"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/participantes"
-            app:layout_constraintVertical_bias="0.04" />
+            app:layout_constraintTop_toBottomOf="@+id/participantes" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabEditPlan"
@@ -83,13 +80,13 @@
         <ListView
             android:id="@+id/pinnedList"
             android:layout_width="347dp"
-            android:layout_height="475dp"
+            android:layout_height="451dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.515"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fabChat"
-            app:layout_constraintVertical_bias="0.341" />
+            app:layout_constraintVertical_bias="0.211" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

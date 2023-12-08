@@ -37,15 +37,15 @@ class MessageListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val userPhoneNumber = (getItem(position) as ChatMessage).messageUser.substring(3)
-        return if (userPhoneNumber == FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3))
+        val userPhoneNumber = (getItem(position) as ChatMessage).messageUser
+        return if (userPhoneNumber == FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
             TYPEOWN else TYPEOTHER
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val viewType = getItemViewType(position)
         val chatMessage = getItem(position) as ChatMessage
-        val userPhoneNumber = chatMessage.messageUser.substring(3)
+        val userPhoneNumber = chatMessage.messageUser
         var view = convertView
         if (view == null) {
             val inflater =
@@ -56,7 +56,7 @@ class MessageListAdapter(
         // Obtén el usuario actual
 
 
-        val color = colorsArray[userPhoneNumber.toInt() % 18]
+        val color = colorsArray[(userPhoneNumber.substring(1).toLong() % 18).toInt()]
         val messageText = view!!.findViewById<View>(
             if (viewType == TYPEOWN) R.id.message_text_own else R.id.message_text_own) as TextView
         val messageUser = view.findViewById<View>(
