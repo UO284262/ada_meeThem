@@ -71,10 +71,14 @@
     <!-- Acciones globales -->
     <action
         android:id="@+id/action_global_nav_home"
-        app:destination="@id/nav_home"/>
+        app:destination="@id/nav_home"
+        app:popUpTo="@+id/nav_home"
+        app:popUpToInclusive="true"/>
     <action
         android:id="@+id/action_global_nav_plan_create"
-        app:destination="@id/nav_plan_create"/>
+        app:destination="@id/nav_plan_create"
+        app:popUpTo="@+id/nav_plan_create"
+        app:popUpToInclusive="true"/>
 
 
 </navigation>

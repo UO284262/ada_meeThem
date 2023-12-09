@@ -20,4 +20,14 @@
     <string name="nav_home_title">Home</string>
     <string name="nav_plan_create_title">Create</string>
     <string name="nav_profile_title">Profile</string>
+    <string name="selected_contacts_list_is_empty">Seleccione al menos 1 contacto</string>
+    <string name="text_input_layout_plan_name_hint">Nombre</string>
+    <string name="text_input_layout_plan_max_people_hint">Capacidad máxima</string>
+    <string name="text_view_miembros_text">Miembros</string>
+    <string name="button_pick_contacts_text">Seleccionar miembros</string>
+    <string name="plan_created_ok">Plan creado correctamente</string>
+    <string name="plan_creation_no_image">Es obligatorio poner una imagen al plan</string>
+    <string name="plan_creation_no_name">Es obligatorio poner un nombre al plan</string>
+    <string name="plan_creation_no_max_people">Es obligatorio poner una capacidad al plan</string>
+    <string name="plan_creation_too_much_people">Los miembros añadidos superan la capacidad máxima del plan</string>
 </resources>
