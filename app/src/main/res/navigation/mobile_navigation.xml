@@ -75,6 +75,12 @@
     <action
         android:id="@+id/action_global_nav_plan_create"
         app:destination="@id/nav_plan_create"/>
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.ada.ada_meethem.ui.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+    <action android:id="@+id/action_global_nav_profile" app:destination="@id/nav_profile" />
 
 
 </navigation>
