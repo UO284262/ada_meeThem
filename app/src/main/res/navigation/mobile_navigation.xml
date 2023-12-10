@@ -71,16 +71,14 @@
     <!-- Acciones globales -->
     <action
         android:id="@+id/action_global_nav_home"
-        app:destination="@id/nav_home"/>
+        app:destination="@id/nav_home"
+        app:popUpTo="@+id/nav_home"
+        app:popUpToInclusive="true"/>
     <action
         android:id="@+id/action_global_nav_plan_create"
+        app:destination="@id/nav_plan_create"
+        app:popUpTo="@+id/nav_plan_create"
+        app:popUpToInclusive="true"/>
         app:destination="@id/nav_plan_create"/>
-    <fragment
-        android:id="@+id/nav_profile"
-        android:name="com.ada.ada_meethem.ui.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
-    <action android:id="@+id/action_global_nav_profile" app:destination="@id/nav_profile" />
-
 
 </navigation>
