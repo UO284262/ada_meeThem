@@ -1,16 +1,10 @@
 package com.ada.ada_meethem
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.ada.ada_meethem.ui.CreatePlanFragment
-import com.ada.ada_meethem.ui.HomeFragment
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +37,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_plan_create -> {
                     navController.navigate(R.id.action_global_nav_plan_create)
+                }
+                R.id.nav_profile -> {
+                    navController.navigate(R.id.action_global_nav_profile)
                 }
             }
             true
