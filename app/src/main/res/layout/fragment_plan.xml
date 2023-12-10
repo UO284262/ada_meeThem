@@ -53,14 +53,14 @@
             android:id="@+id/fabChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:src="@android:drawable/stat_notify_chat"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:backgroundTint="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.912"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/participantes"
-            app:layout_constraintVertical_bias="0.04" />
+            app:layout_constraintTop_toBottomOf="@+id/participantes" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabEditPlan"
@@ -69,23 +69,24 @@
             android:clickable="true"
             android:src="@android:drawable/ic_menu_edit"
             android:visibility="invisible"
+            app:backgroundTint="@color/green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.912"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.976" />
+            app:layout_constraintVertical_bias="0.931" />
 
         <ListView
             android:id="@+id/pinnedList"
-            android:layout_width="348dp"
-            android:layout_height="484dp"
+            android:layout_width="347dp"
+            android:layout_height="451dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.492"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fabChat"
-            app:layout_constraintVertical_bias="0.18" />
+            app:layout_constraintVertical_bias="0.211" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

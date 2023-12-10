@@ -42,7 +42,7 @@
 
     <TextView
         android:id="@+id/message_text_pinned"
-        android:layout_width="320dp"
+        android:layout_width="298dp"
         android:layout_height="39dp"
         android:layout_below="@+id/message_user_pinned"
         android:layout_alignParentStart="true"
@@ -53,7 +53,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/message_user_pinned"
         app:layout_constraintVertical_bias="0.0" />
@@ -62,14 +62,15 @@
         android:id="@+id/pinbutton"
         android:layout_width="37dp"
         android:layout_height="37dp"
+        android:background="@color/green"
         android:clickable="false"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.955"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/message_text_pinned"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        app:srcCompat="@drawable/pin_icon"
-        android:visibility="invisible"/>
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

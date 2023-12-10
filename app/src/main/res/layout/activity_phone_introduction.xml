@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_green"
+    android:backgroundTint="@color/light_green"
     tools:context=".PhoneIntroductionActivity">
 
     <LinearLayout
@@ -11,6 +13,14 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/countryCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:gravity="center"/>
 
         <EditText
             android:id="@+id/phoneNumber"
@@ -26,11 +36,11 @@
             android:id="@+id/sendNumberButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="80dp"
-            android:layout_marginLeft="80dp"
-            android:text="Enviar"
-            />
+            android:background="@color/green"
+            android:text="Enviar" />
 
         <TextView
             android:id="@+id/responseText"

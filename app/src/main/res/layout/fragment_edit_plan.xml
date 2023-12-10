@@ -28,6 +28,7 @@
             android:id="@+id/pin_msg_btn"
             android:layout_width="89dp"
             android:layout_height="48dp"
+            android:backgroundTint="@color/green"
             android:text="@string/pin_msg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,19 +67,19 @@
             android:id="@+id/editTextDate"
             android:layout_width="263dp"
             android:layout_height="44dp"
-            android:focusable="false"
             android:clickable="true"
             android:ems="10"
+            android:focusable="false"
             android:inputType="date"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/survey_add_title"
             app:layout_constraintVertical_bias="0.021" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/survey_add_title"
             android:layout_width="236dp"
             android:layout_height="20dp"
             android:text="@string/create_date_survey_title"
@@ -94,18 +95,20 @@
             android:layout_width="52dp"
             android:layout_height="44dp"
             android:layout_marginTop="8dp"
+            android:backgroundTint="@color/green"
             android:src="@android:drawable/ic_menu_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.406"
             app:layout_constraintStart_toEndOf="@+id/editTextDate"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/survey_add_title"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/btn_crear_survey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
             android:text="@string/create_date_survey_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -113,5 +116,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextDate"
             app:layout_constraintVertical_bias="0.035" />
+
+        <ListView
+            android:id="@+id/oncreate_survey_list"
+            android:layout_width="238dp"
+            android:layout_height="116dp"
+            android:layout_marginTop="19dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.217"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDate"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

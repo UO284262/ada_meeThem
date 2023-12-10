@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PhoneIntroductionActivity extends AppCompatActivity {
 
+    Spinner countryCode;
     EditText phoneNumber;
     Button sendNumberButton;
     TextView responseText;
@@ -42,6 +47,14 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.phoneNumber);
         sendNumberButton = findViewById(R.id.sendNumberButton);
         responseText = findViewById(R.id.responseText);
+        countryCode = findViewById(R.id.countryCode);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.country_codes, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        countryCode.setAdapter(adapter);
+
+        countryCode.setSelection(0);
 
         mAuth = FirebaseAuth.getInstance();
         mAuth.setLanguageCode("es");
@@ -49,7 +62,8 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
         sendNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phNumber = "+" + phoneNumber.getText().toString();
+                String selectedCountryCode = ((String) countryCode.getSelectedItem()).split(" ")[0];
+                String phNumber = selectedCountryCode + phoneNumber.getText().toString();
 
                 if(!phNumber.isEmpty()) {
                     PhoneAuthOptions options =

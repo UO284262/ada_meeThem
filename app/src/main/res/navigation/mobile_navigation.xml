@@ -79,6 +79,6 @@
         app:destination="@id/nav_plan_create"
         app:popUpTo="@+id/nav_plan_create"
         app:popUpToInclusive="true"/>
-
+        app:destination="@id/nav_plan_create"/>
 
 </navigation>

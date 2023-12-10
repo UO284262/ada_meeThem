@@ -20,4 +20,16 @@
         <item>@color/colorGray</item>
         <item>@color/colorMaroon</item>
     </integer-array>
+    <array name="country_codes">
+        <item>+34 (España)</item>
+        <item>+1 (EEUU)</item>
+        <item>+44 (Reino Unido)</item>
+        <item>+81 (Japón)</item>
+        <item>+86 (China)</item>
+        <item>+91 (India)</item>
+        <item>+49 (Alemania)</item>
+        <item>+7 (Rusia)</item>
+        <item>+33 (Francia)</item>
+        <item>+55 (Brasil)</item>
+    </array>
 </resources>

@@ -5,32 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <CheckBox
-        android:id="@+id/date_survey_cb"
-        android:layout_width="260dp"
-        android:layout_height="42dp"
-        android:text="CheckBox"
-        android:textSize="16sp"
+    <TextView
+        android:id="@+id/date_tv"
+        android:layout_width="233dp"
+        android:layout_height="33dp"
+        android:text="TextView"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.185"
+        app:layout_constraintHorizontal_bias="0.088"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintVertical_bias="0.023" />
 
-    <TextView
-        android:id="@+id/num_votes_date"
-        android:layout_width="49dp"
-        android:layout_height="42dp"
-        android:ems="10"
-        android:gravity="center"
-        android:text="1"
-        android:textSize="16sp"
+    <ImageButton
+        android:id="@+id/delete_btn"
+        android:layout_width="40dp"
+        android:layout_height="43dp"
+        android:backgroundTint="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.591"
-        app:layout_constraintStart_toEndOf="@+id/date_survey_cb"
+        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintStart_toEndOf="@+id/date_tv"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.03" />
-
+        app:layout_constraintVertical_bias="0.023"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,7 +20,6 @@
     <color name="colorMaroon">#800000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#6DC36D</color>
 
     <color name="seed">#6DC36D</color>
     <color name="md_theme_light_primary">#116D23</color>
@@ -83,4 +82,6 @@
     <color name="md_theme_dark_surfaceTint">#83DA81</color>
     <color name="md_theme_dark_outlineVariant">#424940</color>
     <color name="md_theme_dark_scrim">#000000</color>
+    <color name="green">#81C784</color>
+    <color name="light_green">#F0FFDF</color>
 </resources>
