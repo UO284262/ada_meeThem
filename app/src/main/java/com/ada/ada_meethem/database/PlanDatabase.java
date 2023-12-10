@@ -15,6 +15,10 @@ public class PlanDatabase {
                 .getReference("plans").child(planId);
     }
 
+    public static DatabaseReference getReference() {
+        return FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("plans");
+    }
     public static void unpinMessage(ChatMessage msg, String planId) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")

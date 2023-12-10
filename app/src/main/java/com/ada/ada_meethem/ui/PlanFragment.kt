@@ -43,7 +43,7 @@ class PlanFragment : Fragment() {
         (root.findViewById<View>(R.id.planName) as TextView).text = plan!!.title
         (root.findViewById<View>(R.id.participantes) as TextView).text =
             String.format("%d/%d", plan!!.enlisted.size, plan!!.maxPeople)
-        (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.username
+        (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.contactName
         //((ImageView) root.findViewById(R.id.imagenPlan))
 
         val fab = root.findViewById<View>(R.id.fabChat) as FloatingActionButton
@@ -53,7 +53,7 @@ class PlanFragment : Fragment() {
         fab2.setOnClickListener { abrirEdit(plan) }
 
         if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-            == plan!!.creator.phoneNumber
+            == plan!!.creator.contactNumber
         ) fab2.visibility = View.VISIBLE
 
         listView = root.findViewById(R.id.pinnedList)

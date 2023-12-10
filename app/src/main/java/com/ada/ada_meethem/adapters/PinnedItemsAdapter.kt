@@ -97,7 +97,7 @@ class PinnedItemsAdapter(
                     view.findViewById<View>(R.id.close_survey_btn) as ImageButton
 
                 if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-                    == plan.creator.phoneNumber
+                    == plan.creator.contactNumber
                 ) {
                     closeSurveyBtn.isClickable = true
                     closeSurveyBtn.isVisible = true
@@ -115,7 +115,7 @@ class PinnedItemsAdapter(
                 val unpinBtn = view.findViewById<View>(R.id.pinbutton)
 
                 if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-                    == plan.creator.phoneNumber
+                    == plan.creator.contactNumber
                 ) {
                     unpinBtn.isClickable = true
                     unpinBtn.isVisible = true

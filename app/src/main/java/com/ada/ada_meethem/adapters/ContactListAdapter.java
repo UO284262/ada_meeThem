@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ada.ada_meethem.R;
-import com.ada.ada_meethem.modelo.Contact;
-import com.squareup.picasso.Picasso;
+import com.ada.ada_meethem.database.entities.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +82,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         // asignar valores a los componentes
         public void bindContact(final Contact contact, final OnItemClickListener listener) {
-            contactSurname.setText(contact.getUsername());
-            contactNumber.setText(contact.getNumber());
+            contactSurname.setText(contact.getContactName());
+            contactNumber.setText(contact.getContactNumber());
             checkBoxes.add(contactCheckBox);
 
             // cargar imagen

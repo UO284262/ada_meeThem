@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ada.ada_meethem.R;
-import com.ada.ada_meethem.modelo.Contact;
+import com.ada.ada_meethem.database.entities.Contact;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class SelectedContactListAdapter extends RecyclerView.Adapter<SelectedCon
 
         // asignar valores a los componentes
         public void bindContact(final Contact contact, final OnItemClickListener listener) {
-            contactSurname.setText(contact.getUsername());
+            contactSurname.setText(contact.getContactName());
 
             // cargar imagen
             // TODO Picasso.get().load(plan.getImageUrl()).into(contactImage);

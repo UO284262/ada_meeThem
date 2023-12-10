@@ -22,7 +22,7 @@ import com.ada.ada_meethem.adapters.ContactListAdapter;
 import com.ada.ada_meethem.data.ContactProvider;
 import com.ada.ada_meethem.database.ContactDatabase;
 import com.ada.ada_meethem.database.daos.ContactDAO;
-import com.ada.ada_meethem.modelo.Contact;
+import com.ada.ada_meethem.database.entities.Contact;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -61,7 +61,6 @@ public class ContactPickerFragment extends Fragment {
 
         // Load the contacts
         loadContacts();
-        safeContactsInLocalDB();
         // Establece el adapter al Recycler view
         loadRecyclerContactListAdapter();
 
@@ -86,7 +85,7 @@ public class ContactPickerFragment extends Fragment {
                     R.string.selected_contacts_list_is_empty,
                     Snackbar.LENGTH_LONG).show();
         } else {
-            bundle.putParcelableArrayList(SELECTED_CONTACTS, (ArrayList<? extends Parcelable>) selectedContacts);
+            bundle.putParcelableArrayList(SELECTED_CONTACTS, (ArrayList<Contact>) selectedContacts);
             Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle);
         }
     }
@@ -105,29 +104,7 @@ public class ContactPickerFragment extends Fragment {
 
     // Extrae los contactos del proveedor de contactos del móvil
     private void loadContacts() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED)
-            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
-        else
-            contacts = new ContactProvider(getContext()).getContacts(null, null);
+        ContactDAO cdb = ContactDatabase.getDatabase(getContext()).getContactDAO();
+        contacts = cdb.getAll();
     }
-
-    private void safeContactsInLocalDB() {
-        ContactDAO cdao = ContactDatabase.getDatabase(getContext()).getContactDAO();
-        for(Contact contact : contacts) {
-            cdao.add(contact.toROM());
-        }
-    }
-
-    // Define el modo en el que la app controla la respuesta del usuario a la solicitud del permiso.
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    contacts = new ContactProvider(getContext()).getContacts(null, null);
-                    loadRecyclerContactListAdapter();
-                } else
-                    Snackbar.make(getActivity().findViewById(android.R.id.content),
-                            R.string.read_contact_permissions_not_acepted,
-                            Snackbar.LENGTH_LONG).show();
-            });
 }

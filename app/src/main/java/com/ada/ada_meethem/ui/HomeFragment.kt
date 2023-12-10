@@ -16,19 +16,21 @@ import com.ada.ada_meethem.R
 import com.ada.ada_meethem.adapters.PlanListAdapter
 import com.ada.ada_meethem.data.ContactProvider
 import com.ada.ada_meethem.database.ContactDatabase
-import com.ada.ada_meethem.modelo.Contact
-import com.ada.ada_meethem.modelo.Person
+import com.ada.ada_meethem.database.PlanDatabase
+import com.ada.ada_meethem.database.entities.Contact
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.ui.PlanFragment.Companion.newInstance
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class HomeFragment : Fragment() {
-    private var plans: MutableList<Plan>? = null
-    private var contacts: List<Contact>? = null
+    private var plans: List<Plan> = ArrayList()
+    private var contacts: List<Contact> = ArrayList()
+    private lateinit var plAdapter : PlanListAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUsersListener()
@@ -41,12 +43,12 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        generatePlans()
+        loadPlans()
         val plansRecyclerView = root.findViewById<RecyclerView>(R.id.plansRecyclerView)
         plansRecyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(root.context)
         plansRecyclerView.layoutManager = layoutManager
-        val plAdapter = PlanListAdapter(
+        plAdapter = PlanListAdapter(
             plans
         ) { plan -> clickonItem(plan) }
         plansRecyclerView.adapter = plAdapter
@@ -66,41 +68,24 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private fun generatePlans() {
-        val person1 = Person("Maricarmen", "666666666", null)
-        val person2 = Person("Alex", "0", null)
-        val person3 = Person("Abel", "0", null)
-        val person4 = Person("Diego", "0", null)
-        val plan1 = Plan(
-            "Ruta del Cares",
-            person1,
-            10,
-            "https://www.escapadarural.com/blog/wp-content/uploads/2019/11/ruta-cares.jpg"
-        )
-        val plan2 = Plan(
-            "Padelcito",
-            person3,
-            3,
-            "https://www.covb.cat/wp-content/uploads/2023/04/padel-g9a1278dbc_1280.jpg"
-        )
-        val plan3 = Plan(
-            "Surf en rodiles",
-            person4,
-            5,
-            "https://img.redbull.com/images/q_auto,f_auto/redbullcom/2015/01/22/1331701014293_2/iv%C3%A1n-villalba-en-rodiles-%28asturias%29-semeyadetoral.com.jpg"
-        )
-        plan3.addToPlan(person1)
-        plan3.addToPlan(person3)
-        plan2.addToPlan(person1)
-        plan2.addToPlan(person2)
-        plan2.addToPlan(person4)
-        plan1.planId = "1"
-        plan2.planId = "2"
-        plan3.planId = "3"
-        plans = ArrayList()
-        (plans as ArrayList<Plan>).add(plan1)
-        (plans as ArrayList<Plan>).add(plan2)
-        (plans as ArrayList<Plan>).add(plan3)
+    private fun loadPlans() {
+        PlanDatabase.getReference().addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val plans = ArrayList<Plan>()
+                val cdb = ContactDatabase.getDatabase(context).contactDAO
+                for (chatSnapshot in dataSnapshot.children) {
+                    val plan = chatSnapshot.getValue(Plan::class.java) as Plan
+                    if(plan.enlisted.contains(FirebaseAuth.getInstance().currentUser!!.phoneNumber)) {
+                        plans.add(plan)
+                    }
+                }
+                plAdapter.update(plans)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Manejo de errores
+            }
+        })
     }
 
     private fun setUsersListener() {
@@ -110,10 +95,10 @@ class HomeFragment : Fragment() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val cdb = ContactDatabase.getDatabase(context).contactDAO
                         for (chatSnapshot in dataSnapshot.children) {
-                            val contact = chatSnapshot.getValue(Person::class.java) as Person
-                            val localContact = cdb.findByNumber(contact.phoneNumber)
+                            val contact = chatSnapshot.getValue(Contact::class.java) as Contact
+                            val localContact = cdb.findByNumber(contact.contactNumber)
                             if(localContact != null) {
-                                localContact.photoUrl = contact.profileImage
+                                localContact.photoUrl = contact.photoUrl
                             }
                         }
                     }
@@ -133,6 +118,7 @@ class HomeFragment : Fragment() {
                 context
             ).getContacts(null, null)
     }
+
     private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -149,8 +135,7 @@ class HomeFragment : Fragment() {
     private fun safeContactsInLocalDB() {
         val cdao = ContactDatabase.getDatabase(context).contactDAO
         for (contact in contacts!!) {
-            cdao.add(contact.toROM())
+            cdao.add(contact)
         }
     }
-
 }

@@ -24,12 +24,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.adapters.SelectedContactListAdapter;
-import com.ada.ada_meethem.modelo.Contact;
+import com.ada.ada_meethem.database.PlanDatabase;
+import com.ada.ada_meethem.database.entities.Contact;
+import com.ada.ada_meethem.modelo.Plan;
+import com.ada.ada_meethem.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreatePlanFragment extends Fragment {
@@ -144,7 +149,15 @@ public class CreatePlanFragment extends Fragment {
         if (!validatePlan(view))
             return;
 
-        // TODO completar guardado del plan
+        String title = etPlanName.getText().toString();
+        int maxPeople = Integer.parseInt(etMaxPeople.getText().toString());
+        String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        Contact user = Util.getCurrentUser();
+        Plan plan = new Plan(title,user,maxPeople,planImageUri.toString(),new ArrayList<>());
+        for(Contact contact : selectedContacts)
+            plan.addToPlan(contact.getContactNumber());
+
+        PlanDatabase.getReference().child(plan.getPlanId()).setValue(plan);
 
         Snackbar.make(getActivity().findViewById(android.R.id.content),
                 R.string.plan_created_ok, Snackbar.LENGTH_LONG).show();
