@@ -5,7 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.ada.ada_meethem.database.ContactDatabase
+import com.ada.ada_meethem.modelo.pinnable.ChatMessage
+import com.ada.ada_meethem.modelo.pinnable.DateSurvey
+import com.ada.ada_meethem.modelo.pinnable.Pinnable
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class MainActivity : AppCompatActivity() {
 

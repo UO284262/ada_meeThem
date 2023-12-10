@@ -16,11 +16,11 @@ public interface ContactDAO {
     List<Contact> getAll();
 
     @Query("SELECT * FROM contacts WHERE contactNumber = (:contactNumber)")
-    Contact findByNumber(int contactNumber);
+    Contact findByNumber(String contactNumber);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void add(Contact pelicula);
+    void add(Contact contact);
 
     @Delete
-    void delete(Contact Pelicula);
+    void delete(Contact contact);
 }

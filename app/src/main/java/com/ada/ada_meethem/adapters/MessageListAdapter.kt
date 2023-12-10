@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.ada.ada_meethem.R
+import com.ada.ada_meethem.database.ContactDatabase
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.google.firebase.auth.FirebaseAuth
 
@@ -45,7 +46,7 @@ class MessageListAdapter(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val viewType = getItemViewType(position)
         val chatMessage = getItem(position) as ChatMessage
-        val userPhoneNumber = chatMessage.messageUser
+        var userPhoneNumber = chatMessage.messageUser
         var view = convertView
         if (view == null) {
             val inflater =
@@ -66,6 +67,11 @@ class MessageListAdapter(
         // Set their text
         messageText.text = chatMessage.messageText
         messageUser.setTextColor(color)
+        val cdb = ContactDatabase.getDatabase(context).contactDAO
+        val localContact =  cdb.findByNumber(userPhoneNumber)
+        if(localContact != null) {
+            userPhoneNumber = localContact.contactName
+        }
         messageUser.text = if(viewType == TYPEOWN) "You" else userPhoneNumber
         // Format the date before showing it
         messageTime.text = DateFormat.format(

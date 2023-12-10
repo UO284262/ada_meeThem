@@ -23,6 +23,14 @@ data class Contact(
         return 0
     }
 
+    fun toROM() : com.ada.ada_meethem.database.entities.Contact {
+        return com.ada.ada_meethem.database.entities.Contact(
+            number!!,
+            "",
+            username,
+        )
+    }
+
     companion object CREATOR : Parcelable.Creator<Contact> {
         override fun createFromParcel(parcel: Parcel): Contact {
             return Contact(parcel)

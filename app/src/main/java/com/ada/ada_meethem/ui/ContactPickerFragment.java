@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.adapters.ContactListAdapter;
 import com.ada.ada_meethem.data.ContactProvider;
+import com.ada.ada_meethem.database.ContactDatabase;
+import com.ada.ada_meethem.database.daos.ContactDAO;
 import com.ada.ada_meethem.modelo.Contact;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -59,7 +61,7 @@ public class ContactPickerFragment extends Fragment {
 
         // Load the contacts
         loadContacts();
-
+        safeContactsInLocalDB();
         // Establece el adapter al Recycler view
         loadRecyclerContactListAdapter();
 
@@ -108,6 +110,13 @@ public class ContactPickerFragment extends Fragment {
             requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
         else
             contacts = new ContactProvider(getContext()).getContacts(null, null);
+    }
+
+    private void safeContactsInLocalDB() {
+        ContactDAO cdao = ContactDatabase.getDatabase(getContext()).getContactDAO();
+        for(Contact contact : contacts) {
+            cdao.add(contact.toROM());
+        }
     }
 
     // Define el modo en el que la app controla la respuesta del usuario a la solicitud del permiso.
