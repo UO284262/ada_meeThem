@@ -82,7 +82,8 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
             planCreator.setText(plan.getCreator().getContactName());
 
             // cargar imagen
-            Picasso.get().load(plan.getImageUrl()).into(planImage);
+            if (!plan.getImageUrl().isEmpty())
+                Picasso.get().load(plan.getImageUrl()).into(planImage);
 
             itemView.setOnClickListener(view -> listener.onItemClick(plan));
         }

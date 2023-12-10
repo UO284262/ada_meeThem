@@ -18,6 +18,8 @@ public class Contact implements Parcelable {
 
     private String contactName;
 
+    public Contact() {}
+
     protected Contact(Parcel in) {
         contactNumber = in.readString();
         photoUrl = in.readString();

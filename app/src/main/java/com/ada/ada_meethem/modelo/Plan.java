@@ -21,13 +21,15 @@ public class Plan implements Parcelable {
     private int maxPeople;
     private String planId;
 
-    public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted) {
+    public Plan() {}
+
+    public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted, String uuid) {
         this.title = title;
         this.creator = creator;
         this.enlisted = new ArrayList<>(enlisted);
         this.maxPeople = maxPeople;
         this.imageUrl = imageUrl;
-        this.planId = UUID.randomUUID().toString();
+        this.planId = uuid;
     }
 
     public void addToPlan(String person) {

@@ -28,14 +28,20 @@ import com.ada.ada_meethem.database.PlanDatabase;
 import com.ada.ada_meethem.database.entities.Contact;
 import com.ada.ada_meethem.modelo.Plan;
 import com.ada.ada_meethem.util.Util;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CreatePlanFragment extends Fragment {
 
@@ -44,7 +50,8 @@ public class CreatePlanFragment extends Fragment {
     private static final String PLAN_NAME = "plan_name";
     private static final String PLAN_MAX_PEOPLE = "plan_max_people";
 
-    private List<Contact> selectedContacts;
+    private List<Contact> selectedContacts = new ArrayList<>();
+    private String createdPlanId;
     private Uri planImageUri;
     private ImageView planImage;
     private TextInputLayout layoutPlanName;
@@ -149,14 +156,24 @@ public class CreatePlanFragment extends Fragment {
         if (!validatePlan(view))
             return;
 
-        String title = etPlanName.getText().toString();
+        createdPlanId = UUID.randomUUID().toString();
+        subirImagen(planImageUri); // se sube la imagen a firebase
+
+        String planName = etPlanName.getText().toString();
         int maxPeople = Integer.parseInt(etMaxPeople.getText().toString());
-        String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        String creatorPlanNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         Contact user = Util.getCurrentUser();
-        Plan plan = new Plan(title,user,maxPeople,planImageUri.toString(),new ArrayList<>());
+
+        Plan plan = new Plan(planName, user, maxPeople, "", new ArrayList<>(), createdPlanId);
+
+        // Añadimos los contactos seleccionados al plan
         for(Contact contact : selectedContacts)
             plan.addToPlan(contact.getContactNumber());
 
+        // Añadimos el creador del plan al plan
+        plan.addToPlan(creatorPlanNumber);
+
+        // Se añade el plan a Firebase
         PlanDatabase.getReference().child(plan.getPlanId()).setValue(plan);
 
         Snackbar.make(getActivity().findViewById(android.R.id.content),
@@ -193,6 +210,35 @@ public class CreatePlanFragment extends Fragment {
         rvSelectedContacts.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(root.getContext(), 3);
         rvSelectedContacts.setLayoutManager(layoutManager);
+    }
+
+    private void subirImagen(Uri selectedImageUri) {
+        // Obtiene una referencia a tu Firebase Storage
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        String path = "planPhotos/plan-" + UUID.randomUUID();
+
+        // Crea una referencia para la imagen en Storage
+        StorageReference imageReference = storageReference.child(path);
+
+        // Sube la imagen
+        imageReference.putFile(selectedImageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                PlanDatabase.getReference(createdPlanId).child("imageUrl").setValue(uri.toString());
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Maneja el error de la subida de la imagen
+                    }
+                });
     }
 
 }

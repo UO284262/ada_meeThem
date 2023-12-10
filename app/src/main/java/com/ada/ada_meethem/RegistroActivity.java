@@ -146,10 +146,10 @@ public class RegistroActivity extends AppCompatActivity {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
         // Crear un nuevo objeto Usuario con el nombre y el número de teléfono
-        Contact usuario = new Contact(username,  imageUrl,phoneNumber);
+        Contact usuario = new Contact(phoneNumber,  imageUrl, username);
 
         // Agregar la información del usuario a la base de datos
-        databaseReference.child(phoneNumber.substring(1)).setValue(usuario);
+        databaseReference.child(phoneNumber).setValue(usuario);
 
         selectedImageUriForUpload = null;
     }
