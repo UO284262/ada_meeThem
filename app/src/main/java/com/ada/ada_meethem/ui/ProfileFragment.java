@@ -23,6 +23,7 @@ import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.RegistroActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -202,28 +203,27 @@ public class ProfileFragment extends Fragment {
         // Obtén la referencia al contexto de la actividad
         Activity activity = getActivity();
         if (activity != null) {
-            // Crea un AlertDialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Cambiar nombre de usuario");
+            // Infla el layout personalizado
+            View dialogView = LayoutInflater.from(activity).inflate(R.layout.custom_dialog_layout, null);
 
-            // Configura el EditText en el AlertDialog
-            final EditText input = new EditText(activity);
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+            // Crea el dialogo personalizado
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setView(dialogView);
 
             // Configura los botones del AlertDialog
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // Obtiene el nuevo nombre de usuario ingresado por el usuario
-                    String newUserName = input.getText().toString();
+                    EditText usernameEditText = dialogView.findViewById(R.id.usernameEditText);
+                    String newUserName = usernameEditText.getText().toString();
 
-                    // Aquí puedes agregar la lógica para actualizar el nombre de usuario en la base de datos
-                    // Por ejemplo, podrías llamar a un método que actualice el nombre de usuario en la base de datos
+                    // Actualiza el nombre de usuario en la interfaz de usuario y en la base de datos
                     userName.setText(newUserName);
                     actualizarNombreDeUsuarioEnBD(mAuth.getCurrentUser().getPhoneNumber(), newUserName);
                 }
             });
+
             builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -232,8 +232,10 @@ public class ProfileFragment extends Fragment {
             });
 
             // Muestra el AlertDialog
-            builder.show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
+
     }
 
     private void actualizarNombreDeUsuarioEnBD(String phoneNumber, String newUserName) {
