@@ -17,7 +17,7 @@ public class DateSurvey implements Pinnable{
     public DateSurvey(List<String> dates) {
         this.dates = new HashMap<String,Integer>();
         for(String date : dates) this.dates.put(date, 0);
-        id = "dts" + UUID.randomUUID().toString();
+        id = "sdt" + UUID.randomUUID().toString();
         open = true;
     }
 

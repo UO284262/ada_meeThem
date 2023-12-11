@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -19,6 +20,7 @@ import com.ada.ada_meethem.modelo.pinnable.DateSurvey
 import com.ada.ada_meethem.modelo.pinnable.Pinnable
 import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 
 class PinnedItemsAdapter(
     private val context: Context,
@@ -133,8 +135,22 @@ class PinnedItemsAdapter(
             }
 
             IMAGE -> {
-                item = getItem(position) as PlanImage
-                layout = R.layout.image_item
+                val planImage = item as PlanImage
+                val img = view!!.findViewById<View>(R.id.iv_pinned_photo) as ImageView
+                Picasso.get().load(planImage.url).into(img)
+                val btn = view.findViewById<View>(R.id.img_del_bt) as ImageButton
+                btn.setOnClickListener {
+                    val databaseReference = PlanDatabase.getReference(plan!!.planId)
+
+                    // Busca el usuario por su número de teléfono
+                    databaseReference.child("pinnedItems").child(planImage.id).removeValue()
+                }
+
+                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
+                    == plan.creator.contactNumber
+                ) {
+                    btn.isVisible = true
+                }
             }
         }
 

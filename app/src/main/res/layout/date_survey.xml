@@ -22,7 +22,7 @@
     <ListView
         android:id="@+id/date_choices_list"
         android:layout_width="395dp"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

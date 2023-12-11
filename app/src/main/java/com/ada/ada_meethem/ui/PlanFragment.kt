@@ -52,7 +52,7 @@ class PlanFragment : Fragment() {
         val fab2 = root.findViewById<View>(R.id.fabEditPlan) as FloatingActionButton
         fab2.setOnClickListener { abrirEdit(plan) }
 
-        if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
+        if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
             == plan!!.creator.contactNumber
         ) fab2.visibility = View.VISIBLE
 
@@ -95,10 +95,11 @@ class PlanFragment : Fragment() {
                     val ident : String = chatSnapshot.key!!.subSequence(0,3).toString()
                     when(ident) {
                         "msg" -> pins.add(chatSnapshot.getValue(ChatMessage::class.java) as ChatMessage)
-                        "dts" -> {
+                        "sdt" -> {
                             pins.add(chatSnapshot.getValue(DateSurvey::class.java) as DateSurvey)
                             surveyDone = true
                         }
+                        "pli" -> pins.add(chatSnapshot.getValue(PlanImage::class.java) as PlanImage)
                     }
                 }
                 adapter!!.update(pins.toList())

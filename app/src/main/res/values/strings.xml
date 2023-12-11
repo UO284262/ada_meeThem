@@ -30,4 +30,6 @@
     <string name="plan_creation_no_name">Es obligatorio poner un nombre al plan</string>
     <string name="plan_creation_no_max_people">Es obligatorio poner una capacidad al plan</string>
     <string name="plan_creation_too_much_people">Los miembros añadidos superan la capacidad máxima del plan</string>
+    <string name="pin_image_to_plan">Anclar imagen al plan</string>
+    <string name="pinned_image_title">Imagen destacada</string>
 </resources>
