@@ -20,6 +20,7 @@ import com.ada.ada_meethem.database.PlanDatabase
 import com.ada.ada_meethem.database.entities.Contact
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.ui.PlanFragment.Companion.newInstance
+import com.ada.ada_meethem.util.ContactLoaderFromProvider
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -28,13 +29,25 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class HomeFragment : Fragment() {
+
     private var plans: List<Plan> = ArrayList()
     private var contacts: List<Contact> = ArrayList()
     private lateinit var plAdapter : PlanListAdapter
+    private lateinit var contactLoader : ContactLoaderFromProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUsersListener()
-        loadContacts()
+
+        // Crea el contactLoader
+        contactLoader = ContactLoaderFromProvider(
+            requireContext(),
+            requestPermissionLauncher,
+            requireActivity()
+        )
+
+        // Carga los contactos
+        contacts = contactLoader.loadContacts()
     }
 
     override fun onCreateView(
@@ -110,32 +123,9 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun loadContacts() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS)
-            != PackageManager.PERMISSION_GRANTED
-        ) requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS) else contacts =
-            ContactProvider(
-                context
-            ).getContacts(null, null)
-    }
 
-    private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            contacts = ContactProvider(context).getContacts(null, null)
-            safeContactsInLocalDB()
-        } else Snackbar.make(
-            requireActivity().findViewById(android.R.id.content),
-            R.string.read_contact_permissions_not_acepted,
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission())
+        { isGranted: Boolean ->contactLoader.requestPermissionLauncherCallback(isGranted) }
 
-    private fun safeContactsInLocalDB() {
-        val cdao = ContactDatabase.getDatabase(context).contactDAO
-        for (contact in contacts!!) {
-            cdao.add(contact)
-        }
-    }
 }

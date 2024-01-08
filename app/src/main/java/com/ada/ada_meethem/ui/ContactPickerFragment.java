@@ -5,6 +5,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,6 +26,7 @@ import com.ada.ada_meethem.data.ContactProvider;
 import com.ada.ada_meethem.database.ContactDatabase;
 import com.ada.ada_meethem.database.daos.ContactDAO;
 import com.ada.ada_meethem.database.entities.Contact;
+import com.ada.ada_meethem.util.ContactLoaderFromProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -38,6 +42,7 @@ public class ContactPickerFragment extends Fragment {
     private RecyclerView contactsRecyclerView;
     private ContactListAdapter clAdapter;
     private Bundle bundle; // para almacenar los datos del createPlanFragment y los contactos seleccionados
+    private ContactLoaderFromProvider contactLoader;
 
     public ContactPickerFragment() {
         // Required empty public constructor
@@ -67,6 +72,12 @@ public class ContactPickerFragment extends Fragment {
         // Listener del fab
         FloatingActionButton fab = root.findViewById(R.id.fabContactsSelected);
         fab.setOnClickListener(this::navigateToCreatePlan);
+
+        // Habilitamos el menú
+        setHasOptionsMenu(true);
+
+        // Crea el contactLoader
+        contactLoader = new ContactLoaderFromProvider(requireContext(), requestPermissionLauncher, requireActivity());
         return root;
     }
 
@@ -106,4 +117,33 @@ public class ContactPickerFragment extends Fragment {
         ContactDAO cdb = ContactDatabase.getDatabase(getContext()).getContactDAO();
         contacts = cdb.getAll();
     }
+
+    // Crea el menú de este fragmento (contiene el botón de refrescar contactos)
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.contact_picker_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    // Añade funcionalidad al elmento del menú
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_refresh_contacts) {
+            contacts = contactLoader.loadContacts();
+
+            // Establece el adapter al Recycler view
+            loadRecyclerContactListAdapter();
+
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                            R.string.contacts_refresh_OK,
+                            Snackbar.LENGTH_SHORT)
+                    .show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                isGranted -> contactLoader.requestPermissionLauncherCallback(isGranted));
+
 }
