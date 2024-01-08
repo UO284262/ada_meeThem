@@ -32,4 +32,6 @@
     <string name="plan_creation_too_much_people">Los miembros añadidos superan la capacidad máxima del plan</string>
     <string name="pin_image_to_plan">Anclar imagen al plan</string>
     <string name="pinned_image_title">Imagen destacada</string>
+    <string name='exit_plan_text'>Salir</string>
+    <string name='confirm_plan_text'>Confirmar</string>
 </resources>

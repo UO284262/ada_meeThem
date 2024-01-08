@@ -2,9 +2,11 @@ package com.ada.ada_meethem.ui
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -29,6 +31,9 @@ class PlanFragment : Fragment() {
     private var adapter: PinnedItemsAdapter? = null
     private var surveyDone: Boolean = false
     private var listView: ListView? = null
+    private lateinit var btExit: Button
+    private lateinit var btConfirm: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -42,7 +47,7 @@ class PlanFragment : Fragment() {
         plan = requireArguments().getParcelable<Parcelable>("plan") as Plan?
         (root.findViewById<View>(R.id.planName) as TextView).text = plan!!.title
         (root.findViewById<View>(R.id.participantes) as TextView).text =
-            String.format("%d/%d", plan!!.enlisted.size, plan!!.maxPeople)
+            String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
         (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.contactName
         //((ImageView) root.findViewById(R.id.imagenPlan))
 
@@ -52,9 +57,21 @@ class PlanFragment : Fragment() {
         val fab2 = root.findViewById<View>(R.id.fabEditPlan) as FloatingActionButton
         fab2.setOnClickListener { abrirEdit(plan) }
 
+        btExit = root.findViewById<View>(R.id.bt_exit) as Button
+        btExit.setOnClickListener { exitPlan(plan!!) }
+
+        btConfirm = root.findViewById<View>(R.id.bt_agree) as Button
+        btConfirm.setOnClickListener {
+            Log.d("confirm","confirm")
+            confirmPlan(plan!!)
+        }
+
         if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
             == plan!!.creator.contactNumber
-        ) fab2.visibility = View.VISIBLE
+        ) fab2.visibility = View.VISIBLE else {
+            btExit.visibility = View.VISIBLE
+            btConfirm.visibility = View.VISIBLE
+        }
 
         listView = root.findViewById(R.id.pinnedList)
         adapter = PinnedItemsAdapter(root.context, ArrayList(), DateSurveyVotes() ,plan!!)
@@ -83,6 +100,25 @@ class PlanFragment : Fragment() {
         findNavController().navigate(
             R.id.action_planFragment_to_editPlanFragment,
             bundle
+        );
+    }
+
+    private fun confirmPlan(plan: Plan) {
+        Log.d("confirmMethod","confirmMethod")
+        val num = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+        plan.confirmToPlan(num)
+        PlanDatabase.confirmPlan(plan)
+        btConfirm.visibility = View.INVISIBLE
+        btExit.visibility = View.INVISIBLE
+    }
+
+    private fun exitPlan(plan: Plan) {
+        plan.exitPlan(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
+        PlanDatabase.exitPlan(plan)
+        btConfirm.visibility = View.INVISIBLE
+        btExit.visibility = View.INVISIBLE
+        findNavController().navigate(
+            R.id.action_global_nav_home
         );
     }
 

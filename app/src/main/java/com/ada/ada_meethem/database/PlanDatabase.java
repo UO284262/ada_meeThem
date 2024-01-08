@@ -1,6 +1,7 @@
 package com.ada.ada_meethem.database;
 
 import com.ada.ada_meethem.modelo.DateSurveyVotes;
+import com.ada.ada_meethem.modelo.Plan;
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage;
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,5 +58,21 @@ public class PlanDatabase {
                 .getReference("plans").child(planId).child("pinnedItems");
         // Escribe los datos en la base de datos
         chatReference.child(surveyId).child("open").setValue(false);
+    }
+
+    public static void confirmPlan( Plan plan) {
+        DatabaseReference chatReference = FirebaseDatabase
+                .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("plans").child(plan.getPlanId()).child("confirmed");
+        // Escribe los datos en la base de datos
+        chatReference.setValue(plan.getConfirmed());
+    }
+
+    public static void exitPlan( Plan plan) {
+        DatabaseReference chatReference = FirebaseDatabase
+                .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("plans").child(plan.getPlanId()).child("enlisted");
+        // Escribe los datos en la base de datos
+        chatReference.setValue(plan.getEnlisted());
     }
 }
