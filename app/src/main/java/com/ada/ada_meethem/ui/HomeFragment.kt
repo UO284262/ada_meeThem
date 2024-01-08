@@ -115,19 +115,25 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadContacts() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS)
-            != PackageManager.PERMISSION_GRANTED
-        ) requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS) else contacts =
-            ContactProvider(
-                context
-            ).getContacts(null, null)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+        else
+            try {
+                contacts = ContactProvider(context).getContacts(null, null)
+            } catch (e: Exception) {
+                contacts = ArrayList()
+            }
     }
 
     private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            contacts = ContactProvider(context).getContacts(null, null)
+            try {
+                contacts = ContactProvider(context).getContacts(null, null)
+            } catch (e: Exception) {
+                contacts = ArrayList()
+            }
             safeContactsInLocalDB()
         } else Snackbar.make(
             requireActivity().findViewById(android.R.id.content),
