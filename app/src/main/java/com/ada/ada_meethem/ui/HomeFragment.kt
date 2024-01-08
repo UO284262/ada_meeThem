@@ -31,10 +31,12 @@ class HomeFragment : Fragment() {
     private var plans: List<Plan> = ArrayList()
     private var contacts: List<Contact> = ArrayList()
     private lateinit var plAdapter : PlanListAdapter
+    private var loadContacts : Boolean = true
+    private var setListener : Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUsersListener()
-        loadContacts()
+        if(setListener) setUsersListener()
+        if(loadContacts) loadContacts()
     }
 
     override fun onCreateView(
@@ -69,13 +71,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadPlans() {
+        val phoneNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
         PlanDatabase.getReference().addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val plans = ArrayList<Plan>()
                 val cdb = ContactDatabase.getDatabase(context).contactDAO
                 for (chatSnapshot in dataSnapshot.children) {
                     val plan = chatSnapshot.getValue(Plan::class.java) as Plan
-                    if(plan.enlisted.contains(FirebaseAuth.getInstance().currentUser!!.phoneNumber)) {
+                    if(plan.enlisted.contains(phoneNumber)) {
                         plans.add(plan)
                     }
                 }
@@ -99,6 +102,7 @@ class HomeFragment : Fragment() {
                             val localContact = cdb.findByNumber(contact.contactNumber)
                             if(localContact != null) {
                                 localContact.photoUrl = contact.photoUrl
+                                loadContacts = true
                             }
                         }
                     }
@@ -134,8 +138,11 @@ class HomeFragment : Fragment() {
 
     private fun safeContactsInLocalDB() {
         val cdao = ContactDatabase.getDatabase(context).contactDAO
-        for (contact in contacts!!) {
+        for (contact in contacts) {
+            contact.contactNumber = contact.contactNumber.replace("\\s".toRegex(), "")
+           // if(!contact.contactNumber.contains("+")) contact.contactNumber = "+34" + contact.contactNumber
             cdao.add(contact)
         }
+        loadContacts = false
     }
 }
