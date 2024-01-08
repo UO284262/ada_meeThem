@@ -75,19 +75,18 @@ public class ContactPickerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bundle = getArguments() != null ? getArguments() : new Bundle();
+
+        // Se marcan los contactos que habían sido seleccionados previamente
+        List<Contact> selectedContacts = getArguments().getParcelableArrayList(SELECTED_CONTACTS);
+        if (selectedContacts != null)
+            clAdapter.setSelectedContacts(selectedContacts);
     }
 
     // Guarda los contactos seleccionados en una lista y los envía al CreatePlanFragment
     private void navigateToCreatePlan(View view) {
         List<Contact> selectedContacts = clAdapter.getContactsSelected();
-        if (selectedContacts.isEmpty()) {
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
-                    R.string.selected_contacts_list_is_empty,
-                    Snackbar.LENGTH_LONG).show();
-        } else {
-            bundle.putParcelableArrayList(SELECTED_CONTACTS, (ArrayList<Contact>) selectedContacts);
-            Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle);
-        }
+        bundle.putParcelableArrayList(SELECTED_CONTACTS, (ArrayList<Contact>) selectedContacts);
+        Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle);
     }
 
     private void loadRecyclerContactListAdapter() {

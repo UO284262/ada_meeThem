@@ -24,6 +24,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     private List<Contact> contacts;
+    private List<Contact> selectedContacts; // contactos seleccionados anteriormente
     private List<CheckBox> checkBoxes = new ArrayList<>();
     private final OnItemClickListener listener;
 
@@ -64,6 +65,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         return contactsSelected;
     }
 
+    public void setSelectedContacts(List<Contact> selectedContacts) {
+        this.selectedContacts = selectedContacts;
+    }
+
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
@@ -85,6 +90,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             contactSurname.setText(contact.getContactName());
             contactNumber.setText(contact.getContactNumber());
             checkBoxes.add(contactCheckBox);
+
+            if (selectedContacts != null && selectedContacts.contains(contact))
+                contactCheckBox.setChecked(true);
 
             // cargar imagen
             // TODO Picasso.get().load(plan.getImageUrl()).into(contactImage);

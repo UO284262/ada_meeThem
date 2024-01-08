@@ -3,14 +3,11 @@ package com.ada.ada_meethem.ui;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -19,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ada.ada_meethem.R;
@@ -136,6 +132,7 @@ public class CreatePlanFragment extends Fragment {
         bundle.putString(PLAN_IMAGE_URI, planImageUri != null ? planImageUri.toString() : null);
         bundle.putString(PLAN_NAME, etPlanName.getText().toString());
         bundle.putString(PLAN_MAX_PEOPLE, etMaxPeople.getText().toString());
+        bundle.putParcelableArrayList(ContactPickerFragment.SELECTED_CONTACTS, (ArrayList<Contact>) selectedContacts);
 
         Navigation.findNavController(view).navigate(R.id.action_nav_plan_create_to_contactPickerFragment, bundle);
     }
@@ -193,11 +190,11 @@ public class CreatePlanFragment extends Fragment {
             Snackbar.make(view, R.string.plan_creation_no_image, Snackbar.LENGTH_LONG).show();
             return false;
         }
-        if (!isMaxPeopleInvalid && selectedContacts != null
-                && selectedContacts.size() > Integer.parseInt(etMaxPeople.getText().toString())) {
-            Snackbar.make(view, R.string.plan_creation_too_much_people, Snackbar.LENGTH_LONG).show();
-            return false;
-        }
+//        if (!isMaxPeopleInvalid && selectedContacts != null
+//                && selectedContacts.size() > Integer.parseInt(etMaxPeople.getText().toString())) {
+//            Snackbar.make(view, R.string.plan_creation_too_much_people, Snackbar.LENGTH_LONG).show();
+//            return false;
+//        }
         if (isPlanNameInvalid)
             layoutPlanName.setError(getString(R.string.plan_creation_no_name));
         if (isMaxPeopleInvalid)

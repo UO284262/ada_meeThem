@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "contacts")
 public class Contact implements Parcelable {
     @NonNull
@@ -93,5 +95,20 @@ public class Contact implements Parcelable {
         dest.writeString(contactNumber);
         dest.writeString(photoUrl);
         dest.writeString(contactName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contact contact = (Contact) o;
+        return contactNumber.equals(contact.contactNumber)
+                && photoUrl.equals(contact.photoUrl)
+                && Objects.equals(contactName, contact.contactName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contactNumber, photoUrl, contactName);
     }
 }
