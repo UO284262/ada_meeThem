@@ -25,7 +25,6 @@ public abstract class ContactDatabase extends RoomDatabase {
              */
             db = Room.databaseBuilder(applicationContext, ContactDatabase.class, DB_NOMBRE)
                     .allowMainThreadQueries()
-                    .createFromAsset("dbinicial.db")
                     .build();
         }
         return db;

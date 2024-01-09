@@ -9,7 +9,7 @@
     <string name="home_recycler_line_group">"Grupo: "</string>
     <string name="hintMessage">Message</string>
     <string name="contact_picker_recycler_line_contact_image_content_description">Imagen del contacto</string>
-    <string name="read_contact_permissions_not_acepted">Para mostrar los contactos hay que aceptar los permisos</string>
+    <string name="read_contact_permissions_not_acepted">Para el correcto funcionamiento de la aplicación debe aceptar los permisos</string>
     <string name="contact_list_is_empty">No hay contactos en el teléfono</string>
     <string name="date_survey">Elegir la fecha</string>
     <string name="pin_msg">Anclar</string>
@@ -20,4 +20,22 @@
     <string name="nav_home_title">Home</string>
     <string name="nav_plan_create_title">Create</string>
     <string name="nav_profile_title">Profile</string>
+    <string name="selected_contacts_list_is_empty">Seleccione al menos 1 contacto</string>
+    <string name="text_input_layout_plan_name_hint">Nombre</string>
+    <string name="text_input_layout_plan_max_people_hint">Capacidad máxima</string>
+    <string name="text_view_miembros_text">Miembros</string>
+    <string name="button_pick_contacts_text">Seleccionar miembros</string>
+    <string name="plan_created_ok">Plan creado correctamente</string>
+    <string name="plan_creation_no_image">Es obligatorio poner una imagen al plan</string>
+    <string name="plan_creation_no_name">Es obligatorio poner un nombre al plan</string>
+    <string name="plan_creation_no_max_people">Es obligatorio poner una capacidad al plan</string>
+    <string name="plan_creation_too_much_people">Los miembros añadidos superan la capacidad máxima del plan</string>
+    <string name="pin_image_to_plan">Anclar imagen al plan</string>
+    <string name="pinned_image_title">Imagen destacada</string>
+    <string name='exit_plan_text'>Salir</string>
+    <string name='confirm_plan_text'>Confirmar</string>
+    <string name='select_date'>Seleccionar fecha</string>
+    <string name="plan_exited">Se ha abandonado el plan correctamente</string>
+    <string name="plan_confirmed">Se ha confirmado asistencia al plan correctamente</string>
+    <string name="plan_full">El plan se ha llenado</string>
 </resources>

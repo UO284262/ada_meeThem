@@ -1,6 +1,5 @@
 package com.ada.ada_meethem.data;
 
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -9,7 +8,7 @@ import android.provider.ContactsContract;
 
 import androidx.core.content.ContextCompat;
 
-import com.ada.ada_meethem.modelo.Contact;
+import com.ada.ada_meethem.database.entities.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,7 @@ public class ContactProvider {
 
                 // Se crea un contacto por cada número de teléfono existente
                 for (String number: numbers)
-                    contacts.add(new Contact(number, name));
+                    contacts.add(new Contact(number,"",name));
             }
         }
         cursor.close();

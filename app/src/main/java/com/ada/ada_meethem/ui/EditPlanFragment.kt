@@ -1,10 +1,11 @@
 package com.ada.ada_meethem.ui
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
-import androidx.navigation.fragment.findNavController
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -15,6 +16,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.adapters.OnCreateDateChoicesAdapter
 import com.ada.ada_meethem.database.PlanDatabase
@@ -22,8 +24,12 @@ import com.ada.ada_meethem.modelo.DateSurveyVotes
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey
+import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.ada.ada_meethem.util.DatePickerFragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 
 class EditPlanFragment : Fragment() {
     private var plan: Plan? = null
@@ -35,6 +41,8 @@ class EditPlanFragment : Fragment() {
     private var dateSurvey: DateSurvey = DateSurvey(ArrayList())
     private var pinMsgText: EditText? = null
     private var adapterOnCreate : OnCreateDateChoicesAdapter? = null
+    private lateinit var planImage : PlanImage
+    private lateinit var pinImgButton : ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -101,6 +109,9 @@ class EditPlanFragment : Fragment() {
             listView.isVisible = false
         }
 
+        pinImgButton = root.findViewById<View>(R.id.ibPinPhoto) as ImageButton
+        pinImgButton.setOnClickListener { abrirSelectorImagen() }
+
         return root
     }
 
@@ -136,5 +147,50 @@ class EditPlanFragment : Fragment() {
         fun newInstance(): EditPlanFragment {
             return EditPlanFragment()
         }
+    }
+
+    private fun abrirSelectorImagen() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 300)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 300 && resultCode == -1 && data != null && data.data != null) {
+            // Aquí obtienes la URI de la imagen seleccionada
+            val selectedImageUri = data.data
+
+            planImage = PlanImage(selectedImageUri.toString())
+            subirImagen(selectedImageUri!!,planImage)
+        }
+    }
+
+    private fun subirImagen(selectedImageUri: Uri, planImage: PlanImage) {
+        // Obtiene una referencia a tu Firebase Storage
+        val storageReference = FirebaseStorage.getInstance().reference
+        val path = "planPhotos/plan-pinned-" + planImage.id + "-" + System.currentTimeMillis()
+
+        // Crea una referencia para la imagen en Storage
+        val imageReference = storageReference.child(path)
+
+        // Sube la imagen
+        imageReference.putFile(selectedImageUri)
+            .addOnSuccessListener {
+                imageReference.downloadUrl.addOnSuccessListener { uri ->
+                    actualizarFotoEnBD(planImage,uri.toString())
+                }
+            }
+            .addOnFailureListener {
+                // Maneja el error de la subida de la imagen
+            }
+    }
+
+    private fun actualizarFotoEnBD(planImage: PlanImage, imageUrl: String) {
+        // Obtiene una referencia a tu base de datos
+        val databaseReference = PlanDatabase.getReference(plan!!.planId)
+
+        // Busca el usuario por su número de teléfono
+        databaseReference.child("pinnedItems").child(planImage.id).setValue(planImage)
     }
 }

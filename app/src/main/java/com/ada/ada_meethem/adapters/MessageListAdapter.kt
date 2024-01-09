@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.ada.ada_meethem.R
+import com.ada.ada_meethem.database.ContactDatabase
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.google.firebase.auth.FirebaseAuth
 
@@ -37,15 +38,15 @@ class MessageListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val userPhoneNumber = (getItem(position) as ChatMessage).messageUser.substring(3)
-        return if (userPhoneNumber == FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3))
+        val userPhoneNumber = (getItem(position) as ChatMessage).messageUser
+        return if (userPhoneNumber == FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
             TYPEOWN else TYPEOTHER
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val viewType = getItemViewType(position)
         val chatMessage = getItem(position) as ChatMessage
-        val userPhoneNumber = chatMessage.messageUser.substring(3)
+        var userPhoneNumber = chatMessage.messageUser
         var view = convertView
         if (view == null) {
             val inflater =
@@ -56,7 +57,7 @@ class MessageListAdapter(
         // Obtén el usuario actual
 
 
-        val color = colorsArray[userPhoneNumber.toInt() % 18]
+        val color = colorsArray[(userPhoneNumber.substring(1).toLong() % 18).toInt()]
         val messageText = view!!.findViewById<View>(
             if (viewType == TYPEOWN) R.id.message_text_own else R.id.message_text_own) as TextView
         val messageUser = view.findViewById<View>(
@@ -66,6 +67,11 @@ class MessageListAdapter(
         // Set their text
         messageText.text = chatMessage.messageText
         messageUser.setTextColor(color)
+        val cdb = ContactDatabase.getDatabase(context).contactDAO
+        val localContact =  cdb.findByNumber(userPhoneNumber)
+        if(localContact != null) {
+            userPhoneNumber = localContact.contactName
+        }
         messageUser.text = if(viewType == TYPEOWN) "You" else userPhoneNumber
         // Format the date before showing it
         messageTime.text = DateFormat.format(

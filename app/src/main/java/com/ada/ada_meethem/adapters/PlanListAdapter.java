@@ -48,6 +48,11 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
         holder.bindPlan(plan, listener);
     }
 
+    public void update(List<Plan> plans) {
+        this.plans = plans;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return plans.size();
@@ -72,12 +77,13 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.PlanVi
         // asignar valores a los componentes
         public void bindPlan(final Plan plan, final OnItemClickListener listener) {
             planName.setText(plan.getTitle());
-            String membersNumber = plan.getEnlisted().size() + "/" + plan.getMaxPeople();
+            String membersNumber = plan.getConfirmed().size() + "/" + plan.getMaxPeople();
             planMembersNumber.setText(membersNumber);
-            planCreator.setText(plan.getCreator().getUsername());
+            planCreator.setText(plan.getCreator().getContactName());
 
             // cargar imagen
-            Picasso.get().load(plan.getImageUrl()).into(planImage);
+            if (!plan.getImageUrl().isEmpty())
+                Picasso.get().load(plan.getImageUrl()).into(planImage);
 
             itemView.setOnClickListener(view -> listener.onItemClick(plan));
         }

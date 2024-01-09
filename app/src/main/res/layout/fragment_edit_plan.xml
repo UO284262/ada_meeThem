@@ -26,8 +26,8 @@
 
         <Button
             android:id="@+id/pin_msg_btn"
-            android:layout_width="89dp"
-            android:layout_height="48dp"
+            android:layout_width="101dp"
+            android:layout_height="50dp"
             android:backgroundTint="@color/green"
             android:text="@string/pin_msg"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -128,5 +128,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextDate"
             app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/ibPinPhoto"
+            android:layout_width="58dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/green"
+            android:src="@android:drawable/ic_menu_camera"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/oncreate_survey_list"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tvPinImg"
+            android:layout_width="201dp"
+            android:layout_height="61dp"
+            android:gravity="center"
+            android:text="@string/pin_image_to_plan"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.043"
+            app:layout_constraintStart_toEndOf="@+id/ibPinPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/oncreate_survey_list"
+            app:layout_constraintVertical_bias="0.135" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

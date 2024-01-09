@@ -12,10 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ada.ada_meethem.modelo.Person;
+import com.ada.ada_meethem.database.entities.Contact;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,8 +22,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -149,10 +146,10 @@ public class RegistroActivity extends AppCompatActivity {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
         // Crear un nuevo objeto Usuario con el nombre y el número de teléfono
-        Person usuario = new Person(username, phoneNumber, imageUrl);
+        Contact usuario = new Contact(phoneNumber,  imageUrl, username);
 
         // Agregar la información del usuario a la base de datos
-        databaseReference.push().setValue(usuario);
+        databaseReference.child(phoneNumber).setValue(usuario);
 
         selectedImageUriForUpload = null;
     }

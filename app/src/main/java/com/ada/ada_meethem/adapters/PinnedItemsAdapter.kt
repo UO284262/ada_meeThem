@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -19,6 +20,7 @@ import com.ada.ada_meethem.modelo.pinnable.DateSurvey
 import com.ada.ada_meethem.modelo.pinnable.Pinnable
 import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 
 class PinnedItemsAdapter(
     private val context: Context,
@@ -96,8 +98,8 @@ class PinnedItemsAdapter(
                 val closeSurveyBtn =
                     view.findViewById<View>(R.id.close_survey_btn) as ImageButton
 
-                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-                    == plan.creator.phoneNumber
+                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+                    == plan.creator.contactNumber
                 ) {
                     closeSurveyBtn.isClickable = true
                     closeSurveyBtn.isVisible = true
@@ -105,7 +107,8 @@ class PinnedItemsAdapter(
 
                 closeSurveyBtn.setOnClickListener(View.OnClickListener {
                     dateSurvey.closeSurvey()
-                    PlanDatabase.closeSurvey(dateSurvey.id,plan.planId)
+                    plan.fecha = dateSurvey.mostVoted()
+                    PlanDatabase.closeSurvey(dateSurvey.id,plan.planId, plan.fecha)
                 })
             }
 
@@ -114,8 +117,8 @@ class PinnedItemsAdapter(
                 val messageTime = view.findViewById<View>(R.id.message_time_pinned) as TextView
                 val unpinBtn = view.findViewById<View>(R.id.pinbutton)
 
-                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-                    == plan.creator.phoneNumber
+                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+                    == plan.creator.contactNumber
                 ) {
                     unpinBtn.isClickable = true
                     unpinBtn.isVisible = true
@@ -133,8 +136,22 @@ class PinnedItemsAdapter(
             }
 
             IMAGE -> {
-                item = getItem(position) as PlanImage
-                layout = R.layout.image_item
+                val planImage = item as PlanImage
+                val img = view!!.findViewById<View>(R.id.iv_pinned_photo) as ImageView
+                Picasso.get().load(planImage.url).into(img)
+                val btn = view.findViewById<View>(R.id.img_del_bt) as ImageButton
+                btn.setOnClickListener {
+                    val databaseReference = PlanDatabase.getReference(plan!!.planId)
+
+                    // Busca el usuario por su número de teléfono
+                    databaseReference.child("pinnedItems").child(planImage.id).removeValue()
+                }
+
+                if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+                    == plan.creator.contactNumber
+                ) {
+                    btn.isVisible = true
+                }
             }
         }
 

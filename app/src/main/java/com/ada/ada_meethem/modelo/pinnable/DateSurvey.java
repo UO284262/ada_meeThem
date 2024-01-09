@@ -17,7 +17,7 @@ public class DateSurvey implements Pinnable{
     public DateSurvey(List<String> dates) {
         this.dates = new HashMap<String,Integer>();
         for(String date : dates) this.dates.put(date, 0);
-        id = "dts" + UUID.randomUUID().toString();
+        id = "sdt" + UUID.randomUUID().toString();
         open = true;
     }
 
@@ -31,6 +31,18 @@ public class DateSurvey implements Pinnable{
             int currentVotes = dates.get(date);
             this.dates.put(date, currentVotes != 0 ? currentVotes - 1 : 0);
         }
+    }
+
+    public String mostVoted() {
+        int max = 0;
+        String date = "";
+        for(String dt : dates.keySet()) {
+            if(dates.get(dt) >= max) {
+                max = dates.get(dt);
+                date = dt;
+            }
+        }
+        return date;
     }
 
     public void addDate(String date) {

@@ -101,27 +101,25 @@ public class ProfileFragment extends Fragment {
     private void cargarUsuarioYNumero(String phone) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
-        databaseReference.orderByChild("phoneNumber").equalTo(phone)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            DataSnapshot userSnapshot = dataSnapshot.getChildren().iterator().next();
-                            String username = userSnapshot.child("username").getValue(String.class);
-                            String url = userSnapshot.child("profileImage").getValue(String.class);
+        databaseReference.child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String username = dataSnapshot.child("contactName").getValue(String.class);
+                    String url = dataSnapshot.child("photoUrl").getValue(String.class);
 
-                            if(url != "null")
-                                Picasso.get().load(url).into(profilePhoto);
-                            userName.setText(username);
-                            phoneNumber.setText(phone);
-                        }
-                    }
+                    if(url != null && !url.equals("null"))
+                        Picasso.get().load(url).into(profilePhoto);
+                    userName.setText(username);
+                    phoneNumber.setText(phone);
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Manejar errores si es necesario
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Manejar errores si es necesario
+            }
+        });
     }
 
     private void abrirSelectorImagen() {
@@ -179,24 +177,7 @@ public class ProfileFragment extends Fragment {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
         // Busca el usuario por su número de teléfono
-        databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            // Obtén la referencia al primer hijo (debería ser único si phoneNumber es único)
-                            DataSnapshot userSnapshot = dataSnapshot.getChildren().iterator().next();
-
-                            // Actualiza el campo "profileImage" con la URL de la imagen
-                            userSnapshot.getRef().child("profileImage").setValue(imageUrl);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Maneja errores si es necesario
-                    }
-                });
+        databaseReference.child(phoneNumber).child("photoUrl").setValue(imageUrl);
     }
 
     private void cambioNombre() {
@@ -243,24 +224,7 @@ public class ProfileFragment extends Fragment {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
         // Busca el usuario por su número de teléfono
-        databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            // Obtén la referencia al primer hijo (debería ser único si phoneNumber es único)
-                            DataSnapshot userSnapshot = dataSnapshot.getChildren().iterator().next();
-
-                            // Actualiza el campo "profileImage" con la URL de la imagen
-                            userSnapshot.getRef().child("username").setValue(newUserName);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Maneja errores si es necesario
-                    }
-                });
+        databaseReference.child(phoneNumber).child("contactName").setValue(newUserName);
     }
 
 }

@@ -1,12 +1,14 @@
 package com.ada.ada_meethem.adapters
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.database.PlanDatabase
 import com.ada.ada_meethem.modelo.DateSurveyVotes
@@ -49,7 +51,11 @@ class DateChoicesAdapter(
             viewStr.isActivated = true
         }
 
-        if(!dateSurvey.open) viewStr.isClickable = false
+        if(!dateSurvey.open) {
+            viewStr.isEnabled = false
+            val colorDeshabilitado = getColor(context,R.color.white) // Reemplaza con tu color
+            viewStr.buttonDrawable?.setColorFilter(colorDeshabilitado, PorterDuff.Mode.SRC_ATOP)
+        }
 
         viewStr.setOnClickListener(View.OnClickListener {
             if(viewStr.isActivated) {

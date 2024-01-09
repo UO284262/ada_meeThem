@@ -3,12 +3,14 @@ package com.ada.ada_meethem.ui;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -18,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.adapters.ContactListAdapter;
 import com.ada.ada_meethem.data.ContactProvider;
-import com.ada.ada_meethem.modelo.Contact;
+import com.ada.ada_meethem.database.ContactDatabase;
+import com.ada.ada_meethem.database.daos.ContactDAO;
+import com.ada.ada_meethem.database.entities.Contact;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,9 +31,13 @@ import java.util.List;
 
 public class ContactPickerFragment extends Fragment {
 
+    public static final String SELECTED_CONTACTS = "selected_contacts";
+
     // Contactos extraídos del móvil
     private List<Contact> contacts;
     private RecyclerView contactsRecyclerView;
+    private ContactListAdapter clAdapter;
+    private Bundle bundle; // para almacenar los datos del createPlanFragment y los contactos seleccionados
 
     public ContactPickerFragment() {
         // Required empty public constructor
@@ -46,9 +54,6 @@ public class ContactPickerFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_contact_picker, container, false);
 
-        FloatingActionButton fab = root.findViewById(R.id.fabContactsSelected);
-        fab.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create));
-
         contactsRecyclerView = root.findViewById(R.id.contactPickerRecyclerView);
         contactsRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext());
@@ -56,10 +61,33 @@ public class ContactPickerFragment extends Fragment {
 
         // Load the contacts
         loadContacts();
-
         // Establece el adapter al Recycler view
         loadRecyclerContactListAdapter();
+
+        // Listener del fab
+        FloatingActionButton fab = root.findViewById(R.id.fabContactsSelected);
+        fab.setOnClickListener(this::navigateToCreatePlan);
         return root;
+    }
+
+    // Recibe los datos del createPlanFragment y los guarda
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        bundle = getArguments() != null ? getArguments() : new Bundle();
+    }
+
+    // Guarda los contactos seleccionados en una lista y los envía al CreatePlanFragment
+    private void navigateToCreatePlan(View view) {
+        List<Contact> selectedContacts = clAdapter.getContactsSelected();
+        if (selectedContacts.isEmpty()) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    R.string.selected_contacts_list_is_empty,
+                    Snackbar.LENGTH_LONG).show();
+        } else {
+            bundle.putParcelableArrayList(SELECTED_CONTACTS, (ArrayList<Contact>) selectedContacts);
+            Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle);
+        }
     }
 
     private void loadRecyclerContactListAdapter() {
@@ -70,30 +98,13 @@ public class ContactPickerFragment extends Fragment {
                     R.string.contact_list_is_empty,
                     Snackbar.LENGTH_LONG).show();
 
-        ContactListAdapter clAdapter= new ContactListAdapter(contacts,
-                plan -> { // TODO completar funcionalidad checkbox
-                });
+        clAdapter = new ContactListAdapter(contacts, plan -> {});
         contactsRecyclerView.setAdapter(clAdapter);
     }
 
     // Extrae los contactos del proveedor de contactos del móvil
     private void loadContacts() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED)
-            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
-        else
-            contacts = new ContactProvider(getContext()).getContacts(null, null);
+        ContactDAO cdb = ContactDatabase.getDatabase(getContext()).getContactDAO();
+        contacts = cdb.getAll();
     }
-
-    // Define el modo en el que la app controla la respuesta del usuario a la solicitud del permiso.
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    contacts = new ContactProvider(getContext()).getContacts(null, null);
-                    loadRecyclerContactListAdapter();
-                } else
-                    Snackbar.make(getActivity().findViewById(android.R.id.content),
-                            R.string.read_contact_permissions_not_acepted,
-                            Snackbar.LENGTH_LONG).show();
-            });
 }
