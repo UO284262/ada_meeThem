@@ -76,4 +76,12 @@ public class PlanDatabase {
         // Escribe los datos en la base de datos
         chatReference.setValue(plan.getEnlisted());
     }
+
+    public static void setEnlisted( Plan plan ) {
+        DatabaseReference chatReference = FirebaseDatabase
+                .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("plans").child(plan.getPlanId()).child("enlisted");
+        // Escribe los datos en la base de datos
+        chatReference.setValue(plan.getEnlisted());
+    }
 }

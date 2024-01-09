@@ -186,6 +186,7 @@ class PlanFragment : Fragment() {
                     String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
                 if(plan!!.confirmed.size == plan!!.maxPeople) {
                     plan!!.enlisted = plan!!.confirmed
+                    PlanDatabase.setEnlisted(plan!!)
                     btConfirm.visibility = View.INVISIBLE
                     btExit.visibility = View.INVISIBLE
                     Snackbar.make(
