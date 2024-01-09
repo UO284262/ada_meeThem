@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -112,22 +113,46 @@ public class ContactPickerFragment extends Fragment {
         contactsRecyclerView.setAdapter(clAdapter);
     }
 
-    // Extrae los contactos del proveedor de contactos del móvil
+    // Extrae los contactos cacheados de la base de datos
     private void loadContacts() {
         ContactDAO cdb = ContactDatabase.getDatabase(getContext()).getContactDAO();
         contacts = cdb.getAll();
     }
 
-    // Crea el menú de este fragmento (contiene el botón de refrescar contactos)
+    // Crea el menú de este fragmento (contiene el botón de buscar y refrescar contactos)
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.contact_picker_menu, menu);
+        searchContactsViewSetUp(menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    // Añade funcionalidad al elmento del menú
+    // Configura el searchView usado para buscar contactos
+    private void searchContactsViewSetUp(Menu menu) {
+        MenuItem menuItemBuscar = menu.findItem(R.id.menu_search_contacts);
+        SearchView searchView = (SearchView) menuItemBuscar.getActionView();
+        searchView.setQueryHint(getString(R.string.contacts_search_view_query_hint));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                clAdapter.getFilter().filter(newText); // filtra contactos
+                return false;
+            }
+        });
+    }
+
+    // Añade funcionalidad a los elementos del menú
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_search_contacts)
+            return true;
+
         if (item.getItemId() == R.id.menu_refresh_contacts) {
             contacts = contactLoader.loadContacts();
 
@@ -138,6 +163,7 @@ public class ContactPickerFragment extends Fragment {
                             R.string.contacts_refresh_OK,
                             Snackbar.LENGTH_SHORT)
                     .show();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

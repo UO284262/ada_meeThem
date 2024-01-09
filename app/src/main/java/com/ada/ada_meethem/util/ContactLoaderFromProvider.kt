@@ -43,8 +43,9 @@ class ContactLoaderFromProvider(
 
     private fun safeContactsInLocalDB() {
         val cdao = ContactDatabase.getDatabase(context).contactDAO
+        cdao.deleteAll() // Borramos todos los contactos
         for (contact in contacts) {
-            cdao.add(contact)
+            cdao.add(contact) // Cargamos los contactos actualizados
         }
     }
 

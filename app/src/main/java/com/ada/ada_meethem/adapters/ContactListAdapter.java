@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ import com.ada.ada_meethem.database.entities.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> implements Filterable {
 
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
@@ -24,12 +26,15 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     private List<Contact> contacts;
+    private List<Contact> contactsFiltered;
+    private List<ContactViewHolder> viewHolders = new ArrayList<>();
     private List<Contact> selectedContacts; // contactos seleccionados anteriormente
     private List<CheckBox> checkBoxes = new ArrayList<>();
     private final OnItemClickListener listener;
 
     public ContactListAdapter(List<Contact> contacts, OnItemClickListener listener) {
         this.contacts = contacts;
+        this.contactsFiltered = contacts;
         this.listener = listener;
     }
 
@@ -48,6 +53,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
         holder.bindContact(contact, listener);
+        viewHolders.add(holder);
     }
 
     @Override
@@ -67,6 +73,49 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public void setSelectedContacts(List<Contact> selectedContacts) {
         this.selectedContacts = selectedContacts;
+    }
+
+    // Filtro de contactos por nombre
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint == null || constraint.length() == 0) {
+                    filterResults.values = contactsFiltered;
+                    filterResults.count = contactsFiltered.size();
+                } else {
+                    String searchStr = constraint.toString().toLowerCase();
+                    List<Contact> contactsAux = new ArrayList<>();
+                    for (Contact contact : contactsFiltered)
+                        if (contact.getContactName().toLowerCase().contains(searchStr))
+                            contactsAux.add(contact);
+                    filterResults.values = contactsAux;
+                    filterResults.count = contactsAux.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                List<Contact> resultContacts = (List<Contact>) results.values;
+                for (Contact contact : contacts) {
+                    int i = contacts.indexOf(contact);
+                    View itemView = viewHolders.get(i).itemView;
+
+                    // Activa o desactiva el item del reclycler view
+                    if (resultContacts.contains(contact)) {
+                        itemView.setVisibility(View.VISIBLE);
+                        float dp = itemView.getContext().getResources().getDisplayMetrics().density;
+                        itemView.getLayoutParams().height = (int) (72 * dp); // reestablece la altura
+                    } else {
+                        itemView.setVisibility(View.GONE);
+                        itemView.getLayoutParams().height = 0; // para que no queden huecos
+                    }
+                }
+            }
+        };
     }
 
 
