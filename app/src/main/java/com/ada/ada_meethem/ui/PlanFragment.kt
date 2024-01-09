@@ -1,5 +1,6 @@
 package com.ada.ada_meethem.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -33,9 +34,11 @@ class PlanFragment : Fragment() {
     private var surveyDone: Boolean = false
     private var listView: ListView? = null
     private lateinit var textParticipantes: TextView
+    private lateinit var tvConfirmedMsg: TextView
     private lateinit var btExit: Button
     private lateinit var btConfirm: Button
     private lateinit var dateTv: TextView
+    private lateinit var num: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,12 +54,19 @@ class PlanFragment : Fragment() {
         (root.findViewById<View>(R.id.planName) as TextView).text = plan!!.title
         (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.contactName
         //((ImageView) root.findViewById(R.id.imagenPlan))
+        num = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
 
         val fab = root.findViewById<View>(R.id.fabChat) as FloatingActionButton
         fab.setOnClickListener { abrirChat(plan) }
 
         val fab2 = root.findViewById<View>(R.id.fabEditPlan) as FloatingActionButton
         fab2.setOnClickListener { abrirEdit(plan) }
+
+        tvConfirmedMsg = root!!.findViewById<View>(R.id.tv_confirmed_msg) as TextView
+        if(plan!!.confirmed.contains(num)) {
+            tvConfirmedMsg.text = "Estas apuntado a este plan"
+            tvConfirmedMsg.setTextColor(resources.getColor(R.color.green))
+        }
 
         textParticipantes = root!!.findViewById<View>(R.id.participantes) as TextView
         textParticipantes.text =
@@ -72,8 +82,6 @@ class PlanFragment : Fragment() {
         btConfirm.setOnClickListener {
             confirmPlan(plan!!)
         }
-
-        val num = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
 
         if (num == plan!!.creator.contactNumber
         ) fab2.visibility = View.VISIBLE else if (!plan!!.confirmed.contains(num)) {
@@ -193,6 +201,13 @@ class PlanFragment : Fragment() {
                         requireActivity().findViewById(android.R.id.content),
                         R.string.plan_full, Snackbar.LENGTH_LONG
                     ).show()
+                }
+                if(plan!!.confirmed.contains(num)) {
+                    tvConfirmedMsg.text = "Estas apuntado a este plan"
+                    tvConfirmedMsg.setTextColor(resources.getColor(R.color.green))
+                } else if (plan!!.confirmed.size == plan!!.maxPeople) {
+                    tvConfirmedMsg.text = "Plan lleno"
+                    tvConfirmedMsg.setTextColor(resources.getColor(R.color.colorRed))
                 }
             }
 
