@@ -52,12 +52,13 @@ public class PlanDatabase {
         chatReference.child(votes.getId()).setValue(votes);
     }
 
-    public static void closeSurvey(String surveyId, String planId) {
+    public static void closeSurvey(String surveyId, String planId, String date) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("plans").child(planId).child("pinnedItems");
+                .getReference("plans").child(planId);
         // Escribe los datos en la base de datos
-        chatReference.child(surveyId).child("open").setValue(false);
+        chatReference.child("pinnedItems").child(surveyId).child("open").setValue(false);
+        chatReference.child("fecha").setValue(date);
     }
 
     public static void confirmPlan( Plan plan) {

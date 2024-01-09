@@ -21,6 +21,7 @@ import com.ada.ada_meethem.modelo.pinnable.DateSurvey
 import com.ada.ada_meethem.modelo.pinnable.Pinnable
 import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -31,8 +32,10 @@ class PlanFragment : Fragment() {
     private var adapter: PinnedItemsAdapter? = null
     private var surveyDone: Boolean = false
     private var listView: ListView? = null
+    private lateinit var textParticipantes: TextView
     private lateinit var btExit: Button
     private lateinit var btConfirm: Button
+    private lateinit var dateTv: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +49,6 @@ class PlanFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_plan, container, false)
         plan = requireArguments().getParcelable<Parcelable>("plan") as Plan?
         (root.findViewById<View>(R.id.planName) as TextView).text = plan!!.title
-        (root.findViewById<View>(R.id.participantes) as TextView).text =
-            String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
         (root.findViewById<View>(R.id.creadorPlan) as TextView).text = plan!!.creator.contactName
         //((ImageView) root.findViewById(R.id.imagenPlan))
 
@@ -57,18 +58,25 @@ class PlanFragment : Fragment() {
         val fab2 = root.findViewById<View>(R.id.fabEditPlan) as FloatingActionButton
         fab2.setOnClickListener { abrirEdit(plan) }
 
+        textParticipantes = root!!.findViewById<View>(R.id.participantes) as TextView
+        textParticipantes.text =
+            String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
+
+        dateTv = root.findViewById<View>(R.id.tv_date) as TextView
+        dateTv.text = plan!!.fecha
+
         btExit = root.findViewById<View>(R.id.bt_exit) as Button
         btExit.setOnClickListener { exitPlan(plan!!) }
 
         btConfirm = root.findViewById<View>(R.id.bt_agree) as Button
         btConfirm.setOnClickListener {
-            Log.d("confirm","confirm")
             confirmPlan(plan!!)
         }
 
-        if (FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
-            == plan!!.creator.contactNumber
-        ) fab2.visibility = View.VISIBLE else {
+        val num = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
+
+        if (num == plan!!.creator.contactNumber
+        ) fab2.visibility = View.VISIBLE else if (!plan!!.confirmed.contains(num)) {
             btExit.visibility = View.VISIBLE
             btConfirm.visibility = View.VISIBLE
         }
@@ -104,12 +112,15 @@ class PlanFragment : Fragment() {
     }
 
     private fun confirmPlan(plan: Plan) {
-        Log.d("confirmMethod","confirmMethod")
         val num = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
         plan.confirmToPlan(num)
         PlanDatabase.confirmPlan(plan)
         btConfirm.visibility = View.INVISIBLE
         btExit.visibility = View.INVISIBLE
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            R.string.plan_confirmed, Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun exitPlan(plan: Plan) {
@@ -117,6 +128,10 @@ class PlanFragment : Fragment() {
         PlanDatabase.exitPlan(plan)
         btConfirm.visibility = View.INVISIBLE
         btExit.visibility = View.INVISIBLE
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            R.string.plan_exited, Snackbar.LENGTH_LONG
+        ).show()
         findNavController().navigate(
             R.id.action_global_nav_home
         );
@@ -155,6 +170,42 @@ class PlanFragment : Fragment() {
                 }
                 adapter!!.updateVotes(votes)
                 listView!!.setSelection(adapter!!.count - 1)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Manejo de errores
+            }
+        })
+
+        PlanDatabase.getReference(plan!!.planId).child("confirmed").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (chatSnapshot in dataSnapshot.children) {
+                    plan!!.confirmed.add(chatSnapshot.getValue(String::class.java) as String)
+                }
+                textParticipantes.text =
+                    String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
+                if(plan!!.confirmed.size == plan!!.maxPeople) {
+                    plan!!.enlisted = plan!!.confirmed
+                    btConfirm.visibility = View.INVISIBLE
+                    btExit.visibility = View.INVISIBLE
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
+                        R.string.plan_full, Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Manejo de errores
+            }
+        })
+
+        PlanDatabase.getReference(plan!!.planId).child("fecha").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (chatSnapshot in dataSnapshot.children) {
+                    plan!!.fecha = chatSnapshot.getValue(String::class.java) as String
+                }
+                dateTv.text = plan!!.fecha
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

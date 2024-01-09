@@ -34,4 +34,8 @@
     <string name="pinned_image_title">Imagen destacada</string>
     <string name='exit_plan_text'>Salir</string>
     <string name='confirm_plan_text'>Confirmar</string>
+    <string name='select_date'>Seleccionar fecha</string>
+    <string name="plan_exited">Se ha abandonado el plan correctamente</string>
+    <string name="plan_confirmed">Se ha confirmado asistencia al plan correctamente</string>
+    <string name="plan_full">El plan se ha llenado</string>
 </resources>

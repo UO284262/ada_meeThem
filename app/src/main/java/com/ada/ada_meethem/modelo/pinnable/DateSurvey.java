@@ -33,6 +33,18 @@ public class DateSurvey implements Pinnable{
         }
     }
 
+    public String mostVoted() {
+        int max = 0;
+        String date = "";
+        for(String dt : dates.keySet()) {
+            if(dates.get(dt) >= max) {
+                max = dates.get(dt);
+                date = dt;
+            }
+        }
+        return date;
+    }
+
     public void addDate(String date) {
         this.dates.put(date,0);
     }

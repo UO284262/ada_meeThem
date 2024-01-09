@@ -19,12 +19,13 @@ public class Plan implements Parcelable {
     private Contact creator;
     private List<String> confirmed = new ArrayList<>();
     private List<String> enlisted;
+    private String fecha;
     private int maxPeople;
     private String planId;
 
     public Plan() {}
 
-    public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted, String uuid) {
+    public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted, String uuid, String fecha) {
         this.title = title;
         this.creator = creator;
         this.enlisted = new ArrayList<>(enlisted);
@@ -32,6 +33,7 @@ public class Plan implements Parcelable {
         this.maxPeople = maxPeople;
         this.imageUrl = imageUrl;
         this.planId = uuid;
+        this.fecha = fecha;
     }
 
     public void addToPlan(String person) {
@@ -115,6 +117,10 @@ public class Plan implements Parcelable {
     public void setPlanId(String id) {
         this.planId = id;
     }
+
+    public String getFecha() {return this.fecha;}
+
+    public void setFecha(String fecha) {this.fecha = fecha;}
 
     @Override
     public int describeContents() {

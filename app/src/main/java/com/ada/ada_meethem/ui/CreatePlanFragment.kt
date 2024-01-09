@@ -1,244 +1,231 @@
-package com.ada.ada_meethem.ui;
+package com.ada.ada_meethem.ui
 
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.net.Uri
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.PickVisualMediaRequest.Builder
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.ada.ada_meethem.R
+import com.ada.ada_meethem.adapters.SelectedContactListAdapter
+import com.ada.ada_meethem.database.PlanDatabase
+import com.ada.ada_meethem.database.entities.Contact
+import com.ada.ada_meethem.modelo.Plan
+import com.ada.ada_meethem.util.DatePickerFragment
+import com.ada.ada_meethem.util.Util
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import java.util.UUID
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.ada.ada_meethem.R;
-import com.ada.ada_meethem.adapters.SelectedContactListAdapter;
-import com.ada.ada_meethem.database.PlanDatabase;
-import com.ada.ada_meethem.database.entities.Contact;
-import com.ada.ada_meethem.modelo.Plan;
-import com.ada.ada_meethem.util.Util;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-public class CreatePlanFragment extends Fragment {
-
-    // Claves para guardar el estado del fragmento
-    private static final String PLAN_IMAGE_URI = "plan_image_uri";
-    private static final String PLAN_NAME = "plan_name";
-    private static final String PLAN_MAX_PEOPLE = "plan_max_people";
-
-    private List<Contact> selectedContacts = new ArrayList<>();
-    private String createdPlanId;
-    private Uri planImageUri;
-    private ImageView planImage;
-    private TextInputLayout layoutPlanName;
-    private TextInputEditText etPlanName;
-    private TextInputLayout layoutMaxPeople;
-    private TextInputEditText etMaxPeople;
-    private RecyclerView rvSelectedContacts;
-
-    public CreatePlanFragment() {
-        // Required empty public constructor
+class CreatePlanFragment : Fragment() {
+    private var selectedContacts: List<Contact>? = ArrayList()
+    private var createdPlanId: String? = null
+    private var planImageUri: Uri? = null
+    private var planImage: ImageView? = null
+    private var layoutPlanName: TextInputLayout? = null
+    private var etPlanName: TextInputEditText? = null
+    private var layoutMaxPeople: TextInputLayout? = null
+    private var etMaxPeople: TextInputEditText? = null
+    private var rvSelectedContacts: RecyclerView? = null
+    private var dateTextView: EditText? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_create_plan, container, false);
+        val root = inflater.inflate(R.layout.fragment_create_plan, container, false)
+        planImage = root.findViewById(R.id.planImage)
+        layoutPlanName = root.findViewById(R.id.planNameTextInputLayout)
+        etPlanName = root.findViewById(R.id.textInputPlanName)
+        layoutMaxPeople = root.findViewById(R.id.planMaxPeopleTextInputLayout)
+        etMaxPeople = root.findViewById(R.id.textInputPlanMaxPeople)
+        rvSelectedContacts = root.findViewById(R.id.selectedContactsRecyclerView)
 
-        planImage = root.findViewById(R.id.planImage);
-        layoutPlanName = root.findViewById(R.id.planNameTextInputLayout);
-        etPlanName = root.findViewById(R.id.textInputPlanName);
-        layoutMaxPeople = root.findViewById(R.id.planMaxPeopleTextInputLayout);
-        etMaxPeople = root.findViewById(R.id.textInputPlanMaxPeople);
-        rvSelectedContacts = root.findViewById(R.id.selectedContactsRecyclerView);
+        val planImagePickerButton = root.findViewById<Button>(R.id.planImagePickerButton)
+        planImagePickerButton.setOnClickListener { view: View? -> pickPlanImage() }
 
-        Button planImagePickerButton = root.findViewById(R.id.planImagePickerButton);
-        planImagePickerButton.setOnClickListener(view -> pickPlanImage());
+        dateTextView = root.findViewById<View>(R.id.dateTextView) as EditText
+        dateTextView!!.setOnClickListener {showDatePickerDialog()}
 
-        Button btPickContacts = root.findViewById(R.id.buttonPickContacts);
-        btPickContacts.setOnClickListener(this::pickContacts);
-
-        FloatingActionButton fab = root.findViewById(R.id.fabCreatePlan);
-        fab.setOnClickListener(this::createPlan);
+        val btPickContacts = root.findViewById<Button>(R.id.buttonPickContacts)
+        btPickContacts.setOnClickListener { view: View -> pickContacts(view) }
+        val fab = root.findViewById<FloatingActionButton>(R.id.fabCreatePlan)
+        fab.setOnClickListener { view: View -> createPlan(view) }
 
         // Configuramos el recycler view
-        rvSelectedContactsSetUp(root);
-
-        return root;
+        rvSelectedContactsSetUp(root)
+        return root
     }
 
     // Recibe los datos del contactPickerFragment y los procesa
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (getArguments() != null) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (arguments != null) {
             // Recuperamos la lista de contactos seleccionados
-            selectedContacts = getArguments().getParcelableArrayList(ContactPickerFragment.SELECTED_CONTACTS);
-            SelectedContactListAdapter sclAdapter = new SelectedContactListAdapter(selectedContacts, contact -> {});
-            rvSelectedContacts.setAdapter(sclAdapter);
+            selectedContacts =
+                requireArguments().getParcelableArrayList(ContactPickerFragment.SELECTED_CONTACTS)
+            val sclAdapter = SelectedContactListAdapter(selectedContacts) { contact: Contact? -> }
+            rvSelectedContacts!!.adapter = sclAdapter
 
             // Restauramos el estado del fragment
-            String planImageUriString = getArguments().getString(PLAN_IMAGE_URI);
+            val planImageUriString = requireArguments().getString(PLAN_IMAGE_URI)
             if (planImageUriString != null) {
-                planImageUri = Uri.parse(planImageUriString);
-                planImage.setImageURI(planImageUri);
+                planImageUri = Uri.parse(planImageUriString)
+                planImage!!.setImageURI(planImageUri)
             }
-            etPlanName.setText(getArguments().getString(PLAN_NAME));
-            etMaxPeople.setText(getArguments().getString(PLAN_MAX_PEOPLE));
+            etPlanName!!.setText(requireArguments().getString(PLAN_NAME))
+            etMaxPeople!!.setText(requireArguments().getString(PLAN_MAX_PEOPLE))
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        planImage.setImageURI(planImageUri); // carga la imagen al reanudar el fragmento (navegación hacia atrás por ejemplo)
+    override fun onResume() {
+        super.onResume()
+        planImage!!.setImageURI(planImageUri) // carga la imagen al reanudar el fragmento (navegación hacia atrás por ejemplo)
     }
 
-    private void pickPlanImage() {
+    private fun showDatePickerDialog() {
+        val newFragment =
+            DatePickerFragment.newInstance { datePicker, year, month, day -> // +1 because January is zero
+                val selectedDate = day.toString() + "-" + (month + 1) + "-" + year
+                dateTextView!!.setText(selectedDate)
+            }
+        newFragment.show(requireActivity().supportFragmentManager, "datePicker")
+    }
+
+    private fun pickPlanImage() {
         // Lanza el photo picker y permite al usuario escoger 1 imagen.
-        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
+        pickMedia.launch(
+            Builder()
+                .setMediaType(ImageOnly)
+                .build()
+        )
     }
 
-    private void pickContacts(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putString(PLAN_IMAGE_URI, planImageUri != null ? planImageUri.toString() : null);
-        bundle.putString(PLAN_NAME, etPlanName.getText().toString());
-        bundle.putString(PLAN_MAX_PEOPLE, etMaxPeople.getText().toString());
-
-        Navigation.findNavController(view).navigate(R.id.action_nav_plan_create_to_contactPickerFragment, bundle);
+    private fun pickContacts(view: View) {
+        val bundle = Bundle()
+        bundle.putString(
+            PLAN_IMAGE_URI,
+            if (planImageUri != null) planImageUri.toString() else null
+        )
+        bundle.putString(PLAN_NAME, etPlanName!!.text.toString())
+        bundle.putString(PLAN_MAX_PEOPLE, etMaxPeople!!.text.toString())
+        findNavController(view).navigate(
+            R.id.action_nav_plan_create_to_contactPickerFragment,
+            bundle
+        )
     }
 
     // Registers a photo picker activity launcher in single-select mode.
-    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                // Callback is invoked after the user selects a media item or closes the
-                // photo picker.
-                if (uri != null) {
-                    planImageUri = uri;
-                    planImage.setImageURI(uri);
-                }
-            });
+    var pickMedia =
+        registerForActivityResult<PickVisualMediaRequest, Uri>(ActivityResultContracts.PickVisualMedia()) { uri: Uri? ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                planImageUri = uri
+                planImage!!.setImageURI(uri)
+            }
+        }
 
-
-    private void createPlan(View view) {
-        if (!validatePlan(view))
-            return;
-
-        createdPlanId = UUID.randomUUID().toString();
-        subirImagen(planImageUri); // se sube la imagen a firebase
-
-        String planName = etPlanName.getText().toString();
-        int maxPeople = Integer.parseInt(etMaxPeople.getText().toString());
-        String creatorPlanNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-        Contact user = Util.getCurrentUser();
-
-        Plan plan = new Plan(planName, user, maxPeople, "", new ArrayList<>(), createdPlanId);
+    private fun createPlan(view: View) {
+        if (!validatePlan(view)) return
+        createdPlanId = UUID.randomUUID().toString()
+        subirImagen(planImageUri) // se sube la imagen a firebase
+        val planName = etPlanName!!.text.toString()
+        val maxPeople = etMaxPeople!!.text.toString().toInt()
+        val creatorPlanNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
+        val user = Util.getCurrentUser()
+        val fecha = dateTextView!!.text.toString()
+        val plan = Plan(planName, user, maxPeople, "", ArrayList<String>(), createdPlanId, fecha)
 
         // Añadimos los contactos seleccionados al plan
-        for(Contact contact : selectedContacts)
-            plan.addToPlan(contact.getContactNumber());
+        for (contact in selectedContacts!!) plan.addToPlan(contact.contactNumber)
 
         // Añadimos el creador del plan al plan
-        plan.addToPlan(creatorPlanNumber);
+        plan.addToPlan(creatorPlanNumber)
 
         // Se añade el plan a Firebase
-        PlanDatabase.getReference().child(plan.getPlanId()).setValue(plan);
-
-        Snackbar.make(getActivity().findViewById(android.R.id.content),
-                R.string.plan_created_ok, Snackbar.LENGTH_LONG).show();
+        PlanDatabase.getReference().child(plan.planId).setValue(plan)
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            R.string.plan_created_ok, Snackbar.LENGTH_LONG
+        ).show()
 
         // Volvemos a Home
-        Navigation.findNavController(view).navigate(R.id.action_global_nav_home);
+        findNavController(view).navigate(R.id.action_global_nav_home)
     }
 
-    private boolean validatePlan(View view) {
-        boolean isPlanNameInvalid = TextUtils.isEmpty(etPlanName.getText());
-        boolean isMaxPeopleInvalid = TextUtils.isEmpty(etMaxPeople.getText());
-        layoutPlanName.setErrorEnabled(false);
-        layoutMaxPeople.setErrorEnabled(isMaxPeopleInvalid);
-
+    private fun validatePlan(view: View): Boolean {
+        val isPlanNameInvalid = TextUtils.isEmpty(etPlanName!!.text)
+        val isMaxPeopleInvalid = TextUtils.isEmpty(etMaxPeople!!.text)
+        layoutPlanName!!.isErrorEnabled = false
+        layoutMaxPeople!!.isErrorEnabled = isMaxPeopleInvalid
         if (planImageUri == null) {
-            Snackbar.make(view, R.string.plan_creation_no_image, Snackbar.LENGTH_LONG).show();
-            return false;
+            Snackbar.make(view, R.string.plan_creation_no_image, Snackbar.LENGTH_LONG).show()
+            return false
         }
-        if (!isMaxPeopleInvalid && selectedContacts != null
-                && selectedContacts.size() > Integer.parseInt(etMaxPeople.getText().toString())) {
-            Snackbar.make(view, R.string.plan_creation_too_much_people, Snackbar.LENGTH_LONG).show();
-            return false;
+        if (!isMaxPeopleInvalid && selectedContacts != null && selectedContacts!!.size > etMaxPeople!!.text.toString()
+                .toInt()
+        ) {
+            Snackbar.make(view, R.string.plan_creation_too_much_people, Snackbar.LENGTH_LONG).show()
+            return false
         }
-        if (isPlanNameInvalid)
-            layoutPlanName.setError(getString(R.string.plan_creation_no_name));
-        if (isMaxPeopleInvalid)
-            layoutMaxPeople.setError(getString(R.string.plan_creation_no_max_people));
-
-        return !isPlanNameInvalid && !isMaxPeopleInvalid;
+        if (isPlanNameInvalid) layoutPlanName!!.error = getString(R.string.plan_creation_no_name)
+        if (isMaxPeopleInvalid) layoutMaxPeople!!.error =
+            getString(R.string.plan_creation_no_max_people)
+        return !isPlanNameInvalid && !isMaxPeopleInvalid
     }
 
-    private void rvSelectedContactsSetUp(View root) {
-        rvSelectedContacts.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(root.getContext(), 3);
-        rvSelectedContacts.setLayoutManager(layoutManager);
+    private fun rvSelectedContactsSetUp(root: View) {
+        rvSelectedContacts!!.setHasFixedSize(true)
+        val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(root.context, 3)
+        rvSelectedContacts!!.layoutManager = layoutManager
     }
 
-    private void subirImagen(Uri selectedImageUri) {
+    private fun subirImagen(selectedImageUri: Uri?) {
         // Obtiene una referencia a tu Firebase Storage
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        String path = "planPhotos/plan-" + UUID.randomUUID();
+        val storageReference = FirebaseStorage.getInstance().reference
+        val path = "planPhotos/plan-" + UUID.randomUUID()
 
         // Crea una referencia para la imagen en Storage
-        StorageReference imageReference = storageReference.child(path);
+        val imageReference = storageReference.child(path)
 
         // Sube la imagen
-        imageReference.putFile(selectedImageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                PlanDatabase.getReference(createdPlanId).child("imageUrl").setValue(uri.toString());
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Maneja el error de la subida de la imagen
-                    }
-                });
+        imageReference.putFile(selectedImageUri!!)
+            .addOnSuccessListener {
+                imageReference.downloadUrl.addOnSuccessListener { uri ->
+                    PlanDatabase.getReference(
+                        createdPlanId
+                    ).child("imageUrl").setValue(uri.toString())
+                }
+            }
+            .addOnFailureListener {
+                // Maneja el error de la subida de la imagen
+            }
     }
 
+    companion object {
+        // Claves para guardar el estado del fragmento
+        private const val PLAN_IMAGE_URI = "plan_image_uri"
+        private const val PLAN_NAME = "plan_name"
+        private const val PLAN_MAX_PEOPLE = "plan_max_people"
+    }
 }
