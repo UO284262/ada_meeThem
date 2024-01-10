@@ -1,181 +1,176 @@
-package com.ada.ada_meethem.ui;
+package com.ada.ada_meethem.ui
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.ada.ada_meethem.R
+import com.ada.ada_meethem.adapters.ContactListAdapter
+import com.ada.ada_meethem.database.ContactDatabase
+import com.ada.ada_meethem.database.entities.Contact
+import com.ada.ada_meethem.util.ContactLoaderFromProvider
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class ContactPickerFragment : Fragment() {
 
-import com.ada.ada_meethem.R;
-import com.ada.ada_meethem.adapters.ContactListAdapter;
-import com.ada.ada_meethem.data.ContactProvider;
-import com.ada.ada_meethem.database.ContactDatabase;
-import com.ada.ada_meethem.database.daos.ContactDAO;
-import com.ada.ada_meethem.database.entities.Contact;
-import com.ada.ada_meethem.util.ContactLoaderFromProvider;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class ContactPickerFragment extends Fragment {
-
-    public static final String SELECTED_CONTACTS = "selected_contacts";
+    companion object {
+        const val SELECTED_CONTACTS = "selected_contacts"
+    }
 
     // Contactos extraídos del móvil
-    private List<Contact> contacts;
-    private RecyclerView contactsRecyclerView;
-    private ProgressBar progressBar;
-    private ContactListAdapter clAdapter;
-    private Bundle bundle; // para almacenar los datos del createPlanFragment y los contactos seleccionados
-    private ContactLoaderFromProvider contactLoader;
+    private var contacts: List<Contact>? = null
+    private lateinit var contactsRecyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarText: TextView
+    private lateinit var clAdapter: ContactListAdapter
+    private lateinit var bundle: Bundle // para almacenar los datos del createPlanFragment y los contactos seleccionados
+    private lateinit var contactLoader: ContactLoaderFromProvider
 
-    public ContactPickerFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_contact_picker, container, false);
-
-        progressBar = root.findViewById(R.id.progressBar);
-        contactsRecyclerView = root.findViewById(R.id.contactPickerRecyclerView);
-        contactsRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext());
-        contactsRecyclerView.setLayoutManager(layoutManager);
+        val root = inflater.inflate(R.layout.fragment_contact_picker, container, false)
+        progressBar = root.findViewById(R.id.progressBar)
+        progressBarText = root.findViewById(R.id.progressBarText)
+        contactsRecyclerView = root.findViewById(R.id.contactPickerRecyclerView)
+        contactsRecyclerView.setHasFixedSize(true)
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(root.context)
+        contactsRecyclerView.setLayoutManager(layoutManager)
 
         // Load the contacts
-        loadContacts();
+        loadContacts()
         // Establece el adapter al Recycler view
-        loadRecyclerContactListAdapter();
+        loadRecyclerContactListAdapter()
 
         // Listener del fab
-        FloatingActionButton fab = root.findViewById(R.id.fabContactsSelected);
-        fab.setOnClickListener(this::navigateToCreatePlan);
+        val fab = root.findViewById<FloatingActionButton>(R.id.fabContactsSelected)
+        fab.setOnClickListener { view: View -> navigateToCreatePlan(view) }
 
         // Habilitamos el menú
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
 
         // Crea el contactLoader
-        contactLoader = new ContactLoaderFromProvider(requireContext(), requestPermissionLauncher, requireActivity());
-        return root;
+        contactLoader = ContactLoaderFromProvider(
+            requireContext(),
+            requestPermissionLauncher,
+            requireActivity()
+        )
+        return root
     }
 
     // Recibe los datos del createPlanFragment y los guarda
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        bundle = getArguments() != null ? getArguments() : new Bundle();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bundle = arguments ?: Bundle()
 
         // Se marcan los contactos que habían sido seleccionados previamente
-        List<Contact> selectedContacts = getArguments().getParcelableArrayList(SELECTED_CONTACTS);
+        val selectedContacts: List<Contact>? = requireArguments().getParcelableArrayList(SELECTED_CONTACTS)
         if (selectedContacts != null)
-            clAdapter.setSelectedContacts(selectedContacts);
+            clAdapter.setSelectedContacts(selectedContacts)
     }
 
     // Guarda los contactos seleccionados en una lista y los envía al CreatePlanFragment
-    private void navigateToCreatePlan(View view) {
-        List<Contact> selectedContacts = clAdapter.getContactsSelected();
-        bundle.putParcelableArrayList(SELECTED_CONTACTS, (ArrayList<Contact>) selectedContacts);
-        Navigation.findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle);
+    private fun navigateToCreatePlan(view: View) {
+        val selectedContacts = clAdapter.contactsSelected
+        bundle.putParcelableArrayList(SELECTED_CONTACTS, selectedContacts as ArrayList<Contact?>)
+        findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle)
     }
 
-    private void loadRecyclerContactListAdapter() {
+    private fun loadRecyclerContactListAdapter() {
         if (contacts == null)
-            return;
-        if (contacts.isEmpty())
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
-                    R.string.contact_list_is_empty,
-                    Snackbar.LENGTH_LONG).show();
-
-        clAdapter = new ContactListAdapter(contacts, plan -> {});
-        contactsRecyclerView.setAdapter(clAdapter);
+            return
+        if (contacts!!.isEmpty())
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                R.string.contact_list_is_empty,
+                Snackbar.LENGTH_LONG
+            ).show()
+        clAdapter = ContactListAdapter(contacts) { plan: Contact? -> }
+        contactsRecyclerView.adapter = clAdapter
     }
 
     // Extrae los contactos cacheados de la base de datos
-    private void loadContacts() {
-        ContactDAO cdb = ContactDatabase.getDatabase(getContext()).getContactDAO();
-        contacts = cdb.getAll();
+    private fun loadContacts() {
+        val cdb = ContactDatabase.getDatabase(context).contactDAO
+        contacts = cdb.all
     }
 
     // Crea el menú de este fragmento (contiene el botón de buscar y refrescar contactos)
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.contact_picker_menu, menu);
-        searchContactsViewSetUp(menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.contact_picker_menu, menu)
+        searchContactsViewSetUp(menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     // Configura el searchView usado para buscar contactos
-    private void searchContactsViewSetUp(Menu menu) {
-        MenuItem menuItemBuscar = menu.findItem(R.id.menu_search_contacts);
-        SearchView searchView = (SearchView) menuItemBuscar.getActionView();
-        searchView.setQueryHint(getString(R.string.contacts_search_view_query_hint));
+    private fun searchContactsViewSetUp(menu: Menu) {
+        val menuItemBuscar = menu.findItem(R.id.menu_search_contacts)
+        val searchView = menuItemBuscar.actionView as SearchView?
+        searchView!!.queryHint = getString(R.string.contacts_search_view_query_hint)
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                clAdapter.getFilter().filter(query); // filtra contactos
-                return false;
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                clAdapter.filter.filter(query) // filtra contactos
+                return false
             }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                clAdapter.getFilter().filter(newText); // filtra contactos
-                return false;
+            override fun onQueryTextChange(newText: String): Boolean {
+                clAdapter.filter.filter(newText) // filtra contactos
+                return false
             }
-        });
+        })
     }
 
     // Añade funcionalidad a los elementos del menú
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_search_contacts)
-            return true;
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_search_contacts)
+            return true
 
-        if (item.getItemId() == R.id.menu_refresh_contacts) {
-            progressBar.setVisibility(View.VISIBLE);
-            contacts = contactLoader.loadContacts();
+        if (item.itemId == R.id.menu_refresh_contacts) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.VISIBLE
+                    progressBarText.visibility = View.VISIBLE
+                }
 
-            // Establece el adapter al Recycler view
-            loadRecyclerContactListAdapter();
+                contacts = contactLoader.loadContacts()
 
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                            R.string.contacts_refresh_OK,
-                            Snackbar.LENGTH_SHORT)
-                    .show();
-            progressBar.setVisibility(View.GONE);
-            return true;
+                withContext(Dispatchers.Main) {
+                    // Establece el adapter al Recycler view
+                    loadRecyclerContactListAdapter()
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        R.string.contacts_refresh_OK,
+                        Snackbar.LENGTH_SHORT)
+                        .show()
+
+                    progressBar.visibility = View.GONE
+                    progressBarText.visibility = View.GONE
+                }
+            }
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
-                isGranted -> contactLoader.requestPermissionLauncherCallback(isGranted));
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean -> contactLoader.requestPermissionLauncherCallback(isGranted) }
 
 }
