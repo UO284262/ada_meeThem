@@ -80,7 +80,7 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
                 // Aquí se asume que estás utilizando Firebase Realtime Database
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
-                databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber)
+                databaseReference.orderByChild("contactNumber").equalTo(phoneNumber)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

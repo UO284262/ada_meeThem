@@ -37,4 +37,10 @@
     <string name="contact_picker_menu_item_search_contacts_title">Buscar</string>
     <string name="contacts_search_view_query_hint">Buscar contactos</string>
     <string name="progress_bar_text">Loading...</string>
+    <string name='exit_plan_text'>Salir</string>
+    <string name='confirm_plan_text'>Confirmar</string>
+    <string name='select_date'>Seleccionar fecha</string>
+    <string name="plan_exited">Se ha abandonado el plan correctamente</string>
+    <string name="plan_confirmed">Se ha confirmado asistencia al plan correctamente</string>
+    <string name="plan_full">El plan se ha llenado</string>
 </resources>

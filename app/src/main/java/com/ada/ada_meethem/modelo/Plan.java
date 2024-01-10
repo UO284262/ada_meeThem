@@ -17,24 +17,37 @@ public class Plan implements Parcelable {
     private String imageUrl;
     private String title;
     private Contact creator;
+    private List<String> confirmed = new ArrayList<>();
     private List<String> enlisted;
+    private String fecha;
     private int maxPeople;
     private String planId;
 
     public Plan() {}
 
-    public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted, String uuid) {
+    public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted, String uuid, String fecha) {
         this.title = title;
         this.creator = creator;
         this.enlisted = new ArrayList<>(enlisted);
+        confirmed.add(creator.getContactNumber());
         this.maxPeople = maxPeople;
         this.imageUrl = imageUrl;
         this.planId = uuid;
+        this.fecha = fecha;
     }
 
     public void addToPlan(String person) {
-        if(!enlisted.contains(person) && enlisted.size() <= maxPeople)
+        if(!enlisted.contains(person))
             enlisted.add(person);
+    }
+
+    public void confirmToPlan(String person) {
+        if(!confirmed.contains(person) && confirmed.size() <= maxPeople)
+            confirmed.add(person);
+    }
+
+    public void exitPlan(String person) {
+        enlisted.remove(person);
     }
 
     public void removeFromPlan(Contact person) {
@@ -53,6 +66,10 @@ public class Plan implements Parcelable {
         this.enlisted = enlisted;
     }
 
+    public void setConfirmed(List<String> confirmed) {
+        this.confirmed = confirmed;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -67,6 +84,14 @@ public class Plan implements Parcelable {
 
     public List<String> _getEnlisted() {
         return enlisted;
+    }
+
+    public List<String> getConfirmed() {
+        return new ArrayList<String>(confirmed);
+    }
+
+    public List<String> _getConfirmed() {
+        return confirmed;
     }
 
     public int getMaxPeople() {
@@ -92,6 +117,10 @@ public class Plan implements Parcelable {
     public void setPlanId(String id) {
         this.planId = id;
     }
+
+    public String getFecha() {return this.fecha;}
+
+    public void setFecha(String fecha) {this.fecha = fecha;}
 
     @Override
     public int describeContents() {

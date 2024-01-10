@@ -43,6 +43,8 @@ class HomeFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var progressBarText: TextView
 
+    private var loadContacts : Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUsersListener()
@@ -72,7 +74,10 @@ class HomeFragment : Fragment() {
             }
 
             // Carga los contactos y los planes
-            contacts = contactLoader.loadContacts()
+            if(loadContacts) {
+                contacts = contactLoader.loadContacts()
+                loadContacts = false
+            }
             loadPlans()
 
             withContext(Dispatchers.Main) {
@@ -106,13 +111,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadPlans() {
+        val phoneNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
         PlanDatabase.getReference().addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val plans = ArrayList<Plan>()
                 val cdb = ContactDatabase.getDatabase(context).contactDAO
                 for (chatSnapshot in dataSnapshot.children) {
                     val plan = chatSnapshot.getValue(Plan::class.java) as Plan
-                    if(plan.enlisted.contains(FirebaseAuth.getInstance().currentUser!!.phoneNumber)) {
+                    if(plan.enlisted.contains(phoneNumber)) {
                         plans.add(plan)
                     }
                 }
