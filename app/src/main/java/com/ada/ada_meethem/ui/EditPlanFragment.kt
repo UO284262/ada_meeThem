@@ -26,6 +26,7 @@ import com.ada.ada_meethem.modelo.pinnable.ChatMessage
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey
 import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.ada.ada_meethem.util.DatePickerFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -120,6 +121,10 @@ class EditPlanFragment : Fragment() {
         val phoneNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
         val message = ChatMessage(text, phoneNumber)
         PlanDatabase.pinMessage(message, plan!!.planId)
+        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            R.string.attached_message_ok,
+            Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     private fun showPlan() {
@@ -180,6 +185,10 @@ class EditPlanFragment : Fragment() {
             .addOnSuccessListener {
                 imageReference.downloadUrl.addOnSuccessListener { uri ->
                     actualizarFotoEnBD(planImage,uri.toString())
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        R.string.attached_image_ok,
+                        Snackbar.LENGTH_SHORT)
+                        .show()
                 }
             }
             .addOnFailureListener {

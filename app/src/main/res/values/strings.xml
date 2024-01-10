@@ -43,4 +43,9 @@
     <string name="plan_exited">Se ha abandonado el plan correctamente</string>
     <string name="plan_confirmed">Se ha confirmado asistencia al plan correctamente</string>
     <string name="plan_full">El plan se ha llenado</string>
+    <string name="edit_plan_edit_text_date_hint">Selecciona una fecha</string>
+    <string name="attached_message_ok">Mensaje anclado correctamente</string>
+    <string name="attached_image_ok">Imagen anclada correctamente</string>
+    <string name="no_network_available">La red no está disponible. La aplicación puede no funcionar correctamente.</string>
+    <string name="no_network_available_alert_title">Sin conexión</string>
 </resources>

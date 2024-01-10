@@ -1,12 +1,17 @@
 package com.ada.ada_meethem
 
+import androidx.appcompat.app.AlertDialog.Builder
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +33,16 @@ class MainActivity : AppCompatActivity() {
 
         navView.setupWithNavController(navController)
         configureNavViewButtons()
+
+        // AlertDialog si no hay red
+        if (!isNetworkAvailable()) {
+            val builder = Builder(this)
+            builder.setTitle(R.string.no_network_available_alert_title)
+            builder.setMessage(R.string.no_network_available)
+            builder.setPositiveButton("OK", null)
+            builder.create()
+            builder.show()
+        }
     }
 
     private fun configureNavViewButtons() {
@@ -45,6 +60,16 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager: ConnectivityManager? =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        if (connectivityManager != null) {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected
+        }
+        return false
     }
 
 }
