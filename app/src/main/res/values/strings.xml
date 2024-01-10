@@ -36,4 +36,5 @@
     <string name="contacts_refresh_OK">Contactos actualizados exitosamente.</string>
     <string name="contact_picker_menu_item_search_contacts_title">Buscar</string>
     <string name="contacts_search_view_query_hint">Buscar contactos</string>
+    <string name="progress_bar_text">Loading...</string>
 </resources>

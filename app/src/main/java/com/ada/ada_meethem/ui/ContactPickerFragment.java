@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -41,6 +42,7 @@ public class ContactPickerFragment extends Fragment {
     // Contactos extraídos del móvil
     private List<Contact> contacts;
     private RecyclerView contactsRecyclerView;
+    private ProgressBar progressBar;
     private ContactListAdapter clAdapter;
     private Bundle bundle; // para almacenar los datos del createPlanFragment y los contactos seleccionados
     private ContactLoaderFromProvider contactLoader;
@@ -60,6 +62,7 @@ public class ContactPickerFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_contact_picker, container, false);
 
+        progressBar = root.findViewById(R.id.progressBar);
         contactsRecyclerView = root.findViewById(R.id.contactPickerRecyclerView);
         contactsRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(root.getContext());
@@ -155,6 +158,7 @@ public class ContactPickerFragment extends Fragment {
             return true;
 
         if (item.getItemId() == R.id.menu_refresh_contacts) {
+            progressBar.setVisibility(View.VISIBLE);
             contacts = contactLoader.loadContacts();
 
             // Establece el adapter al Recycler view
@@ -164,6 +168,7 @@ public class ContactPickerFragment extends Fragment {
                             R.string.contacts_refresh_OK,
                             Snackbar.LENGTH_SHORT)
                     .show();
+            progressBar.setVisibility(View.GONE);
             return true;
         }
         return super.onOptionsItemSelected(item);

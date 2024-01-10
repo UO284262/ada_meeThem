@@ -31,4 +31,20 @@
         app:layout_constraintVertical_bias="0.881"
         android:focusable="true" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.Material.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/md_theme_dark_onPrimaryContainer"
+        android:foregroundTint="@color/md_theme_dark_onPrimary"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/contactPickerRecyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/contactPickerRecyclerView"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/contactPickerRecyclerView"
+        app:layout_constraintTop_toTopOf="@+id/contactPickerRecyclerView"
+        app:layout_constraintVertical_bias="0.372" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

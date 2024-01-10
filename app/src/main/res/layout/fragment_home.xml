@@ -16,4 +16,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.Material.ProgressBar"
+        android:layout_width="103dp"
+        android:layout_height="95dp"
+        android:background="@color/light_green"
+        android:foregroundTint="@color/green"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/plansRecyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/plansRecyclerView"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/plansRecyclerView"
+        app:layout_constraintTop_toTopOf="@+id/plansRecyclerView"
+        app:layout_constraintVertical_bias="0.372" />
+
+    <TextView
+        android:id="@+id/progressBarText"
+        android:layout_width="103dp"
+        android:layout_height="18dp"
+        android:background="@color/light_green"
+        android:gravity="center"
+        android:text="@string/progress_bar_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/plansRecyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/plansRecyclerView"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="@+id/plansRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

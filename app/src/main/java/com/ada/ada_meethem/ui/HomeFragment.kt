@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +30,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -34,6 +40,8 @@ class HomeFragment : Fragment() {
     private var contacts: List<Contact> = ArrayList()
     private lateinit var plAdapter : PlanListAdapter
     private lateinit var contactLoader : ContactLoaderFromProvider
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +53,6 @@ class HomeFragment : Fragment() {
             requestPermissionLauncher,
             requireActivity()
         )
-
-        // Carga los contactos
-        contacts = contactLoader.loadContacts()
     }
 
     override fun onCreateView(
@@ -56,14 +61,33 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        loadPlans()
+
+        progressBar = root.findViewById(R.id.progressBar)
+        progressBarText = root.findViewById(R.id.progressBarText)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                progressBar.visibility = View.VISIBLE
+                progressBarText.visibility = View.VISIBLE
+            }
+
+            // Carga los contactos y los planes
+            contacts = contactLoader.loadContacts()
+            loadPlans()
+
+            withContext(Dispatchers.Main) {
+                progressBar.visibility = View.GONE
+                progressBarText.visibility = View.GONE
+
+            }
+        }
+
+        // Configura el recycler view de planes
         val plansRecyclerView = root.findViewById<RecyclerView>(R.id.plansRecyclerView)
         plansRecyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(root.context)
         plansRecyclerView.layoutManager = layoutManager
-        plAdapter = PlanListAdapter(
-            plans
-        ) { plan -> clickonItem(plan) }
+        plAdapter = PlanListAdapter(plans) { plan -> clickonItem(plan) }
         plansRecyclerView.adapter = plAdapter
         return root
     }
