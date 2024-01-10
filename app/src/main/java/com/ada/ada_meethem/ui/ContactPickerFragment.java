@@ -136,6 +136,7 @@ public class ContactPickerFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                clAdapter.getFilter().filter(query); // filtra contactos
                 return false;
             }
 

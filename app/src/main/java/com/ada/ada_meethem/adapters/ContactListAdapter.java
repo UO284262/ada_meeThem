@@ -16,7 +16,9 @@ import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.database.entities.Contact;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> implements Filterable {
 
@@ -27,9 +29,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     private List<Contact> contacts;
     private List<Contact> contactsFiltered;
-    private List<ContactViewHolder> viewHolders = new ArrayList<>();
     private List<Contact> selectedContacts; // contactos seleccionados anteriormente
-    private List<CheckBox> checkBoxes = new ArrayList<>();
+    private final Map<Contact, Boolean> contactsSelectedMap = new HashMap<>(); // contactos seleccionados actualmente
     private final OnItemClickListener listener;
 
     public ContactListAdapter(List<Contact> contacts, OnItemClickListener listener) {
@@ -53,7 +54,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
         holder.bindContact(contact, listener);
-        viewHolders.add(holder);
     }
 
     @Override
@@ -65,9 +65,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public List<Contact> getContactsSelected() {
         List<Contact> contactsSelected = new ArrayList<>();
 
-        for (int i = 0; i < checkBoxes.size(); i++)
-            if (checkBoxes.get(i).isChecked())
-                contactsSelected.add(contacts.get(i));
+        for (Map.Entry<Contact, Boolean> entry : contactsSelectedMap.entrySet())
+            if (entry.getValue())
+                contactsSelected.add(entry.getKey());
+
+        if (selectedContacts != null)
+            contactsSelected.addAll(selectedContacts);
         return contactsSelected;
     }
 
@@ -99,21 +102,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                List<Contact> resultContacts = (List<Contact>) results.values;
-                for (Contact contact : contacts) {
-                    int i = contacts.indexOf(contact);
-                    View itemView = viewHolders.get(i).itemView;
-
-                    // Activa o desactiva el item del reclycler view
-                    if (resultContacts.contains(contact)) {
-                        itemView.setVisibility(View.VISIBLE);
-                        float dp = itemView.getContext().getResources().getDisplayMetrics().density;
-                        itemView.getLayoutParams().height = (int) (72 * dp); // reestablece la altura
-                    } else {
-                        itemView.setVisibility(View.GONE);
-                        itemView.getLayoutParams().height = 0; // para que no queden huecos
-                    }
-                }
+                contacts = (List<Contact>) results.values;
+                notifyDataSetChanged();
             }
         };
     }
@@ -138,16 +128,21 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         public void bindContact(final Contact contact, final OnItemClickListener listener) {
             contactSurname.setText(contact.getContactName());
             contactNumber.setText(contact.getContactNumber());
-            checkBoxes.add(contactCheckBox);
 
-            if (selectedContacts != null && selectedContacts.contains(contact))
-                contactCheckBox.setChecked(true);
+            if (selectedContacts != null && selectedContacts.contains(contact) && contactsSelectedMap.get(contact) == null) {
+                contactsSelectedMap.put(contact, true);
+                selectedContacts.remove(contact);
+            }
+
+            boolean checked = contactsSelectedMap.get(contact) != null ? contactsSelectedMap.get(contact) : false;
+            contactCheckBox.setChecked(checked);
 
             // cargar imagen
             // TODO Picasso.get().load(plan.getImageUrl()).into(contactImage);
 
             itemView.setOnClickListener(view -> {
                 contactCheckBox.setChecked(!contactCheckBox.isChecked());
+                contactsSelectedMap.put(contact, contactCheckBox.isChecked());
                 listener.onItemClick(contact);
             });
         }
