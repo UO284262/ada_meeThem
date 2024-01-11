@@ -31,14 +31,16 @@ import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
+    companion object  {
+        private var loadContacts: Boolean = true
+    }
+
     private var plans: List<Plan> = ArrayList()
     private var contacts: List<Contact> = ArrayList()
     private lateinit var plAdapter: PlanListAdapter
     private lateinit var contactLoader: ContactLoaderFromProvider
     private lateinit var progressBar: ProgressBar
     private lateinit var progressBarText: TextView
-
-    private var loadContacts: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
