@@ -5,12 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import com.ada.ada_meethem.R
-import com.ada.ada_meethem.database.PlanDatabase
-import com.ada.ada_meethem.modelo.DateSurveyVotes
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey
 import com.ada.ada_meethem.ui.EditPlanFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -50,7 +47,7 @@ class OnCreateDateChoicesAdapter(
         deleteBtn.setOnClickListener(View.OnClickListener {
             this.listaDates.remove(date)
             this.dateSurvey.removeDate(date)
-            if(listaDates.keys.size == 0) this.parentFragment.notifyEmptyDates()
+            if (listaDates.keys.size == 0) this.parentFragment.notifyEmptyDates()
             notifyDataSetChanged()
         })
 
@@ -58,7 +55,7 @@ class OnCreateDateChoicesAdapter(
     }
 
     fun addDate(date: String) {
-        this.listaDates.put(date,0)
+        this.listaDates.put(date, 0)
         notifyDataSetChanged()
     }
 }

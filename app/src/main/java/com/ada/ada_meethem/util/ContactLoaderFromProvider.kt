@@ -11,20 +11,24 @@ import com.ada.ada_meethem.data.ContactProvider
 import com.ada.ada_meethem.database.ContactDatabase
 import com.ada.ada_meethem.database.entities.Contact
 import com.google.android.material.snackbar.Snackbar
-import java.lang.Exception
 
 // Clase de utilidad para cargar contactos desde el proveedor de contactos, pidiendo los
 // permisos de lectura requeridos
 class ContactLoaderFromProvider(
     private val context: Context,
     private val requestPermissionLauncher: ActivityResultLauncher<String>,
-    private val fragmentActivity: FragmentActivity) {
+    private val fragmentActivity: FragmentActivity
+) {
 
     private var contacts: List<Contact> = ArrayList()
 
     // Carga los contactos si la apliación cuenta con los permisos adecuados
     fun loadContacts(): List<Contact> {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+        )
             requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
         else
             getAndSafeContacts()
@@ -54,10 +58,12 @@ class ContactLoaderFromProvider(
         if (isGranted)
             getAndSafeContacts()
         else
-            Snackbar.make(fragmentActivity.findViewById(android.R.id.content),
+            Snackbar.make(
+                fragmentActivity.findViewById(android.R.id.content),
                 R.string.read_contact_permissions_not_acepted,
-                Snackbar.LENGTH_LONG)
-            .show()
+                Snackbar.LENGTH_LONG
+            )
+                .show()
     }
 
 }

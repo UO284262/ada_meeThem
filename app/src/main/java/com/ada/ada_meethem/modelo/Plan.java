@@ -7,10 +7,8 @@ import androidx.annotation.NonNull;
 
 import com.ada.ada_meethem.database.entities.Contact;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Plan implements Parcelable {
 
@@ -23,7 +21,8 @@ public class Plan implements Parcelable {
     private int maxPeople;
     private String planId;
 
-    public Plan() {}
+    public Plan() {
+    }
 
     public Plan(String title, Contact creator, int maxPeople, String imageUrl, List<String> enlisted, String uuid, String fecha) {
         this.title = title;
@@ -37,12 +36,12 @@ public class Plan implements Parcelable {
     }
 
     public void addToPlan(String person) {
-        if(!enlisted.contains(person))
+        if (!enlisted.contains(person))
             enlisted.add(person);
     }
 
     public void confirmToPlan(String person) {
-        if(!confirmed.contains(person) && confirmed.size() <= maxPeople)
+        if (!confirmed.contains(person) && confirmed.size() <= maxPeople)
             confirmed.add(person);
     }
 
@@ -51,7 +50,7 @@ public class Plan implements Parcelable {
     }
 
     public void removeFromPlan(Contact person) {
-        if(enlisted.contains(person)) enlisted.remove(person);
+        if (enlisted.contains(person)) enlisted.remove(person);
     }
 
     public void setTitle(String title) {
@@ -118,9 +117,13 @@ public class Plan implements Parcelable {
         this.planId = id;
     }
 
-    public String getFecha() {return this.fecha;}
+    public String getFecha() {
+        return this.fecha;
+    }
 
-    public void setFecha(String fecha) {this.fecha = fecha;}
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 
     @Override
     public int describeContents() {
@@ -134,8 +137,9 @@ public class Plan implements Parcelable {
         dest.writeList(enlisted);
         dest.writeInt(maxPeople);
         dest.writeString(planId);
-        dest.writeParcelable(creator,flags);
+        dest.writeParcelable(creator, flags);
     }
+
     protected Plan(Parcel in) {
         title = in.readString();
         imageUrl = in.readString();

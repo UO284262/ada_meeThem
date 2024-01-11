@@ -1,9 +1,7 @@
 package com.ada.ada_meethem.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,7 +61,7 @@ class PlanFragment : Fragment() {
         fab2.setOnClickListener { abrirEdit(plan) }
 
         tvConfirmedMsg = root!!.findViewById<View>(R.id.tv_confirmed_msg) as TextView
-        if(plan!!.confirmed.contains(num)) {
+        if (plan!!.confirmed.contains(num)) {
             tvConfirmedMsg.text = "Estas apuntado a este plan"
             tvConfirmedMsg.setTextColor(resources.getColor(R.color.green))
         }
@@ -90,7 +88,7 @@ class PlanFragment : Fragment() {
         }
 
         listView = root.findViewById(R.id.pinnedList)
-        adapter = PinnedItemsAdapter(root.context, ArrayList(), DateSurveyVotes() ,plan!!)
+        adapter = PinnedItemsAdapter(root.context, ArrayList(), DateSurveyVotes(), plan!!)
         listView!!.adapter = adapter
         displayPinned(root)
         return root
@@ -112,7 +110,7 @@ class PlanFragment : Fragment() {
         val editPlanFragment = EditPlanFragment.newInstance()
         val bundle = Bundle()
         bundle.putParcelable("plan", plan)
-        bundle.putBoolean("surveyDone",surveyDone)
+        bundle.putBoolean("surveyDone", surveyDone)
         findNavController().navigate(
             R.id.action_planFragment_to_editPlanFragment,
             bundle
@@ -146,88 +144,94 @@ class PlanFragment : Fragment() {
     }
 
     fun displayPinned(root: View?) {
-        PlanDatabase.getReference(plan!!.planId).child("pinnedItems").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                surveyDone = false
-                val pins: MutableList<Pinnable> = ArrayList()
-                for (chatSnapshot in dataSnapshot.children) {
-                    val ident : String = chatSnapshot.key!!.subSequence(0,3).toString()
-                    when(ident) {
-                        "msg" -> pins.add(chatSnapshot.getValue(ChatMessage::class.java) as ChatMessage)
-                        "sdt" -> {
-                            pins.add(chatSnapshot.getValue(DateSurvey::class.java) as DateSurvey)
-                            surveyDone = true
+        PlanDatabase.getReference(plan!!.planId).child("pinnedItems")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    surveyDone = false
+                    val pins: MutableList<Pinnable> = ArrayList()
+                    for (chatSnapshot in dataSnapshot.children) {
+                        val ident: String = chatSnapshot.key!!.subSequence(0, 3).toString()
+                        when (ident) {
+                            "msg" -> pins.add(chatSnapshot.getValue(ChatMessage::class.java) as ChatMessage)
+                            "sdt" -> {
+                                pins.add(chatSnapshot.getValue(DateSurvey::class.java) as DateSurvey)
+                                surveyDone = true
+                            }
+
+                            "pli" -> pins.add(chatSnapshot.getValue(PlanImage::class.java) as PlanImage)
                         }
-                        "pli" -> pins.add(chatSnapshot.getValue(PlanImage::class.java) as PlanImage)
+                    }
+                    adapter!!.update(pins.toList())
+                    listView!!.setSelection(adapter!!.count - 1)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Manejo de errores
+                }
+            })
+
+        PlanDatabase.getReference(plan!!.planId).child("surveyVotes")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    var votes: DateSurveyVotes = DateSurveyVotes();
+                    for (chatSnapshot in dataSnapshot.children) {
+                        votes =
+                            chatSnapshot.getValue(DateSurveyVotes::class.java) as DateSurveyVotes
+                    }
+                    adapter!!.updateVotes(votes)
+                    listView!!.setSelection(adapter!!.count - 1)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Manejo de errores
+                }
+            })
+
+        PlanDatabase.getReference(plan!!.planId).child("confirmed")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (chatSnapshot in dataSnapshot.children) {
+                        plan!!.confirmed.add(chatSnapshot.getValue(String::class.java) as String)
+                    }
+                    textParticipantes.text =
+                        String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
+                    if (plan!!.confirmed.size == plan!!.maxPeople) {
+                        plan!!.enlisted = plan!!.confirmed
+                        PlanDatabase.setEnlisted(plan!!)
+                        btConfirm.visibility = View.INVISIBLE
+                        btExit.visibility = View.INVISIBLE
+                        Snackbar.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            R.string.plan_full, Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    if (plan!!.confirmed.contains(num)) {
+                        tvConfirmedMsg.text = "Estas apuntado a este plan"
+                        tvConfirmedMsg.setTextColor(resources.getColor(R.color.green))
+                    } else if (plan!!.confirmed.size == plan!!.maxPeople) {
+                        tvConfirmedMsg.text = "Plan lleno"
+                        tvConfirmedMsg.setTextColor(resources.getColor(R.color.colorRed))
                     }
                 }
-                adapter!!.update(pins.toList())
-                listView!!.setSelection(adapter!!.count - 1)
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Manejo de errores
-            }
-        })
-
-        PlanDatabase.getReference(plan!!.planId).child("surveyVotes").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var votes: DateSurveyVotes = DateSurveyVotes();
-                for (chatSnapshot in dataSnapshot.children) {
-                    votes = chatSnapshot.getValue(DateSurveyVotes::class.java) as DateSurveyVotes
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Manejo de errores
                 }
-                adapter!!.updateVotes(votes)
-                listView!!.setSelection(adapter!!.count - 1)
-            }
+            })
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Manejo de errores
-            }
-        })
-
-        PlanDatabase.getReference(plan!!.planId).child("confirmed").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (chatSnapshot in dataSnapshot.children) {
-                    plan!!.confirmed.add(chatSnapshot.getValue(String::class.java) as String)
+        PlanDatabase.getReference(plan!!.planId).child("fecha")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (chatSnapshot in dataSnapshot.children) {
+                        plan!!.fecha = chatSnapshot.getValue(String::class.java) as String
+                    }
+                    dateTv.text = plan!!.fecha
                 }
-                textParticipantes.text =
-                    String.format("%d/%d", plan!!.confirmed.size, plan!!.maxPeople)
-                if(plan!!.confirmed.size == plan!!.maxPeople) {
-                    plan!!.enlisted = plan!!.confirmed
-                    PlanDatabase.setEnlisted(plan!!)
-                    btConfirm.visibility = View.INVISIBLE
-                    btExit.visibility = View.INVISIBLE
-                    Snackbar.make(
-                        requireActivity().findViewById(android.R.id.content),
-                        R.string.plan_full, Snackbar.LENGTH_LONG
-                    ).show()
-                }
-                if(plan!!.confirmed.contains(num)) {
-                    tvConfirmedMsg.text = "Estas apuntado a este plan"
-                    tvConfirmedMsg.setTextColor(resources.getColor(R.color.green))
-                } else if (plan!!.confirmed.size == plan!!.maxPeople) {
-                    tvConfirmedMsg.text = "Plan lleno"
-                    tvConfirmedMsg.setTextColor(resources.getColor(R.color.colorRed))
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Manejo de errores
-            }
-        })
-
-        PlanDatabase.getReference(plan!!.planId).child("fecha").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (chatSnapshot in dataSnapshot.children) {
-                    plan!!.fecha = chatSnapshot.getValue(String::class.java) as String
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Manejo de errores
                 }
-                dateTv.text = plan!!.fecha
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Manejo de errores
-            }
-        })
+            })
     }
 
     companion object {

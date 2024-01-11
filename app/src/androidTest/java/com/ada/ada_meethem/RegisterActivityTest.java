@@ -1,40 +1,42 @@
 package com.ada.ada_meethem;
 
 
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.filters.LargeTest;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.GrantPermissionRule;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.espresso.Espresso.onData;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.action.ViewActions.*;
-import static androidx.test.espresso.assertion.ViewAssertions.*;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.GrantPermissionRule;
 
-import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.util.TestUtils;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -48,6 +50,12 @@ public class RegisterActivityTest {
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.READ_CONTACTS");
+
+    @Before
+    public void setUp() {
+        FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("users").child("+34644444444").removeValue();
+    }
 
     @Test
     public void registerActivityTest() throws InterruptedException {
@@ -141,6 +149,105 @@ public class RegisterActivityTest {
                                 withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))))));
         textView3.check(matches(isDisplayed()));
         textView3.check(matches(withText("Test")));
+
+        // Cerrar sesión
+        bottomNavigationItemView = onView(
+                allOf(withId(R.id.nav_profile), withContentDescription("Profile"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0),
+                                2),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        materialButton3 = onView(
+                allOf(withId(R.id.logout), withText("Cerrar Sesión"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton3.perform(click());
+    }
+
+    @Test
+    public void invalidRegisterTest() throws InterruptedException {
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.phoneNumber),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.coordinatorlayout.widget.CoordinatorLayout")),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText.perform(replaceText("13"), closeSoftKeyboard());
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.sendNumberButton), withText("Enviar"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.coordinatorlayout.widget.CoordinatorLayout")),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.responseText), withText("Error en el formato del número de teléfono"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
+                        isDisplayed()));
+        textView.check(matches(withText("Error en el formato del número de teléfono")));
+
+        appCompatEditText.perform(replaceText("666666666"), closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText6 = onView(
+                allOf(withId(R.id.phoneNumber), withText("666666666"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.coordinatorlayout.widget.CoordinatorLayout")),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText6.perform(closeSoftKeyboard());
+
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.sendNumberButton), withText("Enviar"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.coordinatorlayout.widget.CoordinatorLayout")),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton3.perform(click());
+
+        ViewInteraction appCompatEditText7 = onView(
+                allOf(withId(R.id.smsCode),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                1),
+                        isDisplayed()));
+        TestUtils.waitFor(appCompatEditText7, TestUtils.DEFAULT_TIMEOUT);
+        appCompatEditText7.perform(replaceText("123456"), closeSoftKeyboard());
+
+        ViewInteraction materialButton4 = onView(
+                allOf(withId(R.id.verifyBtn), withText("Verificar"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton4.perform(click());
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.responseText), withText("Error de verificación"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
+                        isDisplayed()));
+        textView2.check(matches(withText("Error de verificación")));
     }
 
     private static Matcher<View> childAtPosition(

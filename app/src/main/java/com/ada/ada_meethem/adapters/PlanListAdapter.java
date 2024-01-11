@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.modelo.Plan;
 import com.squareup.picasso.Picasso;
-//import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

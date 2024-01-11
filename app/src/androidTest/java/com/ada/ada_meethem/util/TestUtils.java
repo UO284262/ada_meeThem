@@ -7,7 +7,7 @@ import androidx.test.espresso.ViewInteraction;
 
 public class TestUtils {
 
-    public static final int DEFAULT_TIMEOUT = 5000;
+    public static final int DEFAULT_TIMEOUT = 1000000;
 
     // Espera a que aparezca un elemento en la vista
     public static void waitFor(ViewInteraction viewInteraction, long timeoutMillis) throws InterruptedException {

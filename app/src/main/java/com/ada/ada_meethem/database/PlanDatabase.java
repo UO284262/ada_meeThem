@@ -4,11 +4,8 @@ import com.ada.ada_meethem.modelo.DateSurveyVotes;
 import com.ada.ada_meethem.modelo.Plan;
 import com.ada.ada_meethem.modelo.pinnable.ChatMessage;
 import com.ada.ada_meethem.modelo.pinnable.DateSurvey;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.List;
 
 public class PlanDatabase {
     public static DatabaseReference getReference(String planId) {
@@ -20,6 +17,7 @@ public class PlanDatabase {
         return FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("plans");
     }
+
     public static void unpinMessage(ChatMessage msg, String planId) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -61,7 +59,7 @@ public class PlanDatabase {
         chatReference.child("fecha").setValue(date);
     }
 
-    public static void confirmPlan( Plan plan) {
+    public static void confirmPlan(Plan plan) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("plans").child(plan.getPlanId()).child("confirmed");
@@ -69,7 +67,7 @@ public class PlanDatabase {
         chatReference.setValue(plan.getConfirmed());
     }
 
-    public static void exitPlan( Plan plan) {
+    public static void exitPlan(Plan plan) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("plans").child(plan.getPlanId()).child("enlisted");
@@ -77,7 +75,7 @@ public class PlanDatabase {
         chatReference.setValue(plan.getEnlisted());
     }
 
-    public static void setEnlisted( Plan plan ) {
+    public static void setEnlisted(Plan plan) {
         DatabaseReference chatReference = FirebaseDatabase
                 .getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("plans").child(plan.getPlanId()).child("enlisted");

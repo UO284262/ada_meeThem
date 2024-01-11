@@ -1,7 +1,5 @@
 package com.ada.ada_meethem.ui
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,14 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ada.ada_meethem.R
 import com.ada.ada_meethem.adapters.PlanListAdapter
-import com.ada.ada_meethem.data.ContactProvider
 import com.ada.ada_meethem.database.ContactDatabase
 import com.ada.ada_meethem.database.PlanDatabase
 import com.ada.ada_meethem.database.entities.Contact
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.ui.PlanFragment.Companion.newInstance
 import com.ada.ada_meethem.util.ContactLoaderFromProvider
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -38,12 +33,12 @@ class HomeFragment : Fragment() {
 
     private var plans: List<Plan> = ArrayList()
     private var contacts: List<Contact> = ArrayList()
-    private lateinit var plAdapter : PlanListAdapter
-    private lateinit var contactLoader : ContactLoaderFromProvider
+    private lateinit var plAdapter: PlanListAdapter
+    private lateinit var contactLoader: ContactLoaderFromProvider
     private lateinit var progressBar: ProgressBar
     private lateinit var progressBarText: TextView
 
-    private var loadContacts : Boolean = true
+    private var loadContacts: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +69,7 @@ class HomeFragment : Fragment() {
             }
 
             // Carga los contactos y los planes
-            if(loadContacts) {
+            if (loadContacts) {
                 contacts = contactLoader.loadContacts()
                 loadContacts = false
             }
@@ -118,7 +113,7 @@ class HomeFragment : Fragment() {
                 val cdb = ContactDatabase.getDatabase(context).contactDAO
                 for (chatSnapshot in dataSnapshot.children) {
                     val plan = chatSnapshot.getValue(Plan::class.java) as Plan
-                    if(plan.enlisted.contains(phoneNumber)) {
+                    if (plan.enlisted.contains(phoneNumber)) {
                         plans.add(plan)
                     }
                 }
@@ -140,7 +135,7 @@ class HomeFragment : Fragment() {
                         for (chatSnapshot in dataSnapshot.children) {
                             val contact = chatSnapshot.getValue(Contact::class.java) as Contact
                             val localContact = cdb.findByNumber(contact.contactNumber)
-                            if(localContact != null) {
+                            if (localContact != null) {
                                 localContact.photoUrl = contact.photoUrl
                             }
                         }
@@ -155,7 +150,8 @@ class HomeFragment : Fragment() {
 
 
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission())
-        { isGranted: Boolean ->contactLoader.requestPermissionLauncherCallback(isGranted) }
+        ActivityResultContracts.RequestPermission()
+    )
+    { isGranted: Boolean -> contactLoader.requestPermissionLauncherCallback(isGranted) }
 
 }

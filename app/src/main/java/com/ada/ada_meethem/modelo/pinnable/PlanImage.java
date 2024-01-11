@@ -7,7 +7,8 @@ public class PlanImage implements Pinnable {
 
     private String id;
 
-    public PlanImage() {}
+    public PlanImage() {
+    }
 
     public PlanImage(String url) {
         this.url = url;
@@ -22,7 +23,11 @@ public class PlanImage implements Pinnable {
         this.id = id;
     }
 
-    public void setUrl(String url) {this.url = url;}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-    public String getUrl() {return this.url;}
+    public String getUrl() {
+        return this.url;
+    }
 }

@@ -17,9 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,8 +69,8 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String selectedCountryCode = ((String) countryCode.getSelectedItem()).split(" ")[0];
 
-                if(!phoneNumber.getText().toString().isEmpty()) {
-                    if(isValidFormat(phoneNumber.getText().toString(), selectedCountryCode)) {
+                if (!phoneNumber.getText().toString().isEmpty()) {
+                    if (isValidFormat(phoneNumber.getText().toString(), selectedCountryCode)) {
                         String phNumber = selectedCountryCode + phoneNumber.getText().toString();
                         PhoneAuthOptions options =
                                 PhoneAuthOptions.newBuilder(mAuth)
@@ -125,9 +123,9 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
     }
 
     private boolean isValidFormat(String phNumber, String selectedCountryCode) {
-        if(selectedCountryCode.equals("+34") && phNumber.length() == 9)
+        if (selectedCountryCode.equals("+34") && phNumber.length() == 9)
             return true;
-        if(selectedCountryCode.equals("+1") && phNumber.length() == 10)
+        if (selectedCountryCode.equals("+1") && phNumber.length() == 10)
             return true;
         return false;
     }
@@ -136,7 +134,7 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             existenciaUsuario();
         }
     }
@@ -145,7 +143,7 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     existenciaUsuario();
                 } else {
                     responseText.setText(task.getException().getMessage());
@@ -167,7 +165,7 @@ public class PhoneIntroductionActivity extends AppCompatActivity {
                 // Verifica si se encontró algún usuario
                 boolean userExists = dataSnapshot.exists();
 
-                if(!userExists) {
+                if (!userExists) {
                     FirebaseAuth.getInstance().signOut();
 
                     Intent intent = new Intent(PhoneIntroductionActivity.this, PhoneIntroductionActivity.class);

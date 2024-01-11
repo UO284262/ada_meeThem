@@ -1,17 +1,15 @@
 package com.ada.ada_meethem;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,8 +49,8 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String code = smsCode.getText().toString();
-                if(!code.isEmpty()) {
-                    if(code.length() == 6) {
+                if (!code.isEmpty()) {
+                    if (code.length() == 6) {
                         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(intentAuth, code);
                         iniciarSesion(credential);
                     } else {
@@ -69,7 +67,7 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
                 mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             verificarNuevoUsuario();
                         } else {
                             //Toast.makeText(PhoneSMSVerificationActivity.this, "Error de verificación", Toast.LENGTH_SHORT).show();
@@ -122,7 +120,7 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             inicioMainActivity();
         }
     }

@@ -6,8 +6,10 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -38,7 +40,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RegisterTest {
+public class PlanChatTest {
 
     @Rule
     public ActivityScenarioRule<PhoneIntroductionActivity> mActivityScenarioRule =
@@ -51,13 +53,12 @@ public class RegisterTest {
 
     @Before
     public void setUp() {
-        // Se borra el usuario
         FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("users").child("+34644444444").removeValue();
+                .getReference("chats").child("086eea9e-89ca-4fc4-b2fc-c6efc086dd0d").removeValue();
     }
 
     @Test
-    public void registerTest() throws InterruptedException {
+    public void planChatTest() throws InterruptedException {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.phoneNumber),
                         childAtPosition(
@@ -66,7 +67,7 @@ public class RegisterTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("644444444"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("666666666"), closeSoftKeyboard());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.sendNumberButton), withText("Enviar"),
@@ -78,13 +79,6 @@ public class RegisterTest {
                         isDisplayed()));
         materialButton.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withText("Ingrese el código de verificación"),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
-                        isDisplayed()));
-        TestUtils.waitFor(textView, TestUtils.DEFAULT_TIMEOUT);
-        textView.check(matches(withText("Ingrese el código de verificación")));
-
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.smsCode),
                         childAtPosition(
@@ -93,7 +87,8 @@ public class RegisterTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("444444"), closeSoftKeyboard());
+        TestUtils.waitFor(appCompatEditText2, TestUtils.DEFAULT_TIMEOUT);
+        appCompatEditText2.perform(replaceText("666666"), closeSoftKeyboard());
 
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.verifyBtn), withText("Verificar"),
@@ -105,37 +100,76 @@ public class RegisterTest {
                         isDisplayed()));
         materialButton2.perform(click());
 
-        ViewInteraction editText = onView(withId(R.id.newUsername));
-        TestUtils.waitFor(editText, TestUtils.DEFAULT_TIMEOUT);
-        editText.check(matches(withText("Nombre de usuario")));
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.plansRecyclerView),
+                        childAtPosition(
+                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                0)));
+        TestUtils.waitFor(recyclerView, TestUtils.DEFAULT_TIMEOUT);
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.planName), withText("planaso"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class))),
+                        isDisplayed()));
+        textView.check(matches(withText("planaso")));
+
+        ViewInteraction floatingActionButton = onView(
+                allOf(withId(R.id.fabChat),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.FrameLayout")),
+                                        0),
+                                3),
+                        isDisplayed()));
+        floatingActionButton.perform(click());
 
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.newUsername),
+                allOf(withId(R.id.etMessage),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText3.perform(replaceText("Test"), closeSoftKeyboard());
-
-        ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.registerButton), withText("Registrar"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        withClassName(is("android.widget.FrameLayout")),
                                         0),
                                 2),
                         isDisplayed()));
-        materialButton3.perform(click());
+        appCompatEditText3.perform(replaceText("puerto de indias"), closeSoftKeyboard());
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withId(R.id.buttonSend),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.FrameLayout")),
+                                        0),
+                                3),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
 
         ViewInteraction textView2 = onView(
-                allOf(withText("meeThem"),
-                        withParent(allOf(withId(androidx.appcompat.R.id.action_bar),
-                                withParent(withId(androidx.appcompat.R.id.action_bar_container)))),
+                allOf(withId(R.id.message_text_own), withText("puerto de indias"),
+                        withParent(withParent(withId(R.id.chatList))),
                         isDisplayed()));
-        TestUtils.waitFor(textView2, TestUtils.DEFAULT_TIMEOUT);
-        textView2.check(matches(withText("meeThem")));
+        textView2.check(matches(withText("puerto de indias")));
+
+        // Cerrar sesión
+        ViewInteraction bottomNavigationItemView = onView(
+                allOf(withId(R.id.nav_profile), withContentDescription("Profile"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0),
+                                2),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.logout), withText("Cerrar Sesión"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton3.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

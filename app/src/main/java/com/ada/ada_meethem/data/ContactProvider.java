@@ -24,8 +24,9 @@ public class ContactProvider {
 
     /**
      * Hace una consulta al proveedor de contenido para obtener los contactos del móvil.
-     * @param selection string con el criterio para seleccionar contactos, null implica
-     *                   recuperar todos los contactos.
+     *
+     * @param selection     string con el criterio para seleccionar contactos, null implica
+     *                      recuperar todos los contactos.
      * @param selectionArgs array de los argumentos usados en el string selection. Null si
      *                      no se emplean parámetros en la claúsula de selección.
      * @return lista de contactos encontrados o null si no encuentra ninguno.
@@ -75,8 +76,8 @@ public class ContactProvider {
                 List<String> numbers = getNumberListFromContactId(contactId);
 
                 // Se crea un contacto por cada número de teléfono existente
-                for (String number: numbers)
-                    contacts.add(new Contact(parsePhoneNumber(number),"",name));
+                for (String number : numbers)
+                    contacts.add(new Contact(parsePhoneNumber(number), "", name));
             }
         }
         cursor.close();
@@ -111,18 +112,21 @@ public class ContactProvider {
             phones.add(phone);
         }
         cursor.close();
-        return  phones;
+        return phones;
     }
 
     private String parsePhoneNumber(String number) {
-        number = number.replace("(","");
-        number = number.replace(")","");
-        number = number.replace("-","");
-        number = number.replace(" ","");
-        switch(number.length()) {
-            case 9: return "+34" + number;
-            case 10: return "+1" + number;
-            default: return number;
+        number = number.replace("(", "");
+        number = number.replace(")", "");
+        number = number.replace("-", "");
+        number = number.replace(" ", "");
+        switch (number.length()) {
+            case 9:
+                return "+34" + number;
+            case 10:
+                return "+1" + number;
+            default:
+                return number;
         }
     }
 

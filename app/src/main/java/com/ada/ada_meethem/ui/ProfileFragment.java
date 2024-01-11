@@ -2,17 +2,10 @@ package com.ada.ada_meethem.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.TaskInfo;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ada.ada_meethem.MainActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.ada.ada_meethem.PhoneIntroductionActivity;
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.RegistroActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -119,7 +113,7 @@ public class ProfileFragment extends Fragment {
                     String username = dataSnapshot.child("contactName").getValue(String.class);
                     String url = dataSnapshot.child("photoUrl").getValue(String.class);
 
-                    if(url != null && !url.equals("null"))
+                    if (url != null && !url.equals("null"))
                         Picasso.get().load(url).into(profilePhoto);
                     userName.setText(username);
                     phoneNumber.setText(phone);
@@ -229,9 +223,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void checkNewUserName(String newUserName) {
-        if(RegistroActivity.correctLength(newUserName)) {
+        if (RegistroActivity.correctLength(newUserName)) {
 
-            if(!RegistroActivity.validChars(newUserName)) {
+            if (!RegistroActivity.validChars(newUserName)) {
                 Toast.makeText(getContext(), getText(R.string.username_illegal_chars), Toast.LENGTH_LONG).show();
             } else {
                 RegistroActivity.usuarioExistente(newUserName, new RegistroActivity.UserExistenceCallback() {
@@ -250,7 +244,7 @@ public class ProfileFragment extends Fragment {
                 });
             }
 
-        } else if(!newUserName.isEmpty()) {
+        } else if (!newUserName.isEmpty()) {
             Toast.makeText(getContext(), getText(R.string.username_length_error), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getContext(), getText(R.string.username_empty), Toast.LENGTH_LONG).show();

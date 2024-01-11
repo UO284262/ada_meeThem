@@ -20,7 +20,8 @@ public class Contact implements Parcelable {
 
     private String contactName;
 
-    public Contact() {}
+    public Contact() {
+    }
 
     protected Contact(Parcel in) {
         contactNumber = in.readString();
@@ -45,12 +46,10 @@ public class Contact implements Parcelable {
     }
 
 
-
     @NonNull
     public String getContactNumber() {
         return contactNumber;
     }
-
 
 
     public Contact(@NonNull String contactNumber, @NonNull String photoUrl, String contactName) {

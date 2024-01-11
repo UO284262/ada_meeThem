@@ -73,7 +73,7 @@ class CreatePlanFragment : Fragment() {
         planImagePickerButton.setOnClickListener { view: View? -> pickPlanImage() }
 
         dateTextView = root.findViewById<View>(R.id.dateTextView) as EditText
-        dateTextView!!.setOnClickListener {showDatePickerDialog()}
+        dateTextView!!.setOnClickListener { showDatePickerDialog() }
 
         val btPickContacts = root.findViewById<Button>(R.id.buttonPickContacts)
         btPickContacts.setOnClickListener { view: View -> pickContacts(view) }
@@ -131,12 +131,16 @@ class CreatePlanFragment : Fragment() {
 
     private fun pickContacts(view: View) {
         val bundle = Bundle()
-        bundle.putString(PLAN_IMAGE_URI,
+        bundle.putString(
+            PLAN_IMAGE_URI,
             if (planImageUri != null) planImageUri.toString() else null
         )
         bundle.putString(PLAN_NAME, etPlanName!!.text.toString())
         bundle.putString(PLAN_MAX_PEOPLE, etMaxPeople!!.text.toString())
-        bundle.putParcelableArrayList(ContactPickerFragment.SELECTED_CONTACTS, selectedContacts as java.util.ArrayList<Contact?>?)
+        bundle.putParcelableArrayList(
+            ContactPickerFragment.SELECTED_CONTACTS,
+            selectedContacts as java.util.ArrayList<Contact?>?
+        )
 
         findNavController(view).navigate(
             R.id.action_nav_plan_create_to_contactPickerFragment,

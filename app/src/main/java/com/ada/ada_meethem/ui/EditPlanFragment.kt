@@ -28,10 +28,7 @@ import com.ada.ada_meethem.modelo.pinnable.PlanImage
 import com.ada.ada_meethem.util.DatePickerFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
-import java.time.LocalDate
 
 class EditPlanFragment : Fragment() {
     private var plan: Plan? = null
@@ -42,9 +39,9 @@ class EditPlanFragment : Fragment() {
     private var dateTextView: EditText? = null
     private var dateSurvey: DateSurvey = DateSurvey(ArrayList())
     private var pinMsgText: EditText? = null
-    private var adapterOnCreate : OnCreateDateChoicesAdapter? = null
-    private lateinit var planImage : PlanImage
-    private lateinit var pinImgButton : ImageButton
+    private var adapterOnCreate: OnCreateDateChoicesAdapter? = null
+    private lateinit var planImage: PlanImage
+    private lateinit var pinImgButton: ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -72,11 +69,11 @@ class EditPlanFragment : Fragment() {
             imm.hideSoftInputFromWindow(pinMsgText!!.windowToken, 0)
             showPlan()
         }
-        if(!surveyDone) {
+        if (!surveyDone) {
             createSurveyBtn = root.findViewById<View>(R.id.btn_crear_survey) as Button
             createSurveyBtn!!.setOnClickListener {
                 PlanDatabase.pinDateSurvey(dateSurvey, plan!!.planId)
-                PlanDatabase.voteDate(DateSurveyVotes(HashMap<String,String>()),plan!!.planId)
+                PlanDatabase.voteDate(DateSurveyVotes(HashMap<String, String>()), plan!!.planId)
                 showPlan()
             }
             createSurveyBtn!!.isClickable = false
@@ -95,7 +92,8 @@ class EditPlanFragment : Fragment() {
             }
 
             val listView = root.findViewById<View>(R.id.oncreate_survey_list) as ListView
-            adapterOnCreate = OnCreateDateChoicesAdapter(root.context, dateSurvey, plan!!.planId,this)
+            adapterOnCreate =
+                OnCreateDateChoicesAdapter(root.context, dateSurvey, plan!!.planId, this)
             listView.adapter = adapterOnCreate
         } else {
             createSurveyBtn = root.findViewById<View>(R.id.btn_crear_survey) as Button
@@ -121,9 +119,11 @@ class EditPlanFragment : Fragment() {
         val phoneNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber
         val message = ChatMessage(text, phoneNumber)
         PlanDatabase.pinMessage(message, plan!!.planId)
-        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
             R.string.attached_message_ok,
-            Snackbar.LENGTH_SHORT)
+            Snackbar.LENGTH_SHORT
+        )
             .show()
     }
 
@@ -168,7 +168,7 @@ class EditPlanFragment : Fragment() {
             val selectedImageUri = data.data
 
             planImage = PlanImage(selectedImageUri.toString())
-            subirImagen(selectedImageUri!!,planImage)
+            subirImagen(selectedImageUri!!, planImage)
         }
     }
 
@@ -184,10 +184,12 @@ class EditPlanFragment : Fragment() {
         imageReference.putFile(selectedImageUri)
             .addOnSuccessListener {
                 imageReference.downloadUrl.addOnSuccessListener { uri ->
-                    actualizarFotoEnBD(planImage,uri.toString())
-                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    actualizarFotoEnBD(planImage, uri.toString())
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
                         R.string.attached_image_ok,
-                        Snackbar.LENGTH_SHORT)
+                        Snackbar.LENGTH_SHORT
+                    )
                         .show()
                 }
             }

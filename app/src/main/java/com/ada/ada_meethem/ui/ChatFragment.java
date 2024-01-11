@@ -1,12 +1,6 @@
 package com.ada.ada_meethem.ui;
 
-import static android.view.View.VISIBLE;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +9,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.adapters.MessageListAdapter;
-import com.ada.ada_meethem.modelo.pinnable.ChatMessage;
 import com.ada.ada_meethem.database.ChatMessageDatabase;
 import com.ada.ada_meethem.modelo.Plan;
-import com.google.firebase.auth.FirebaseAuth;
+import com.ada.ada_meethem.modelo.pinnable.ChatMessage;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -36,6 +32,7 @@ public class ChatFragment extends Fragment {
     private Plan plan;
 
     private int[] colorsArray;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -63,14 +60,14 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EditText input = (EditText) root.findViewById(R.id.etMessage);
-                if(!input.getText().toString().trim().isEmpty())
+                if (!input.getText().toString().trim().isEmpty())
                     ChatMessageDatabase.sendMessage(plan.getPlanId(), input.getText().toString());
                 input.setText("");
             }
         });
 
         listView = root.findViewById(R.id.chatList);
-        adapter = new MessageListAdapter(root.getContext(), new ArrayList<ChatMessage>(),colorsArray);
+        adapter = new MessageListAdapter(root.getContext(), new ArrayList<ChatMessage>(), colorsArray);
         listView.setAdapter(adapter);
         displayMessages(root);
 
@@ -91,7 +88,7 @@ public class ChatFragment extends Fragment {
                     }
                 }
                 Comparator<ChatMessage> timeComparator = Comparator.comparingLong(
-                                                                ChatMessage::getMessageTime);
+                        ChatMessage::getMessageTime);
                 msgs.sort(timeComparator);
                 adapter.update(msgs);
                 listView.setSelection(adapter.getCount() - 1);

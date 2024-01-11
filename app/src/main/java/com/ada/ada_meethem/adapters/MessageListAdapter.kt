@@ -19,8 +19,8 @@ class MessageListAdapter(
     private val colorsArray: IntArray
 ) : BaseAdapter() {
 
-    private val TYPEOWN : Int = 0
-    private val TYPEOTHER : Int = 1
+    private val TYPEOWN: Int = 0
+    private val TYPEOTHER: Int = 1
     override fun getCount(): Int {
         return listaMessages.size
     }
@@ -51,7 +51,10 @@ class MessageListAdapter(
         if (view == null) {
             val inflater =
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(if (viewType == TYPEOWN) R.layout.own_message else R.layout.message, null)
+            view = inflater.inflate(
+                if (viewType == TYPEOWN) R.layout.own_message else R.layout.message,
+                null
+            )
         }
 
         // Obtén el usuario actual
@@ -59,20 +62,23 @@ class MessageListAdapter(
 
         val color = colorsArray[(userPhoneNumber.substring(1).toLong() % 18).toInt()]
         val messageText = view!!.findViewById<View>(
-            if (viewType == TYPEOWN) R.id.message_text_own else R.id.message_text_own) as TextView
+            if (viewType == TYPEOWN) R.id.message_text_own else R.id.message_text_own
+        ) as TextView
         val messageUser = view.findViewById<View>(
-            if (viewType == TYPEOWN) R.id.message_user_own else R.id.message_user_own) as TextView
+            if (viewType == TYPEOWN) R.id.message_user_own else R.id.message_user_own
+        ) as TextView
         val messageTime = view.findViewById<View>(
-            if (viewType == TYPEOWN) R.id.message_time_own else R.id.message_time_own) as TextView
+            if (viewType == TYPEOWN) R.id.message_time_own else R.id.message_time_own
+        ) as TextView
         // Set their text
         messageText.text = chatMessage.messageText
         messageUser.setTextColor(color)
         val cdb = ContactDatabase.getDatabase(context).contactDAO
-        val localContact =  cdb.findByNumber(userPhoneNumber)
-        if(localContact != null) {
+        val localContact = cdb.findByNumber(userPhoneNumber)
+        if (localContact != null) {
             userPhoneNumber = localContact.contactName
         }
-        messageUser.text = if(viewType == TYPEOWN) "You" else userPhoneNumber
+        messageUser.text = if (viewType == TYPEOWN) "You" else userPhoneNumber
         // Format the date before showing it
         messageTime.text = DateFormat.format(
             "EEE HH:mm",
@@ -81,7 +87,7 @@ class MessageListAdapter(
         return view
     }
 
-    fun update(listaChatMessage : List<ChatMessage>) {
+    fun update(listaChatMessage: List<ChatMessage>) {
         listaMessages = listaChatMessage
         notifyDataSetChanged()
     }

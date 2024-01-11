@@ -108,7 +108,7 @@ class PinnedItemsAdapter(
                 closeSurveyBtn.setOnClickListener(View.OnClickListener {
                     dateSurvey.closeSurvey()
                     plan.fecha = dateSurvey.mostVoted()
-                    PlanDatabase.closeSurvey(dateSurvey.id,plan.planId, plan.fecha)
+                    PlanDatabase.closeSurvey(dateSurvey.id, plan.planId, plan.fecha)
                 })
             }
 

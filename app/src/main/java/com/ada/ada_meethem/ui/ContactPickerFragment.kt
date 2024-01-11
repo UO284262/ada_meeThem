@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -83,7 +82,8 @@ class ContactPickerFragment : Fragment() {
         bundle = arguments ?: Bundle()
 
         // Se marcan los contactos que habían sido seleccionados previamente
-        val selectedContacts: List<Contact>? = requireArguments().getParcelableArrayList(SELECTED_CONTACTS)
+        val selectedContacts: List<Contact>? =
+            requireArguments().getParcelableArrayList(SELECTED_CONTACTS)
         if (selectedContacts != null)
             clAdapter.setSelectedContacts(selectedContacts)
     }
@@ -92,14 +92,18 @@ class ContactPickerFragment : Fragment() {
     private fun navigateToCreatePlan(view: View) {
         val selectedContacts = clAdapter.contactsSelected
         bundle.putParcelableArrayList(SELECTED_CONTACTS, selectedContacts as ArrayList<Contact?>)
-        findNavController(view).navigate(R.id.action_contactPickerFragment_to_nav_plan_create, bundle)
+        findNavController(view).navigate(
+            R.id.action_contactPickerFragment_to_nav_plan_create,
+            bundle
+        )
     }
 
     private fun loadRecyclerContactListAdapter() {
         if (contacts == null)
             return
         if (contacts!!.isEmpty())
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(
+                requireActivity().findViewById(android.R.id.content),
                 R.string.contact_list_is_empty,
                 Snackbar.LENGTH_LONG
             ).show()
@@ -156,9 +160,11 @@ class ContactPickerFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     // Establece el adapter al Recycler view
                     loadRecyclerContactListAdapter()
-                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
                         R.string.contacts_refresh_OK,
-                        Snackbar.LENGTH_SHORT)
+                        Snackbar.LENGTH_SHORT
+                    )
                         .show()
 
                     progressBar.visibility = View.GONE

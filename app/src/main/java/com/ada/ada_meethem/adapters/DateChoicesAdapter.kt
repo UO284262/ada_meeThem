@@ -45,30 +45,30 @@ class DateChoicesAdapter(
         }
         val viewStr: CheckBox = view!!.findViewById<View>(R.id.date_survey_cb) as CheckBox
         viewStr.text = date
-        if(listaVotes.votes.keys.contains(phoneNumber)
-            && listaVotes.votes.get(phoneNumber) == date) {
+        if (listaVotes.votes.keys.contains(phoneNumber)
+            && listaVotes.votes.get(phoneNumber) == date
+        ) {
             viewStr.isChecked = true
             viewStr.isActivated = true
         }
 
-        if(!dateSurvey.open) {
+        if (!dateSurvey.open) {
             viewStr.isEnabled = false
-            val colorDeshabilitado = getColor(context,R.color.white) // Reemplaza con tu color
+            val colorDeshabilitado = getColor(context, R.color.white) // Reemplaza con tu color
             viewStr.buttonDrawable?.setColorFilter(colorDeshabilitado, PorterDuff.Mode.SRC_ATOP)
         }
 
         viewStr.setOnClickListener(View.OnClickListener {
-            if(viewStr.isActivated) {
+            if (viewStr.isActivated) {
                 dateSurvey.unvoteDate(date)
                 listaVotes.unvote(date)
-            }
-            else if(!viewStr.isActivated) {
+            } else if (!viewStr.isActivated) {
                 dateSurvey.voteDate(date)
                 unvotePrevius()
                 listaVotes.vote(date)
             }
-            PlanDatabase.pinDateSurvey(dateSurvey,planId)
-            PlanDatabase.voteDate(listaVotes,planId)
+            PlanDatabase.pinDateSurvey(dateSurvey, planId)
+            PlanDatabase.voteDate(listaVotes, planId)
         })
 
         val numVotes = view.findViewById<View>(R.id.num_votes_date) as TextView
@@ -78,7 +78,7 @@ class DateChoicesAdapter(
     }
 
     fun unvotePrevius() {
-        var date : String? = listaVotes.votes.get(phoneNumber)
-        if(date != null) dateSurvey.unvoteDate(date)
+        var date: String? = listaVotes.votes.get(phoneNumber)
+        if (date != null) dateSurvey.unvoteDate(date)
     }
 }

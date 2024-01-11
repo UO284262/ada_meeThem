@@ -1,18 +1,17 @@
 package com.ada.ada_meethem;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ada.ada_meethem.database.entities.Contact;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,7 +58,9 @@ public class RegistroActivity extends AppCompatActivity {
 
         profilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { abrirSelectorImagen(); }
+            public void onClick(View v) {
+                abrirSelectorImagen();
+            }
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +136,7 @@ public class RegistroActivity extends AppCompatActivity {
                 });
             }
 
-        } else if(!username.isEmpty()) {
+        } else if (!username.isEmpty()) {
             // Mostrar un mensaje de error si el nombre de usuario tiene longitudes ilegales
             responseText.setText(getText(R.string.username_length_error));
             responseText.setTextColor(Color.RED);
@@ -172,14 +173,14 @@ public class RegistroActivity extends AppCompatActivity {
     }
 
     public static boolean correctLength(String username) {
-         return (username.length() >= 3 && username.length() <= 16);
+        return (username.length() >= 3 && username.length() <= 16);
     }
 
     public static boolean validChars(String username) {
-        for(int i = 0; i < username.length(); i++) {
+        for (int i = 0; i < username.length(); i++) {
             char current = username.charAt(i);
 
-            if(!Character.isLetterOrDigit(current) && current != '-' && current != '_' && current != '.')
+            if (!Character.isLetterOrDigit(current) && current != '-' && current != '_' && current != '.')
                 return false;
         }
         return true;
@@ -219,7 +220,7 @@ public class RegistroActivity extends AppCompatActivity {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
         // Crear un nuevo objeto Usuario con el nombre y el número de teléfono
-        Contact usuario = new Contact(phoneNumber,  imageUrl, username);
+        Contact usuario = new Contact(phoneNumber, imageUrl, username);
 
         // Agregar la información del usuario a la base de datos
         databaseReference.child(phoneNumber).setValue(usuario);

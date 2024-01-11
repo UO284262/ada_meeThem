@@ -51,7 +51,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.0-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.0-alpha02'
     androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestImplementation 'androidx.test:rules:1.6.0-alpha01'
+    androidTestImplementation 'androidx.test:rules:1.6.0-alpha02'
 
     // librería para cargar imágenes desde una url
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -62,7 +62,8 @@ dependencies {
     //db
     implementation("androidx.room:room-runtime:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
-    annotationProcessor ("androidx.room:room-compiler:2.5.0")
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.0-alpha02'
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
 
     //AUTH
     // Import the BoM for the Firebase platform
