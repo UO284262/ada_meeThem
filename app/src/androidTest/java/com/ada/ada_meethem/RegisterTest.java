@@ -1,44 +1,44 @@
 package com.ada.ada_meethem;
 
 
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.filters.LargeTest;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.GrantPermissionRule;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.espresso.Espresso.onData;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.action.ViewActions.*;
-import static androidx.test.espresso.assertion.ViewAssertions.*;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.GrantPermissionRule;
 
-import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.util.TestUtils;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.is;
-
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RegisterActivityTest {
+public class RegisterTest {
 
     @Rule
     public ActivityScenarioRule<PhoneIntroductionActivity> mActivityScenarioRule =
@@ -49,8 +49,15 @@ public class RegisterActivityTest {
             GrantPermissionRule.grant(
                     "android.permission.READ_CONTACTS");
 
+    @Before
+    public void setUp() {
+        // Se borra el usuario
+        FirebaseDatabase.getInstance("https://meethem-8955a-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("users").child("+34644444444").removeValue();
+    }
+
     @Test
-    public void registerActivityTest() throws InterruptedException {
+    public void registerTest() throws InterruptedException {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.phoneNumber),
                         childAtPosition(
@@ -73,7 +80,8 @@ public class RegisterActivityTest {
 
         ViewInteraction textView = onView(
                 allOf(withText("Ingrese el código de verificación"),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))));
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
+                        isDisplayed()));
         TestUtils.waitFor(textView, TestUtils.DEFAULT_TIMEOUT);
         textView.check(matches(withText("Ingrese el código de verificación")));
 
@@ -97,6 +105,10 @@ public class RegisterActivityTest {
                         isDisplayed()));
         materialButton2.perform(click());
 
+        ViewInteraction editText = onView(withId(R.id.newUsername));
+        TestUtils.waitFor(editText, TestUtils.DEFAULT_TIMEOUT);
+        editText.check(matches(withText("Nombre de usuario")));
+
         ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.newUsername),
                         childAtPosition(
@@ -105,7 +117,6 @@ public class RegisterActivityTest {
                                         0),
                                 1),
                         isDisplayed()));
-        TestUtils.waitFor(appCompatEditText3, TestUtils.DEFAULT_TIMEOUT);
         appCompatEditText3.perform(replaceText("Test"), closeSoftKeyboard());
 
         ViewInteraction materialButton3 = onView(
@@ -119,28 +130,12 @@ public class RegisterActivityTest {
         materialButton3.perform(click());
 
         ViewInteraction textView2 = onView(
-                allOf(withId(com.google.android.material.R.id.navigation_bar_item_large_label_view), withText("Home"),
-                        withParent(allOf(withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
-                                withParent(allOf(withId(R.id.nav_home), withContentDescription("Home")))))));
-        textView2.check(matches(isDisplayed()));
-        textView2.check(matches(withText("Home")));
-
-        ViewInteraction bottomNavigationItemView = onView(
-                allOf(withId(R.id.nav_profile), withContentDescription("Profile"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.nav_view),
-                                        0),
-                                2),
+                allOf(withText("meeThem"),
+                        withParent(allOf(withId(androidx.appcompat.R.id.action_bar),
+                                withParent(withId(androidx.appcompat.R.id.action_bar_container)))),
                         isDisplayed()));
-        bottomNavigationItemView.perform(click());
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.username), withText("Test"),
-                        withParent(allOf(withId(R.id.usernameLayout),
-                                withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))))));
-        textView3.check(matches(isDisplayed()));
-        textView3.check(matches(withText("Test")));
+        TestUtils.waitFor(textView2, TestUtils.DEFAULT_TIMEOUT);
+        textView2.check(matches(withText("meeThem")));
     }
 
     private static Matcher<View> childAtPosition(
