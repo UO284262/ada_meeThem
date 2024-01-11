@@ -33,6 +33,14 @@ import com.google.firebase.storage.FirebaseStorage
 import java.util.UUID
 
 class CreatePlanFragment : Fragment() {
+
+    companion object {
+        // Claves para guardar el estado del fragmento
+        private const val PLAN_IMAGE_URI = "plan_image_uri"
+        private const val PLAN_NAME = "plan_name"
+        private const val PLAN_MAX_PEOPLE = "plan_max_people"
+    }
+
     private var selectedContacts: List<Contact>? = ArrayList()
     private var createdPlanId: String? = null
     private var planImageUri: Uri? = null
@@ -43,6 +51,7 @@ class CreatePlanFragment : Fragment() {
     private var etMaxPeople: TextInputEditText? = null
     private var rvSelectedContacts: RecyclerView? = null
     private var dateTextView: EditText? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -122,12 +131,13 @@ class CreatePlanFragment : Fragment() {
 
     private fun pickContacts(view: View) {
         val bundle = Bundle()
-        bundle.putString(
-            PLAN_IMAGE_URI,
+        bundle.putString(PLAN_IMAGE_URI,
             if (planImageUri != null) planImageUri.toString() else null
         )
         bundle.putString(PLAN_NAME, etPlanName!!.text.toString())
         bundle.putString(PLAN_MAX_PEOPLE, etMaxPeople!!.text.toString())
+        bundle.putParcelableArrayList(ContactPickerFragment.SELECTED_CONTACTS, selectedContacts as java.util.ArrayList<Contact?>?)
+
         findNavController(view).navigate(
             R.id.action_nav_plan_create_to_contactPickerFragment,
             bundle
@@ -182,12 +192,6 @@ class CreatePlanFragment : Fragment() {
             Snackbar.make(view, R.string.plan_creation_no_image, Snackbar.LENGTH_LONG).show()
             return false
         }
-        if (!isMaxPeopleInvalid && selectedContacts != null && selectedContacts!!.size > etMaxPeople!!.text.toString()
-                .toInt()
-        ) {
-            Snackbar.make(view, R.string.plan_creation_too_much_people, Snackbar.LENGTH_LONG).show()
-            return false
-        }
         if (isPlanNameInvalid) layoutPlanName!!.error = getString(R.string.plan_creation_no_name)
         if (isMaxPeopleInvalid) layoutMaxPeople!!.error =
             getString(R.string.plan_creation_no_max_people)
@@ -222,10 +226,4 @@ class CreatePlanFragment : Fragment() {
             }
     }
 
-    companion object {
-        // Claves para guardar el estado del fragmento
-        private const val PLAN_IMAGE_URI = "plan_image_uri"
-        private const val PLAN_NAME = "plan_name"
-        private const val PLAN_MAX_PEOPLE = "plan_max_people"
-    }
 }

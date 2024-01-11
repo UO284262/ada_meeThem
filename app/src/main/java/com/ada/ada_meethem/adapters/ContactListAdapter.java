@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,9 +16,11 @@ import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.database.entities.Contact;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> implements Filterable {
 
     // Interfaz para manejar el evento click sobre un elemento
     public interface OnItemClickListener {
@@ -24,11 +28,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     private List<Contact> contacts;
-    private List<CheckBox> checkBoxes = new ArrayList<>();
+    private List<Contact> contactsFiltered;
+    private List<Contact> selectedContacts; // contactos seleccionados anteriormente
+    private final Map<Contact, Boolean> contactsSelectedMap = new HashMap<>(); // contactos seleccionados actualmente
     private final OnItemClickListener listener;
 
     public ContactListAdapter(List<Contact> contacts, OnItemClickListener listener) {
         this.contacts = contacts;
+        this.contactsFiltered = contacts;
         this.listener = listener;
     }
 
@@ -58,10 +65,47 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     public List<Contact> getContactsSelected() {
         List<Contact> contactsSelected = new ArrayList<>();
 
-        for (int i = 0; i < checkBoxes.size(); i++)
-            if (checkBoxes.get(i).isChecked())
-                contactsSelected.add(contacts.get(i));
+        for (Map.Entry<Contact, Boolean> entry : contactsSelectedMap.entrySet())
+            if (entry.getValue())
+                contactsSelected.add(entry.getKey());
+
+        if (selectedContacts != null)
+            contactsSelected.addAll(selectedContacts);
         return contactsSelected;
+    }
+
+    public void setSelectedContacts(List<Contact> selectedContacts) {
+        this.selectedContacts = selectedContacts;
+    }
+
+    // Filtro de contactos por nombre
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint == null || constraint.length() == 0) {
+                    filterResults.values = contactsFiltered;
+                    filterResults.count = contactsFiltered.size();
+                } else {
+                    String searchStr = constraint.toString().toLowerCase();
+                    List<Contact> contactsAux = new ArrayList<>();
+                    for (Contact contact : contactsFiltered)
+                        if (contact.getContactName().toLowerCase().contains(searchStr))
+                            contactsAux.add(contact);
+                    filterResults.values = contactsAux;
+                    filterResults.count = contactsAux.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                contacts = (List<Contact>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 
@@ -84,13 +128,21 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         public void bindContact(final Contact contact, final OnItemClickListener listener) {
             contactSurname.setText(contact.getContactName());
             contactNumber.setText(contact.getContactNumber());
-            checkBoxes.add(contactCheckBox);
+
+            if (selectedContacts != null && selectedContacts.contains(contact) && contactsSelectedMap.get(contact) == null) {
+                contactsSelectedMap.put(contact, true);
+                selectedContacts.remove(contact);
+            }
+
+            boolean checked = contactsSelectedMap.get(contact) != null ? contactsSelectedMap.get(contact) : false;
+            contactCheckBox.setChecked(checked);
 
             // cargar imagen
             // TODO Picasso.get().load(plan.getImageUrl()).into(contactImage);
 
             itemView.setOnClickListener(view -> {
                 contactCheckBox.setChecked(!contactCheckBox.isChecked());
+                contactsSelectedMap.put(contact, contactCheckBox.isChecked());
                 listener.onItemClick(contact);
             });
         }

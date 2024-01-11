@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,10 +52,16 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String code = smsCode.getText().toString();
                 if(!code.isEmpty()) {
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(intentAuth, code);
-                    iniciarSesion(credential);
+                    if(code.length() == 6) {
+                        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(intentAuth, code);
+                        iniciarSesion(credential);
+                    } else {
+                        responseText.setText(getText(R.string.code_length_error));
+                        responseText.setTextColor(Color.RED);
+                    }
                 } else {
-                    Toast.makeText(PhoneSMSVerificationActivity.this, "Ingrese el código de verificación", Toast.LENGTH_SHORT).show();
+                    responseText.setText(getText(R.string.no_code));
+                    responseText.setTextColor(Color.RED);
                 }
             }
 
@@ -65,7 +72,9 @@ public class PhoneSMSVerificationActivity extends AppCompatActivity {
                         if(task.isSuccessful()) {
                             verificarNuevoUsuario();
                         } else {
-                            Toast.makeText(PhoneSMSVerificationActivity.this, "Error de verificación", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(PhoneSMSVerificationActivity.this, "Error de verificación", Toast.LENGTH_SHORT).show();
+                            responseText.setText(getText(R.string.code_error));
+                            responseText.setTextColor(Color.RED);
                         }
                     }
                 });

@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,23 +23,38 @@ import com.ada.ada_meethem.database.PlanDatabase
 import com.ada.ada_meethem.database.entities.Contact
 import com.ada.ada_meethem.modelo.Plan
 import com.ada.ada_meethem.ui.PlanFragment.Companion.newInstance
+import com.ada.ada_meethem.util.ContactLoaderFromProvider
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
+
     private var plans: List<Plan> = ArrayList()
     private var contacts: List<Contact> = ArrayList()
     private lateinit var plAdapter : PlanListAdapter
+    private lateinit var contactLoader : ContactLoaderFromProvider
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarText: TextView
+
     private var loadContacts : Boolean = true
-    private var setListener : Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(setListener) setUsersListener()
-        if(loadContacts) loadContacts()
+        setUsersListener()
+
+        // Crea el contactLoader
+        contactLoader = ContactLoaderFromProvider(
+            requireContext(),
+            requestPermissionLauncher,
+            requireActivity()
+        )
     }
 
     override fun onCreateView(
@@ -45,14 +63,36 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        loadPlans()
+
+        progressBar = root.findViewById(R.id.progressBar)
+        progressBarText = root.findViewById(R.id.progressBarText)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                progressBar.visibility = View.VISIBLE
+                progressBarText.visibility = View.VISIBLE
+            }
+
+            // Carga los contactos y los planes
+            if(loadContacts) {
+                contacts = contactLoader.loadContacts()
+                loadContacts = false
+            }
+            loadPlans()
+
+            withContext(Dispatchers.Main) {
+                progressBar.visibility = View.GONE
+                progressBarText.visibility = View.GONE
+
+            }
+        }
+
+        // Configura el recycler view de planes
         val plansRecyclerView = root.findViewById<RecyclerView>(R.id.plansRecyclerView)
         plansRecyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(root.context)
         plansRecyclerView.layoutManager = layoutManager
-        plAdapter = PlanListAdapter(
-            plans
-        ) { plan -> clickonItem(plan) }
+        plAdapter = PlanListAdapter(plans) { plan -> clickonItem(plan) }
         plansRecyclerView.adapter = plAdapter
         return root
     }
@@ -102,7 +142,6 @@ class HomeFragment : Fragment() {
                             val localContact = cdb.findByNumber(contact.contactNumber)
                             if(localContact != null) {
                                 localContact.photoUrl = contact.photoUrl
-                                loadContacts = true
                             }
                         }
                     }
@@ -114,41 +153,9 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun loadContacts() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
-        else
-            try {
-                contacts = ContactProvider(context).getContacts(null, null)
-            } catch (e: Exception) {
-                contacts = ArrayList()
-            }
-    }
 
-    private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            try {
-                contacts = ContactProvider(context).getContacts(null, null)
-            } catch (e: Exception) {
-                contacts = ArrayList()
-            }
-            safeContactsInLocalDB()
-        } else Snackbar.make(
-            requireActivity().findViewById(android.R.id.content),
-            R.string.read_contact_permissions_not_acepted,
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission())
+        { isGranted: Boolean ->contactLoader.requestPermissionLauncherCallback(isGranted) }
 
-    private fun safeContactsInLocalDB() {
-        val cdao = ContactDatabase.getDatabase(context).contactDAO
-        for (contact in contacts) {
-            contact.contactNumber = contact.contactNumber.replace("\\s".toRegex(), "")
-           // if(!contact.contactNumber.contains("+")) contact.contactNumber = "+34" + contact.contactNumber
-            cdao.add(contact)
-        }
-        loadContacts = false
-    }
 }

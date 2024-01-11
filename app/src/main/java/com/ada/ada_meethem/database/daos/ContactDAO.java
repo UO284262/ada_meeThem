@@ -18,9 +18,12 @@ public interface ContactDAO {
     @Query("SELECT * FROM contacts WHERE contactNumber = (:contactNumber)")
     Contact findByNumber(String contactNumber);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void add(Contact contact);
 
     @Delete
     void delete(Contact contact);
+
+    @Query("DELETE FROM contacts")
+    void deleteAll();
 }

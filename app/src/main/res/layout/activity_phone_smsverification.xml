@@ -20,7 +20,7 @@
             android:gravity="center"
             android:textSize="16dp"
             android:textStyle="bold"
-            android:text="Ingrese el código de verificación"/>
+            android:text="@string/type_verif_code"/>
 
         <EditText
             android:id="@+id/smsCode"
@@ -41,14 +41,14 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="80dp"
             android:background="@color/green"
-            android:text="Verificar" />
+            android:text="@string/verif_code" />
 
         <TextView
             android:id="@+id/responseText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:text="Respuesta"
+            android:text=""
             android:textStyle="italic"
             android:gravity="center"
             android:layout_marginTop="30dp"
