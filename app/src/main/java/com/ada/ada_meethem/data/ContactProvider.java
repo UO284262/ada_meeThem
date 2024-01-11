@@ -76,7 +76,7 @@ public class ContactProvider {
 
                 // Se crea un contacto por cada número de teléfono existente
                 for (String number: numbers)
-                    contacts.add(new Contact(number,"",name));
+                    contacts.add(new Contact(parsePhoneNumber(number),"",name));
             }
         }
         cursor.close();
@@ -112,6 +112,18 @@ public class ContactProvider {
         }
         cursor.close();
         return  phones;
+    }
+
+    private String parsePhoneNumber(String number) {
+        number = number.replace("(","");
+        number = number.replace(")","");
+        number = number.replace("-","");
+        number = number.replace(" ","");
+        switch(number.length()) {
+            case 9: return "+34" + number;
+            case 10: return "+1" + number;
+            default: return number;
+        }
     }
 
 }
