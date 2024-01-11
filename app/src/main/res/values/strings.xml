@@ -48,4 +48,27 @@
     <string name="attached_image_ok">Imagen anclada correctamente</string>
     <string name="no_network_available">La red no está disponible. La aplicación puede no funcionar correctamente.</string>
     <string name="no_network_available_alert_title">Sin conexión</string>
+    <string name="send_sms">Enviar</string>
+    <string name="no_number">Introduzca un número de teléfono</string>
+    <string name="format_error">Error en el formato del número de teléfono</string>
+    <string name="verif_error">Ha ocurrido un error inesperado. Inténtelo más tarde</string>
+    <string name="sended_sms">El código de verificación fue enviado</string>
+    <string name="type_verif_code">Ingrese el código de verificación</string>
+    <string name="verif_code">Verificar</string>
+    <string name="no_code">Código vacío</string>
+    <string name="code_length_error">El código es de 6 dígitos</string>
+    <string name="code_error">Error de verificación</string>
+    <string name="username_hint">Nombre de usuario</string>
+    <string name="register">Registrar</string>
+    <string name="username_empty">Ingrese un nombre de usuario</string>
+    <string name="username_length_error">El nombre de usuario debe contener entre 3 y 16 caracteres</string>
+    <string name="username_illegal_chars">El nombre de usuario solo puede tener letras, números, -, _ y .</string>
+    <string name="existing_username">El nombre de usuario ya está en uso</string>
+    <string name="correct_register">Registro exitoso</string>
+    <string name="username_change">Cambiar nombre de usuario</string>
+    <string name="new_username_hint">Nuevo nombre de usuario</string>
+    <string name="changed_username">Cambio realizado</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="logout">Cerrar Sesión</string>
 </resources>

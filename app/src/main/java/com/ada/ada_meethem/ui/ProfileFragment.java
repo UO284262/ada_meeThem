@@ -2,8 +2,10 @@ package com.ada.ada_meethem.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.TaskInfo;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,7 +20,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ada.ada_meethem.MainActivity;
+import com.ada.ada_meethem.PhoneIntroductionActivity;
 import com.ada.ada_meethem.R;
 import com.ada.ada_meethem.RegistroActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -91,7 +96,13 @@ public class ProfileFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                FirebaseAuth.getInstance().signOut();
+
+                // Reiniciar la aplicación desde un fragmento
+                Intent intent = new Intent(requireActivity(), PhoneIntroductionActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                requireActivity().finish();
             }
         });
 
@@ -192,20 +203,18 @@ public class ProfileFragment extends Fragment {
             builder.setView(dialogView);
 
             // Configura los botones del AlertDialog
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getString(R.string.accept), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // Obtiene el nuevo nombre de usuario ingresado por el usuario
                     EditText usernameEditText = dialogView.findViewById(R.id.usernameEditText);
                     String newUserName = usernameEditText.getText().toString();
 
-                    // Actualiza el nombre de usuario en la interfaz de usuario y en la base de datos
-                    userName.setText(newUserName);
-                    actualizarNombreDeUsuarioEnBD(mAuth.getCurrentUser().getPhoneNumber(), newUserName);
+                    checkNewUserName(newUserName);
                 }
             });
 
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -217,6 +226,35 @@ public class ProfileFragment extends Fragment {
             dialog.show();
         }
 
+    }
+
+    private void checkNewUserName(String newUserName) {
+        if(RegistroActivity.correctLength(newUserName)) {
+
+            if(!RegistroActivity.validChars(newUserName)) {
+                Toast.makeText(getContext(), getText(R.string.username_illegal_chars), Toast.LENGTH_LONG).show();
+            } else {
+                RegistroActivity.usuarioExistente(newUserName, new RegistroActivity.UserExistenceCallback() {
+                    @Override
+                    public void onUserExistenceCheck(boolean userExists) {
+                        if (userExists) {
+                            Toast.makeText(getContext(), getText(R.string.existing_username), Toast.LENGTH_LONG).show();
+                        } else {
+                            userName.setText(newUserName);
+                            actualizarNombreDeUsuarioEnBD(mAuth.getCurrentUser().getPhoneNumber(), newUserName);
+
+                            // Mostrar un mensaje de éxito
+                            Toast.makeText(getContext(), getText(R.string.changed_username), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+
+        } else if(!newUserName.isEmpty()) {
+            Toast.makeText(getContext(), getText(R.string.username_length_error), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(), getText(R.string.username_empty), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void actualizarNombreDeUsuarioEnBD(String phoneNumber, String newUserName) {

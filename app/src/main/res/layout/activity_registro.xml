@@ -32,7 +32,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="25dp"
-            android:hint="Nombre de usuario"
+            android:hint="@string/username_hint"
             android:inputType="text" />
 
         <Button
@@ -42,14 +42,14 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="80dp"
             android:layout_marginRight="80dp"
-            android:text="Registrar" />
+            android:text="@string/register" />
 
         <TextView
             android:id="@+id/responseText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:text="Respuesta"
+            android:text=""
             android:textStyle="italic"
             android:gravity="center"
             android:layout_marginTop="30dp"
